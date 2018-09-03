@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Médiathèque{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        <header>
-            <div id="mainLogo">
-                <img src="{{ asset('images/logo.png') }}" alt="Médiathèque" />
-            </div>
-            <menu>
-                <option>Livres</option>
-            </menu>
-        </header>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Médiathèque{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+<div id="app">
+    <header>
+        <div id="mainLogo">
+            <img src="{{ asset('images/logo.png') }}" alt="Médiathèque"/>
+        </div>
+        <menu>
+            <option>Livres</option>
+        </menu>
+    </header>
+    {% block body %}
+        <div id="appBody"></div>
+    {% endblock %}
+    {% block javascripts %}
+    {% endblock %}
+</div>
+</body>
 </html>

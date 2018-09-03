@@ -20,18 +20,19 @@ class ApiBookController extends AbstractController
         $return = [];
         /**@var $book \App\Entity\Book */
         foreach ($aBook as $book) {
-            $aBookData= [
+            $aBookData = [
+                'id' => $book->getId(),
                 'title' => $book->getTitle(),
                 'year' => $book->getYear(),
                 'language' => $book->getLanguage(),
-                'authors'=>array()
+                'authors' => array()
             ];
 
-            /**@var \App\Entity\Author*/
+            /**@var \App\Entity\Author */
             foreach ($book->getAuthors() as $author) {
                 $aBookData['authors'][] = [
-                  'firstname'=>$author->getFirstname(),
-                  'lastname'=>$author->getLastname()
+                    'firstname' => $author->getFirstname(),
+                    'lastname' => $author->getLastname()
                 ];
             }
 
