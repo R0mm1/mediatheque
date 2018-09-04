@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Médiathèque{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/main.min.css') }}">
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
@@ -11,9 +12,14 @@
         <div id="mainLogo">
             <img src="{{ asset('images/logo.png') }}" alt="Médiathèque"/>
         </div>
-        <menu>
-            <option>Livres</option>
-        </menu>
+        <ul id="mainMenu">
+            <li>Livres
+                <ul class="subMenu l1Menu">
+                    <li>Par livre</li>
+                    <li>Par auteur</li>
+                </ul>
+            </li>
+        </ul>
     </header>
     {% block body %}
         <div id="appBody"></div>

@@ -1,0 +1,55 @@
+html, body{
+  height: 100%;
+}
+
+body {
+  margin: 0px;
+}
+
+#app{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
+  display: flex;
+  height: 100px;
+
+  #mainLogo {
+    display: inline-block;
+
+    img {
+      height: 80px;
+      margin: 10px;
+    }
+  }
+
+  ul#mainMenu {
+    margin: auto 0px;
+    list-style-type: none;
+
+    > li {
+      padding: 10px 50px;
+    }
+
+    > li:hover > .subMenu {
+      display: block;
+      position: absolute;
+    }
+  }
+
+  .subMenu {
+    list-style-type: none;
+    padding: 0px;
+    display: none;
+
+    > li {
+      cursor: pointer;
+    }
+  }
+}
+
+#vueList{
+  flex: 1;
+}

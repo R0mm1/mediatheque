@@ -3,13 +3,18 @@ import List from '../../vue/list/list.vue'
 
 new Vue({
     el: "#appBody",
-    template: '<List :cols="listCols" :data="listData"/>',
+    template: '<List :cols="listCols" :data="listData" :colsProperties="listColsProperties"/>',
     data: function(){
         return {
             listData: [],
             listCols: {
                 'Titre': 'title',
-                'Année': 'year'
+                'Année': 'year',
+                'Langue': 'language',
+                'Auteur': {'authors': ['firstname', 'lastname']}
+            },
+            listColsProperties: {
+                'Auteur': {'sort': false, 'searchName': ['author']}
             }
         }
     },

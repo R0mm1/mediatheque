@@ -1,8 +1,6 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
-console.log(path.resolve(__dirname, 'public/js/'));
-
 var config = {
     module: {
         rules: [
@@ -13,7 +11,8 @@ var config = {
                 use: {
                     loader: "babel-loader"
                 }
-            }
+            },
+            {test: /\.scss$/, loader: ['vue-style-loader', 'css-loader', 'sass-loader']}
         ]
     },
     resolve: {

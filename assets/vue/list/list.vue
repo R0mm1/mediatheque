@@ -1,8 +1,8 @@
 <template>
-    <div>
-        <row-header :cols="cols"></row-header>
+    <table id="vueList">
+        <row-header :cols="cols" :colsProperties="colsProperties"></row-header>
         <row v-for="dataRow in data" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
-    </div>
+    </table>
 </template>
 
 <script>
@@ -10,13 +10,19 @@
     import ListHeader from './_listHeader'
 
     export default {
-        props: ['cols', 'data'],
+        props: ['cols', 'data', 'colsProperties'],
         components: {
             Row, RowHeader: ListHeader
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+</style>
 
+<style lang="scss">
+    /*.cell {*/
+        /*display: inline-block;*/
+        /*width: 250px;*/
+    /*}*/
 </style>
