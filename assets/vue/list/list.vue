@@ -1,7 +1,8 @@
 <template>
     <table id="vueList">
-        <row-header :cols="cols" :colsProperties="colsProperties"></row-header>
-        <row v-for="dataRow in data" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
+        <list-header :cols="cols" :colsProperties="colsProperties"
+                     v-on:list-header-sort-up="sortUp"></list-header>
+        <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
     </table>
 </template>
 
@@ -10,10 +11,52 @@
     import ListHeader from './_listHeader'
 
     export default {
-        props: ['cols', 'data', 'colsProperties'],
+        data: function () {
+            return {
+                'listData': [],
+                'sort': {}
+            };
+        },
+        props: ['cols', 'colsProperties', 'apiEndpoint'],
         components: {
-            Row, RowHeader: ListHeader
-        }
+            Row, ListHeader
+        },
+        methods: {
+            'load': function () {
+                self = this;
+
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function (event) {
+                    if (this.readyState === XMLHttpRequest.DONE) {
+                        if (this.status === 200) {
+                            self.listData = JSON.parse(xhr.response);
+                        } else {
+                            alert('Une erreur est survenue');
+                        }
+                    }
+                };
+
+                //Building sort params
+                let sortParam = '';
+                for (let prop in this.sort) {
+                    if (sortParam != '') {
+                        sortParam += '&';
+                    }
+                    sortParam += 'sort_' + prop + '=' + this.sort[prop];
+                }
+
+                xhr.open('GET', this.apiEndpoint + '?' + sortParam, true);
+                xhr.send(sortParam);
+            },
+
+            'sortUp': function (colName) {
+                this.sort[colName] = 'ASC';
+                this.load();
+            }
+        },
+        created: function () {
+            this.load();
+        },
     }
 </script>
 
@@ -22,7 +65,7 @@
 
 <style lang="scss">
     /*.cell {*/
-        /*display: inline-block;*/
-        /*width: 250px;*/
+    /*display: inline-block;*/
+    /*width: 250px;*/
     /*}*/
 </style>

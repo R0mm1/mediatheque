@@ -3,12 +3,15 @@
         <th v-for="(colDataAttribute, colName) in cols" class="cell">
             <div class="headerRow headerRow1">
                 <div class="headerRowLabel">{{colName}}</div>
-                <button v-if="isSearchEnabled(colName)" class="headerSearchButton"></button>
-                <button v-if="isSortEnabled(colName)" class="headerSortButton"></button>
+                <button v-if="isSearchEnabled(colName)" class="headerSearchButton fas fa-search"></button>
+                <div v-if="isSortEnabled(colName)" class="buttonGroup">
+                    <button class="headerSortButtonUp fas fa-sort-up" v-on:click="$emit('list-header-sort-up', colDataAttribute)"></button>
+                    <button class="headerSortButtonDown fas fa-sort-down"></button>
+                </div>
             </div>
             <div class="headerRow headerRow2" v-if="isSearchEnabled(colName)">
                 <input type="text" :name="'search_'+getSearchName(colName)">
-                <input type="button" :name="'submitSearch_'+getSearchName(colName)">
+                <input type="button" :name="'submitSearch_'+getSearchName(colName)" placeholder="Rechercher..." class="fas fa-search">
             </div>
         </th>
     </tr>
@@ -19,6 +22,9 @@
         name: 'header',
         props: ['cols', 'colsProperties'],
         methods: {
+            debug: function(){
+                console.log('coucou')
+            },
             isSearchEnabled: function (colName) {
                 return !this.colsProperties[colName]
                     || (typeof this.colsProperties[colName]['search'] === 'undefined')
