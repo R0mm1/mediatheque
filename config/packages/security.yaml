@@ -9,16 +9,15 @@ security:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
-    main:
-      pattern: ^/
-      form_login:
-        provider: fos_userbundle
-        csrf_token_generator: security.csrf.token_manager
-        # if you are using Symfony < 2.8, use the following config instead:
-        # csrf_provider: form.csrf_provider
-
-      logout:       true
-      anonymous:    true
+    oauth_token:
+      pattern:    ^/oauth/v2/token
+      security:   false
+    api:
+      pattern:    ^/api
+      fos_oauth:  true
+      stateless:  true
+      anonymous:  false
+      provider: fos_userbundle
 
 
   # Easy way to control access for large sections of your site
