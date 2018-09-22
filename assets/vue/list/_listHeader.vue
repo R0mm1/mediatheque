@@ -32,9 +32,6 @@
             }
         },
         methods: {
-            debug: function () {
-                console.log('coucou')
-            },
             isSearchEnabled: function (colName) {
                 return !this.colsProperties[colName]
                     || (typeof this.colsProperties[colName]['search'] === 'undefined')
@@ -55,12 +52,10 @@
             toggleRowTwo: function (colName) {
                 if(!this.colsProperties[colName])this.colsProperties[colName] = {displayRowTwo: false};
                 // this.colsProperties[colName]['displayRowTwo'] = !this.colsProperties[colName]['displayRowTwo'];
-                this.$set(this.colsProperties[colName], 'displayRowTwo', !this.colsProperties[colName]['displayRowTwo'])
-                console.log(this.colsProperties[colName]['displayRowTwo']);
+                this.$set(this.colsProperties[colName], 'displayRowTwo', !this.colsProperties[colName]['displayRowTwo']);
             },
             displayRowTwo: function (colName) {
                 if(!this.colsProperties[colName])this.colsProperties[colName] = {displayRowTwo: false};
-                console.log(this.colsProperties[colName]['displayRowTwo']);
                 return this.colsProperties[colName]['displayRowTwo'];
             }
         }

@@ -16,7 +16,7 @@ new Vue({
                         'placeholder': 'Nom d\'utilisateur'
                     },
                     {
-                        'type': 'text',
+                        'type': 'password',
                         'name': 'password',
                         'placeholder': 'Mot de passe'
                     },
@@ -32,9 +32,6 @@ new Vue({
     },
     methods: {
         callLogin: function (formData) {
-            console.log(formData.get('username'));
-            console.log(formData.get('password'));
-
             Xhr.login(formData.get('username'), formData.get('password'));
         }
     },

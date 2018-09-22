@@ -1,7 +1,9 @@
 {
-  "auth":
-  {
+  "auth": {
     "client_id": "",
     "client_secret": ""
+  },
+  "default": {
+    "page": "/book"
   }
 }

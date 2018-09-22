@@ -3,6 +3,7 @@
         <form :action="action" v-on:submit="submit">
             <template v-for="element in description.elements">
                 <InputText v-if="element.type == 'text'" :element="element"></InputText>
+                <inputPassword v-if="element.type == 'password'" :element="element"></inputPassword>
                 <InputButton v-if="element.type == 'button'" :element="element"></InputButton>
             </template>
         </form>
@@ -12,10 +13,11 @@
 <script>
     import InputText from './elements/_inputText';
     import InputButton from './elements/_inputButton';
+    import InputPassword from './elements/_inputPassword';
 
     export default {
         name: "form",
-        components: {InputButton, InputText},
+        components: {InputButton, InputText, InputPassword},
         props: ['description'],
         computed: {
             action: function () {
