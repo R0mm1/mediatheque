@@ -8,13 +8,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class MediathequeController extends AbstractController
 {
     /**
-     * @Route("/mediatheque", name="mediatheque")
+     * @Route("/login", name="login")
      */
     public function index()
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/MediathequeController.php',
-        ]);
+        return $this->render('mediatheque/login.html.twig');
     }
 }

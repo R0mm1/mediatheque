@@ -9,6 +9,9 @@
 <script>
     import Row from './_row'
     import ListHeader from './_listHeader'
+    import Xhr from './../../js/tools/xhr';
+
+    Xhr.request();
 
     export default {
         data: function () {
@@ -64,8 +67,8 @@
 </style>
 
 <style lang="scss">
-    /*.cell {*/
-    /*display: inline-block;*/
-    /*width: 250px;*/
-    /*}*/
+    #vueList {
+        border-collapse: collapse;
+        width: 100%;
+    }
 </style>
