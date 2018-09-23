@@ -75,5 +75,10 @@
 <style scoped lang="scss">
     .listRow {
         height: 1.5rem;
+        transition: height 0.3s;
+    }
+
+    .listRow:hover {
+        height: 2rem;
     }
 </style>

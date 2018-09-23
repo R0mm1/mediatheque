@@ -29,7 +29,7 @@
                 // Building sort params
                 let sortParam = {};
                 for (let prop in this.sort) {
-                    sortParam['sort_' + prop]=this.sort[prop];
+                    sortParam['sort_' + prop] = this.sort[prop];
                 }
 
                 Xhr.request({
@@ -62,5 +62,13 @@
     #vueList {
         border-collapse: collapse;
         width: 100%;
+    }
+
+    td.cell {
+        padding: 5px 3px 5px 5px;
+    }
+
+    tr:not(.listListHeader):nth-child(2) {
+        background-color: #f8f5ef;
     }
 </style>

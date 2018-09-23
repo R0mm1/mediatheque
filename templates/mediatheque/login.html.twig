@@ -1,7 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/login.min.css') }}">
+{% endblock %}
+
 {% block header%}
-    Bienvenue!
+    <div id="headerWelcome">
+        Bienvenue!
+    </div>
 {% endblock %}
 
 {% block javascripts%}

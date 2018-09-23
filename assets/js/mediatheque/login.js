@@ -9,6 +9,8 @@ new Vue({
         return {
             description: {
                 'action': this.callLogin,
+                'containerId': 'formLogin',
+                'title': 'Se connecter',
                 'elements': [
                     {
                         'type': 'text',
@@ -24,7 +26,7 @@ new Vue({
                         'type': 'button',
                         'isSubmit': true,
                         'name': 'submit',
-                        'value': 'Se connecter'
+                        'value': 'Connexion'
                     }
                 ]
             }

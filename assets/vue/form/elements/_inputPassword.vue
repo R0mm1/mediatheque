@@ -11,6 +11,11 @@
     }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+    input {
+        width: 100%;
+        border: 1px solid #f8f3ea;
+        padding: 2px;
+        margin-bottom: 10px;
+    }
 </style>

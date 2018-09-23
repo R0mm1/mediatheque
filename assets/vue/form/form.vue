@@ -1,5 +1,6 @@
 <template>
-    <span>
+    <div :id="containerId">
+        <div class="formTitle" :class="{displayed: hasFormTitle}">{{description.title}}</div>
         <form :action="action" v-on:submit="submit">
             <template v-for="element in description.elements">
                 <InputText v-if="element.type == 'text'" :element="element"></InputText>
@@ -7,7 +8,7 @@
                 <InputButton v-if="element.type == 'button'" :element="element"></InputButton>
             </template>
         </form>
-    </span>
+    </div>
 </template>
 
 <script>
@@ -22,11 +23,17 @@
         computed: {
             action: function () {
                 return (typeof this.description.action == 'string') ? this.description.action : '';
+            },
+            containerId: function () {
+                return this.description.containerId ? this.description.containerId : '';
+            },
+            hasFormTitle: function () {
+                return this.description.title && this.description.title.length > 0;
             }
         },
         methods: {
             submit: function (e) {
-                var formData = new FormData(this.$el.querySelector('form'));
+                let formData = new FormData(this.$el.querySelector('form'));
                 if (typeof this.description.action == 'function') {
                     this.description.action(formData);
                 }
@@ -36,6 +43,13 @@
     }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+    .formTitle {
+        background-color: #e4dccc;
+        padding: 10px;
+    }
+    form{
+        padding: 5px;
+        border-left: 3px solid #e4dccc;
+    }
 </style>
