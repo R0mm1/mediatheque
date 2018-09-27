@@ -1,6 +1,21 @@
-import config from './../../../config';
-
 export default {
+    'config': false,
+    'loadConf': function () {
+        if (this.config === false) {
+            var self = this;
+            this.request({
+                url: '/js/config.json',
+                async: false,
+                success: function (e) {
+                    self.config = JSON.parse(e.responseText);
+                },
+                error: function () {
+                    alert('Impossible de charger la configuration');
+                }
+            });
+        }
+    },
+
     'request': function (params) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function (event) {
@@ -25,7 +40,7 @@ export default {
             });
         }
 
-        xhr.open(params.method ? params.method : 'GET', params.url + queryParams, true);
+        xhr.open(params.method ? params.method : 'GET', params.url + queryParams, (typeof params.async != "undefined" ? params.async : true));
 
         let token = localStorage.getItem('token');
         if (token && token.length > 0) {
@@ -37,10 +52,13 @@ export default {
     },
 
     'login': function (username, password) {
+        var self = this;
+        this.loadConf();
+
         let formData = new FormData();
         formData.append('grant_type', 'password');
-        formData.append('client_id', config.auth.client_id);
-        formData.append('client_secret', config.auth.client_secret);
+        formData.append('client_id', this.config.auth.client_id);
+        formData.append('client_secret', this.config.auth.client_secret);
         formData.append('username', username);
         formData.append('password', password);
 
@@ -51,7 +69,7 @@ export default {
             success: function (event) {
                 let response = JSON.parse(event.responseText);
                 localStorage.setItem('token', response.access_token);
-                window.location = config.default.page;
+                window.location = self.config.default.page;
             },
             error: function (event) {
                 if (event.status === 400) {
