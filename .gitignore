@@ -55,4 +55,4 @@
 /config/packages/dev/config.yaml
 
 /.env
-/config.json
+/public/js/config.json
