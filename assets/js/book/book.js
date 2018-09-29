@@ -1,9 +1,13 @@
 import Vue from 'vue';
-import List from '../../vue/list/list.vue'
+import List from '../../vue/list/list.vue';
+import BookPopup from '../../vue/book/bookPopup';
 
 new Vue({
     el: "#appBody",
-    template: '<List :apiEndpoint="\'/api/book\'" :cols="listCols" :colsProperties="listColsProperties"/>',
+    template: '<div>' +
+        '<bookPopup></bookPopup>' +
+        '<List :apiEndpoint="\'/api/book\'" :cols="listCols" :colsProperties="listColsProperties"/>' +
+        '</div>',
     data: function(){
         return {
             listCols: {
@@ -17,5 +21,5 @@ new Vue({
             }
         }
     },
-    components: { List }
+    components: { List, BookPopup }
 })

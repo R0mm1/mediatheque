@@ -1,18 +1,28 @@
 <template>
-    <table id="vueList">
-        <list-header :cols="cols" :colsProperties="colsProperties"
-                     v-on:list-header-sort-up="sortUp"
-                     v-on:list-header-sort-down="sortDown"
-                     v-on:list-header-search="search">
-        </list-header>
-        <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
-    </table>
+    <span id="vueListContainer">
+        <left-action-bar id="vueListLeftActionBar" :hasAddButton="labHasAddButton"
+                         :hasDeleteButton="labHasDeleteButton"
+                         :customButtons="labCustomButtons"></left-action-bar>
+        <div id="vueListContent">
+            <table id="vueList">
+            <list-header :cols="cols" :colsProperties="colsProperties"
+                         v-on:list-header-sort-up="sortUp"
+                         v-on:list-header-sort-down="sortDown"
+                         v-on:list-header-search="search">
+            </list-header>
+            <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
+        </table>
+        </div>
+
+    </span>
+
 </template>
 
 <script>
     import Row from './_row'
     import ListHeader from './_listHeader'
     import Xhr from './../../js/tools/xhr';
+    import LeftActionBar from "./leftActionBar/leftActionBar";
 
     export default {
         data: function () {
@@ -22,9 +32,20 @@
                 'searchParams': {}
             };
         },
-        props: ['cols', 'colsProperties', 'apiEndpoint'],
+        props: {'leftActionBarProperties': {'default': {}}, 'cols': {}, 'colsProperties': {}, 'apiEndpoint': {}},
         components: {
-            Row, ListHeader
+            LeftActionBar, Row, ListHeader
+        },
+        computed: {
+            labHasAddButton: function () {
+                return (typeof this.leftActionBarProperties.hasAddButton != 'undefined' ? this.leftActionBarProperties.hasAddButton : true);
+            },
+            labHasDeleteButton: function () {
+                return (typeof this.leftActionBarProperties.hasDeleteButton != 'undefined' ? this.leftActionBarProperties.hasDeleteButton : true);
+            },
+            labCustomButtons: function () {
+                return (typeof this.leftActionBarProperties.customButtons != 'undefined' ? this.leftActionBarProperties.customButtons : {});
+            }
         },
         methods: {
             'load': function () {
@@ -91,16 +112,38 @@
 </style>
 
 <style lang="scss">
-    #vueList {
-        border-collapse: collapse;
-        width: 100%;
+    #vueListContainer {
+        display: flex;
+        height: 100%;
     }
 
-    td.cell {
-        padding: 5px 3px 5px 5px;
+    #vueListLeftActionBar {
+        width: 30px;
+        display: flex;
+        flex-direction: column;
+        transition: width .3s;
+
+        &:hover{
+            width: 170px;
+        }
     }
 
-    tr:not(.listListHeader):nth-child(2) {
-        background-color: #f8f5ef;
+    #vueListContent {
+        flex-grow: 1;
+
+        #vueList {
+            border-collapse: collapse;
+            width: 100%;
+
+            td.cell {
+                padding: 5px 3px 5px 5px;
+            }
+
+            tr:not(.listListHeader):nth-child(2) {
+                background-color: #f8f5ef;
+            }
+        }
     }
+
+
 </style>
