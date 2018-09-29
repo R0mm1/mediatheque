@@ -1,7 +1,10 @@
 <template>
     <table id="vueList">
         <list-header :cols="cols" :colsProperties="colsProperties"
-                     v-on:list-header-sort-up="sortUp"></list-header>
+                     v-on:list-header-sort-up="sortUp"
+                     v-on:list-header-sort-down="sortDown"
+                     v-on:list-header-search="search">
+        </list-header>
         <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
     </table>
 </template>
@@ -15,7 +18,8 @@
         data: function () {
             return {
                 'listData': [],
-                'sort': {}
+                'sort': {},
+                'searchParams': {}
             };
         },
         props: ['cols', 'colsProperties', 'apiEndpoint'],
@@ -26,15 +30,21 @@
             'load': function () {
                 self = this;
 
+                let params = {};
+
                 // Building sort params
-                let sortParam = {};
                 for (let prop in this.sort) {
-                    sortParam['sort_' + prop] = this.sort[prop];
+                    params['sort_' + prop] = this.sort[prop];
+                }
+
+                //Building search param
+                for (let prop in this.searchParams) {
+                    params['search_' + prop] = this.searchParams[prop];
                 }
 
                 Xhr.request({
                     url: this.apiEndpoint,
-                    data: sortParam,
+                    data: params,
                     success: function (xhr) {
                         self.listData = JSON.parse(xhr.response);
                     },
@@ -45,7 +55,29 @@
             },
 
             'sortUp': function (colName) {
-                this.sort[colName] = 'ASC';
+                if (this.sort[colName] && this.sort[colName] == 'ASC') {
+                    delete this.sort[colName];
+                } else {
+                    this.sort[colName] = 'ASC';
+                }
+                this.load();
+            },
+
+            'sortDown': function (colName) {
+                if (this.sort[colName] && this.sort[colName] == 'DESC') {
+                    delete this.sort[colName];
+                } else {
+                    this.sort[colName] = 'DESC';
+                }
+                this.load();
+            },
+
+            'search': function (searchParamName, searchValue) {
+                if (searchValue == '') {
+                    delete this.searchParams[searchParamName];
+                } else {
+                    this.searchParams[searchParamName] = searchValue;
+                }
                 this.load();
             }
         },

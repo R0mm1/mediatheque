@@ -5,17 +5,19 @@
                 <div class="headerRowLabel">{{colName}}</div>
                 <button v-if="isSearchEnabled(colName)"
                         class="headerSearchButton fas fa-ellipsis-h"
-                        v-on:click="toggleRowTwo"></button>
+                        v-on:click="toggleRowTwo(colDataAttribute)"></button>
                 <div v-if="isSortEnabled(colName)" class="buttonGroup">
                     <button class="headerSortButtonUp fas fa-sort-up"
                             v-on:click="$emit('list-header-sort-up', colDataAttribute)"></button>
-                    <button class="headerSortButtonDown fas fa-sort-down"></button>
+                    <button class="headerSortButtonDown fas fa-sort-down"
+                            v-on:click="$emit('list-header-sort-down', colDataAttribute)"></button>
                 </div>
             </div>
             <div class="headerRow headerRow2 headerRowFloating" v-if="isSearchEnabled(colName)"
-                 :class="{headerRowHidden: !displayRowTwo(colName)}">
+                 :class="{headerRowHidden: !listDisplayRowTwo[colDataAttribute]}">
                 <input type="text" :name="'search_'+getSearchName(colName)" placeholder="Rechercher...">
                 <button :name="'submitSearch_'+getSearchName(colName)"
+                        v-on:click="search"
                         class="fas fa-search"></button>
             </div>
         </th>
@@ -49,14 +51,17 @@
                     return this.cols[colName];
                 }
             },
-            toggleRowTwo: function (colName) {
-                if(!this.colsProperties[colName])this.colsProperties[colName] = {displayRowTwo: false};
-                // this.colsProperties[colName]['displayRowTwo'] = !this.colsProperties[colName]['displayRowTwo'];
-                this.$set(this.colsProperties[colName], 'displayRowTwo', !this.colsProperties[colName]['displayRowTwo']);
+            toggleRowTwo: function (colDataAttribute) {
+                if (!this.listDisplayRowTwo[colDataAttribute]) {
+                    this.$set(this.listDisplayRowTwo, colDataAttribute, true);
+                } else {
+                    this.$set(this.listDisplayRowTwo, colDataAttribute, !this.listDisplayRowTwo[colDataAttribute]);
+                }
             },
-            displayRowTwo: function (colName) {
-                if(!this.colsProperties[colName])this.colsProperties[colName] = {displayRowTwo: false};
-                return this.colsProperties[colName]['displayRowTwo'];
+            search: function (e) {
+                let searchParamName = e.target.name.split("submitSearch_")[1];
+                let searchValue = this.$el.querySelector('input[name="search_' + searchParamName + '"]').value;
+                this.$emit('list-header-search', searchParamName, searchValue);
             }
         }
     }
@@ -77,7 +82,7 @@
             display: none;
         }
 
-        &.headerRowFloating{
+        &.headerRowFloating {
             position: absolute;
         }
 
