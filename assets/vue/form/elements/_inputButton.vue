@@ -1,6 +1,6 @@
 <template>
-    <div class="form_element">
-        <label :for="element.name" v-on:click="trigger">{{element.value}}</label>
+    <div class="form_element form_element_button">
+        <label :for="element.name" :class="element.class" v-on:click="trigger">{{element.value}}</label>
         <input :type="type" :name="element.name" :value="element.value"/>
     </div>
 </template>
@@ -34,21 +34,25 @@
         background: #f8f3ea;
         padding: 7px;
         font-size: .9rem;
-        position: relative;
     }
 
-    label::after {
+    .form_element_button {
+        position: relative;
+        display: inline-block;
+    }
+
+    .form_element_button::after {
         content: ' ';
         height: 2px;
         background-color: #f8f3ea;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        left: 0;
         transition: background-color 0.3s;
+        position: absolute;
+        bottom: -7px;
+        left: 0;
+        right: 0;
     }
 
-    label:hover::after {
+    .form_element_button:hover::after {
         background-color: #e4dccc;
     }
 </style>

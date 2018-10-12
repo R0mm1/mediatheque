@@ -1,5 +1,5 @@
 <template>
-    <div class="form_element">
+    <div class="form_element form_element_text">
         <input type="text" :name="element.name" :value="element.value" :placeholder="element.placeholder"/>
     </div>
 </template>
@@ -12,10 +12,11 @@
 </script>
 
 <style scoped lang="scss">
+
     input {
-        width: 100%;
+        width: calc(100% - 6px);
+        height: calc(100% - 6px);
         border: 1px solid #f8f3ea;
         padding: 2px;
-        margin-bottom: 10px;
     }
 </style>

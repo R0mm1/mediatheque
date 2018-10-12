@@ -4,12 +4,14 @@ import BookPopup from '../../vue/book/bookPopup';
 
 new Vue({
     el: "#appBody",
-    template: '<div>' +
-        '<bookPopup></bookPopup>' +
-        '<List :apiEndpoint="\'/api/book\'" :cols="listCols" :colsProperties="listColsProperties"/>' +
+    template: '<div style="height: 100%; position: relative">' +
+        '<bookPopup :style="{display: popupDisplayStyle}" :bookId="bookPopupElementId" v-on:popup-wanna-close="closePopup"></bookPopup>' +
+        '<List :apiEndpoint="\'/api/book\'" :cols="listCols" :colsProperties="listColsProperties" v-on:list-action-add="newBook"/>' +
         '</div>',
-    data: function(){
+    data: function () {
         return {
+            popupDisplayStyle: 'none',
+            bookPopupElementId: null,
             listCols: {
                 'Titre': 'title',
                 'Année': 'year',
@@ -21,5 +23,14 @@ new Vue({
             }
         }
     },
-    components: { List, BookPopup }
+    methods: {
+        newBook: function () {
+            this.bookPopupElementId = null;
+            this.popupDisplayStyle = 'block';
+        },
+        closePopup: function () {
+            this.popupDisplayStyle = 'none';
+        }
+    },
+    components: {List, BookPopup}
 })

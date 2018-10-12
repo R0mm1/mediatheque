@@ -15,18 +15,24 @@
             </div>
             <div class="headerRow headerRow2 headerRowFloating" v-if="isSearchEnabled(colName)"
                  :class="{headerRowHidden: !listDisplayRowTwo[colDataAttribute]}">
-                <input type="text" :name="'search_'+getSearchName(colName)" placeholder="Rechercher...">
-                <button :name="'submitSearch_'+getSearchName(colName)"
-                        v-on:click="search"
-                        class="fas fa-search"></button>
+                <div class="headerRowContent">
+                    <input-text
+                            :element="{name: 'search_'+getSearchName(colName), placeholder: 'Rechercher...'}"></input-text>
+                    <button :name="'submitSearch_'+getSearchName(colName)"
+                            v-on:click="search"
+                            class="fas fa-search"></button>
+                </div>
             </div>
         </th>
     </tr>
 </template>
 
 <script>
+    import InputText from '../form/elements/_inputText';
+
     export default {
         name: 'header',
+        components: {InputText},
         props: ['cols', 'colsProperties'],
         data() {
             return {
@@ -79,16 +85,33 @@
 
     .headerRow {
         &.headerRowHidden {
-            display: none;
+            .headerRowContent {
+                margin-top: -35px;
+            }
         }
 
         &.headerRowFloating {
+            overflow: hidden;
             position: absolute;
+            right: 0px;
+
+            .headerRowContent {
+                transition: margin-top .3s;
+                display: flex;
+                background-color: #d0c3a9;
+                padding: 5px;
+            }
         }
 
         button {
             border: none;
             background: white;
+            transition: background-color .3s, color .3s;
+
+            &:hover {
+                background: #bbaf99;
+                color: white;
+            }
         }
         > button {
             padding: 5px;
@@ -106,10 +129,21 @@
 
         .buttonGroup {
             height: 100%;
+            border-radius: 0px 5px 0px 0px;
+            overflow: hidden;
             > button {
                 display: block;
                 height: 50%;
             }
+        }
+    }
+</style>
+
+<style lang="scss">
+    .headerRow2 {
+        .form_element input {
+            margin-bottom: initial !important;
+            height: 19px;
         }
     }
 </style>

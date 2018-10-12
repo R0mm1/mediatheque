@@ -122,6 +122,8 @@
         display: flex;
         flex-direction: column;
         transition: width .3s;
+        height: 100%;
+        background-color: #eeeae1;
 
         &:hover{
             width: 170px;

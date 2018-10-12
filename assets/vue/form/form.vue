@@ -3,8 +3,9 @@
         <div class="formTitle" :class="{displayed: hasFormTitle}">{{description.title}}</div>
         <form :action="action" v-on:submit="submit">
             <template v-for="element in description.elements">
-                <InputText v-if="element.type == 'text'" :element="element"></InputText>
-                <inputPassword v-if="element.type == 'password'" :element="element"></inputPassword>
+                <InputText class="form_element_text_container" v-if="element.type == 'text'"
+                           :element="element"></InputText>
+                <InputPassword v-if="element.type == 'password'" :element="element"></InputPassword>
                 <InputButton v-if="element.type == 'button'" :element="element"></InputButton>
             </template>
         </form>
@@ -48,8 +49,13 @@
         background-color: #e4dccc;
         padding: 10px;
     }
-    form{
+
+    form {
         padding: 5px;
         border-left: 3px solid #e4dccc;
+
+        .form_element_text_container {
+            margin-bottom: 10px;
+        }
     }
 </style>

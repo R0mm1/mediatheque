@@ -1,9 +1,10 @@
 <template>
     <div id="leftActionBar">
+        <div id="labColorBar"></div>
         <bar-element v-if="hasAddButton" :icon="'fas fa-plus'" :text="'Ajouter'"
-                     v-on:click="$emit('list-action-add')"></bar-element>
+                     v-on:click.native="$parent.$emit('list-action-add')"></bar-element>
         <bar-element v-if="hasDeleteButton" :icon="'fas fa-minus'" :text="'Supprimer'"
-                     v-on:click="$emit('list-action-delete')"></bar-element>
+                     v-on:click.native="$parent.$emit('list-action-delete')"></bar-element>
     </div>
 </template>
 
@@ -22,4 +23,11 @@
 </script>
 
 <style scoped lang="scss">
+    #labColorBar{
+        height: 100%;
+        width: 30px;
+        position: fixed;
+        background-color: #e4dccc;
+        z-index: 0;
+    }
 </style>
