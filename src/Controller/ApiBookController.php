@@ -11,9 +11,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class ApiBookController extends AbstractController
 {
     /**
-     * @Route("/api/book", name="api_book", methods="GET")
+     * @Route("/api/book", name="api_list_book", methods="GET")
      */
-    public function index(Request $request)
+    public function listBook(Request $request)
     {
         /**@var $qb QueryBuilder */
         $qb = $this->getDoctrine()
@@ -52,25 +52,28 @@ class ApiBookController extends AbstractController
         $return = [];
         /**@var $book \App\Entity\Book */
         foreach ($aBook as $book) {
-            $aBookData = [
-                'id' => $book->getId(),
-                'title' => $book->getTitle(),
-                'year' => $book->getYear(),
-                'language' => $book->getLanguage(),
-                'authors' => array()
-            ];
-
-            /**@var \App\Entity\Author */
-            foreach ($book->getAuthors() as $author) {
-                $aBookData['authors'][] = [
-                    'firstname' => $author->getFirstname(),
-                    'lastname' => $author->getLastname()
-                ];
-            }
-
-            $return[] = $aBookData;
+            $return[] = $book->asArray(['Id', 'Title', 'Year', 'Language'], ['Firstname', 'Lastname']);
         }
 
         return $this->json($return);
+    }
+
+    /**
+     * @Route("/api/book/{id}", name="api_get_book", methods="GET")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getBook($id)
+    {
+        $book = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(Book::class)
+            ->find($id);
+        if (is_object($book)) {
+            return $this->json($book->asArray());
+        } else {
+            return $this->json([], 404);
+        }
     }
 }

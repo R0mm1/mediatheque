@@ -105,4 +105,15 @@ class Author
 
         return $this;
     }
+
+    public function asArray(array $aFields = null)
+    {
+        $aReturn = [];
+        foreach (['Id', 'Firstname', 'Lastname', 'BearthYear', 'DeathYear', 'Biography'] as $authorPropery) {
+            if (is_null($aFields) || in_array($authorPropery, $aFields)) {
+                $aReturn[lcfirst($authorPropery)] = $this->{"get$authorPropery"}();
+            }
+        }
+        return $aReturn;
+    }
 }

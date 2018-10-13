@@ -161,5 +161,22 @@ class Book
         return $this;
     }
 
+    public function asArray(array $aBookFields = null, array $aAuthorFields = null)
+    {
+        $aReturn = [
+            'authors' => []
+        ];
 
+        foreach (['Id', 'Title', 'Year', 'Language'] as $bookProperty) {
+            if (is_null($aBookFields) || in_array($bookProperty, $aBookFields)) {
+                $aReturn[lcfirst($bookProperty)] = $this->{"get$bookProperty"}();
+            }
+        }
+
+        foreach ($this->getAuthors() as $author) {
+            $aReturn['authors'][] = $author->asArray($aAuthorFields);
+        }
+
+        return $aReturn;
+    }
 }
