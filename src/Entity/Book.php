@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
@@ -55,10 +57,15 @@ class Book
      * @ORM\ManyToMany(targetEntity="Author")
      * @ORM\JoinTable(name="books_authors",
      *     joinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="author_id", referencedColumnName="id", unique=true)}
+     *     inverseJoinColumns={@ORM\JoinColumn(name="author_id", referencedColumnName="id")}
      *     )
      */
     private $authors;
+
+    public function __construct()
+    {
+        $this->authors = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -154,9 +161,11 @@ class Book
         return $this->authors;
     }
 
-    public function setAuthors($authors): self
+    public function addAuthor(Author $author): self
     {
-        $this->authors = $authors;
+        if ($this->authors instanceof ArrayCollection && !$this->authors->contains($author)) {
+            $this->authors->add($author);
+        }
 
         return $this;
     }
@@ -173,8 +182,11 @@ class Book
             }
         }
 
-        foreach ($this->getAuthors() as $author) {
-            $aReturn['authors'][] = $author->asArray($aAuthorFields);
+        $authors = $this->getAuthors();
+        if ($authors instanceof PersistentCollection) {
+            foreach ($authors as $author) {
+                $aReturn['authors'][] = $author->asArray($aAuthorFields);
+            }
         }
 
         return $aReturn;

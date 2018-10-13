@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Book;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,7 +53,7 @@ class ApiBookController extends AbstractController
         $return = [];
         /**@var $book \App\Entity\Book */
         foreach ($aBook as $book) {
-            $return[] = $book->asArray(['Id', 'Title', 'Year', 'Language'], ['Firstname', 'Lastname']);
+            $return[] = $book->asArray(['Id', 'Title', 'Year', 'Language'], ['Id', 'Firstname', 'Lastname']);
         }
 
         return $this->json($return);
@@ -75,5 +76,43 @@ class ApiBookController extends AbstractController
         } else {
             return $this->json([], 404);
         }
+    }
+
+    /**
+     * @Route("/api/book", name="api_add_book", methods="POST")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function addBook(Request $request)
+    {
+        $book = new Book();
+
+        foreach ($request->request->all() as $paramName => $paramValue) {
+            $setter = 'set' . ucfirst($paramName);
+            if (is_callable([$book, $setter])) {
+                $book->$setter($paramValue);
+            }
+        }
+
+        if (empty($book->getTitle())) {
+            return $this->json(['error' => 'bad_book'], 400);
+        }
+
+        $aAuthor = $request->request->get('authors');
+        if (!empty($aAuthor)) {
+            $repo = $this->getDoctrine()->getManager()->getRepository(Author::class);
+            foreach ($aAuthor as $authorId) {
+                $author = $repo->find($authorId);
+                if (is_object($author)) {
+                    $book->addAuthor($author);
+                }
+            }
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($book);
+        $em->flush();
+
+        return $this->json($book->asArray());
     }
 }
