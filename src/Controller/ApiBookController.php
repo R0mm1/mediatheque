@@ -95,7 +95,7 @@ class ApiBookController extends AbstractController
         }
 
         if (empty($book->getTitle())) {
-            return $this->json(['error' => 'bad_book'], 400);
+            return $this->json(['error' => 'bad_request'], 400);
         }
 
         $aAuthor = $request->request->get('authors');
@@ -114,5 +114,112 @@ class ApiBookController extends AbstractController
         $em->flush();
 
         return $this->json($book->asArray());
+    }
+
+    /**
+     * @Route("/api/book/{id}", name="api_delete_book", methods="DELETE")
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteBook($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $book = $em->getRepository(Book::class)->find($id);
+
+        if (is_object($book)) {
+            $em->remove($book);
+            $em->flush();
+            return $this->json([]);
+        } else {
+            return $this->json(['error' => 'bad_book'], 404);
+        }
+    }
+
+    /**
+     * @Route("/api/book/{id}", name="api_set_book", methods="PUT")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function setBook(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $book = $em->getRepository(Book::class)->find($id);
+
+        if (!is_object($book)) {
+            return $this->json(['error' => 'bad_book'], 404);
+        }
+
+        $data = json_decode($request->getContent());
+
+        foreach ($data as $paramName => $paramValue) {
+            $setter = 'set' . ucfirst($paramName);
+            if (is_callable([$book, $setter])) {
+                $book->$setter($paramValue);
+            }
+        }
+
+        $em->persist($book);
+        $em->flush();
+
+        return $this->json($book->asArray());
+    }
+
+    /**
+     * @Route("/api/book/{bookId}/author/{authorId}", name="api_book_add_author", methods="POST")
+     * @param $bookId
+     * @param $authorId
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function addAuthor($bookId, $authorId)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $book = $em->getRepository(Book::class)->find($bookId);
+        if (!is_object($book)) {
+            return $this->json(['bad_book'], 404);
+        }
+
+        $author = $em->getRepository(Author::class)->find($authorId);
+        if (!is_object($author)) {
+            return $this->json(['bad_author'], 404);
+        }
+
+        $book->addAuthor($author);
+
+        $em->persist($book);
+        $em->flush();
+
+        return $this->json([]);
+    }
+
+    /**
+     * @Route("/api/book/{bookId}/author/{authorId}", name="api_book_delete_author", methods="DELETE")
+     * @param $bookId
+     * @param $authorId
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteAuthor($bookId, $authorId)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $book = $em->getRepository(Book::class)->find($bookId);
+        if (!is_object($book)) {
+            return $this->json(['bad_book'], 404);
+        }
+
+        $author = $em->getRepository(Author::class)->find($authorId);
+        if (!is_object($author)) {
+            return $this->json(['bad_author'], 404);
+        }
+
+        $book->removeAuthor($author);
+
+        $em->persist($book);
+        $em->flush();
+
+        return $this->json([]);
     }
 }

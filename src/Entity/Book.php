@@ -163,8 +163,23 @@ class Book
 
     public function addAuthor(Author $author): self
     {
-        if ($this->authors instanceof ArrayCollection && !$this->authors->contains($author)) {
+        $isAC = ($this->authors instanceof ArrayCollection);
+        $isPC = ($this->authors instanceof PersistentCollection);
+
+        if (($isAC || $isPC) && !$this->authors->contains($author)) {
             $this->authors->add($author);
+        }
+
+        return $this;
+    }
+
+    public function removeAuthor(Author $author): self
+    {
+        $isAC = ($this->authors instanceof ArrayCollection);
+        $isPC = ($this->authors instanceof PersistentCollection);
+
+        if (($isAC || $isPC) && $this->authors->contains($author)) {
+            $this->authors->removeElement($author);
         }
 
         return $this;
