@@ -1,13 +1,20 @@
 <template>
     <div class="form_element form_element_text">
-        <input type="text" :name="element.name" :value="element.value" :placeholder="element.placeholder"/>
+        <label v-if="typeof element.label != 'undefined'" :for="element.name">{{element.label}}</label>
+        <input type="text" :name="element.name" v-model="element.value" :placeholder="element.placeholder"
+               v-on:change="$emit('input-text-content-changed', element.name, element.value)"/>
     </div>
 </template>
 
 <script>
     export default {
         name: "inputText",
-        props: ['element']
+        props: ['element'],
+        data: function () {
+            return {
+                content: ''
+            }
+        }
     }
 </script>
 

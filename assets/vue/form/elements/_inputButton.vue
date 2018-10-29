@@ -18,8 +18,9 @@
             }
         },
         methods: {
-            trigger: function () {
+            trigger: function (e) {
                 this.$el.querySelector('input').click();
+                e.stopPropagation();
             }
         }
     }

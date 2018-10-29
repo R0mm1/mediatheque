@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Author;
 use App\Entity\Book;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -87,7 +87,7 @@ class ApiBookController extends AbstractController
     {
         $book = new Book();
 
-        foreach ($request->request->all() as $paramName => $paramValue) {
+        foreach ($this->getParameters($request) as $paramName => $paramValue) {
             $setter = 'set' . ucfirst($paramName);
             if (is_callable([$book, $setter])) {
                 $book->$setter($paramValue);
