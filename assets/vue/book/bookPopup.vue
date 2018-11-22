@@ -6,15 +6,18 @@
             <input-button :element="{name: 'close', class: 'fas fa-times'}"
                           v-on:click.native="$emit('popup-wanna-close')"></input-button>
         </div>
-        <div id="bookPopupGeneralData">
-            <input-switch :element="{name:'isEBook', label: 'Livre électronique'}"
-                          v-on:input-switch-state-changed="setTypeBook"></input-switch>
-            <input-text :element="{name:'year', label:'Année'}"
-                        v-on:input-text-content-changed="dataChanged"></input-text>
-            <input-text :element="{name:'pageCount', label:'Nombre de pages'}"
-                        v-on:input-text-content-changed="dataChanged"></input-text>
-            <input-text :element="{name:'isbn', label:'ISBN'}"
-                        v-on:input-text-content-changed="dataChanged"></input-text>
+        <div id="bookPopupBody">
+            <wysiwyg-editor></wysiwyg-editor>
+            <div id="bookPopupGeneralData">
+                <input-switch :element="{name:'isEBook', label: 'Livre électronique'}"
+                              v-on:input-switch-state-changed="setTypeBook"></input-switch>
+                <input-text :element="{name:'year', label:'Année'}"
+                            v-on:input-text-content-changed="dataChanged"></input-text>
+                <input-text :element="{name:'pageCount', label:'Nombre de pages'}"
+                            v-on:input-text-content-changed="dataChanged"></input-text>
+                <input-text :element="{name:'isbn', label:'ISBN'}"
+                            v-on:input-text-content-changed="dataChanged"></input-text>
+            </div>
         </div>
         <div id="bookPopupFooter">
             <input-button v-if="hasChanged" :element="{name: 'close', value: 'Sauvegarder'}"
@@ -26,12 +29,13 @@
 <script>
     import InputText from "../form/elements/_inputText";
     import InputButton from "../form/elements/_inputButton";
+    import WysiwygEditor from "../form/elements/_wysiwygEditor";
     import InputSwitch from "../form/elements/_inputSwitch";
     import Xhr from './../../js/tools/xhr';
 
     export default {
         name: "bookPopup",
-        components: {InputButton, InputText, InputSwitch},
+        components: {InputButton, InputText, WysiwygEditor, InputSwitch},
         props: ['bookId'],
         data: function () {
             return {
@@ -93,6 +97,7 @@
                 font-size: 2.5rem !important;
             }
         }
+
         .form_element_button {
             height: 100%;
             width: 4rem;
