@@ -6,6 +6,9 @@
             <input-button :element="{name: 'close', class: 'fas fa-times'}"
                           v-on:click.native="$emit('popup-wanna-close')"></input-button>
         </div>
+        <div id="bookPopupPicture">
+            <input-picture :element="{name: 'picture'}"></input-picture>
+        </div>
         <div id="bookPopupGeneralData">
             <input-switch :element="{name:'isEBook', label: 'Livre électronique'}"
                           v-on:input-switch-state-changed="setTypeBook"></input-switch>
@@ -27,11 +30,12 @@
     import InputText from "../form/elements/_inputText";
     import InputButton from "../form/elements/_inputButton";
     import InputSwitch from "../form/elements/_inputSwitch";
+    import InputPicture from "../form/elements/_inputPicture";
     import Xhr from './../../js/tools/xhr';
 
     export default {
         name: "bookPopup",
-        components: {InputButton, InputText, InputSwitch},
+        components: {InputPicture, InputButton, InputText, InputSwitch},
         props: ['bookId'],
         data: function () {
             return {
