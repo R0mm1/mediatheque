@@ -9,15 +9,18 @@
         <div id="bookPopupPicture">
             <input-picture :element="{name: 'picture'}"></input-picture>
         </div>
-        <div id="bookPopupGeneralData">
-            <input-switch :element="{name:'isEBook', label: 'Livre électronique'}"
-                          v-on:input-switch-state-changed="setTypeBook"></input-switch>
-            <input-text :element="{name:'year', label:'Année'}"
-                        v-on:input-text-content-changed="dataChanged"></input-text>
-            <input-text :element="{name:'pageCount', label:'Nombre de pages'}"
-                        v-on:input-text-content-changed="dataChanged"></input-text>
-            <input-text :element="{name:'isbn', label:'ISBN'}"
-                        v-on:input-text-content-changed="dataChanged"></input-text>
+        <div id="bookPopupBody">
+            <wysiwyg-editor></wysiwyg-editor>
+            <div id="bookPopupGeneralData">
+                <input-switch :element="{name:'isEBook', label: 'Livre électronique'}"
+                              v-on:input-switch-state-changed="setTypeBook"></input-switch>
+                <input-text :element="{name:'year', label:'Année'}"
+                            v-on:input-text-content-changed="dataChanged"></input-text>
+                <input-text :element="{name:'pageCount', label:'Nombre de pages'}"
+                            v-on:input-text-content-changed="dataChanged"></input-text>
+                <input-text :element="{name:'isbn', label:'ISBN'}"
+                            v-on:input-text-content-changed="dataChanged"></input-text>
+            </div>
         </div>
         <div id="bookPopupFooter">
             <input-button v-if="hasChanged" :element="{name: 'close', value: 'Sauvegarder'}"
@@ -29,13 +32,14 @@
 <script>
     import InputText from "../form/elements/_inputText";
     import InputButton from "../form/elements/_inputButton";
+    import WysiwygEditor from "../form/elements/_wysiwygEditor";
     import InputSwitch from "../form/elements/_inputSwitch";
     import InputPicture from "../form/elements/_inputPicture";
     import Xhr from './../../js/tools/xhr';
 
     export default {
         name: "bookPopup",
-        components: {InputPicture, InputButton, InputText, InputSwitch},
+        components: {InputPicture, InputButton, InputText, WysiwygEditor, InputSwitch},
         props: ['bookId'],
         data: function () {
             return {
@@ -70,6 +74,7 @@
 
 <style scoped lang="scss">
     #bookPopup {
+        flex-direction: column;
         position: absolute;
         z-index: 2;
         width: calc(100% - 20px);
@@ -82,6 +87,16 @@
     #bookPopupHeader {
         height: 4rem;
         display: flex;
+    }
+
+    #bookPopupBody {
+        flex: 1;
+        display: flex;
+
+        > div {
+            flex: 1;
+            padding: 10px;
+        }
     }
 </style>
 
@@ -97,6 +112,7 @@
                 font-size: 2.5rem !important;
             }
         }
+
         .form_element_button {
             height: 100%;
             width: 4rem;
@@ -109,6 +125,17 @@
             label {
                 font-size: 2rem !important;
                 line-height: 3rem;
+            }
+        }
+    }
+
+    #bookPopupBody {
+        .trix-container {
+            display: flex;
+            flex-direction: column;
+
+            .trix-content {
+                flex: 1;
             }
         }
     }

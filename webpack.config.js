@@ -13,7 +13,8 @@ var config = {
                     loader: "babel-loader"
                 }
             },
-            {test: /\.scss$/, loader: ['vue-style-loader', 'css-loader', 'sass-loader']}
+            {test: /\.scss$/, loader: ['vue-style-loader', 'css-loader', 'sass-loader']},
+            {test: /\.css$/, use: ['style-loader', 'css-loader']}
         ]
     },
     resolve: {

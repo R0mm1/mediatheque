@@ -26,7 +26,7 @@ new Vue({
     methods: {
         newBook: function () {
             this.bookPopupElementId = null;
-            this.popupDisplayStyle = 'block';
+            this.popupDisplayStyle = 'flex';
         },
         closePopup: function () {
             this.popupDisplayStyle = 'none';
