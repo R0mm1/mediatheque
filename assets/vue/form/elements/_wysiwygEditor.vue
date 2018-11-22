@@ -1,5 +1,5 @@
 <template>
-    <VueTrix v-model="hello"/>
+    <VueTrix v-model="content"/>
 </template>
 
 <script>
@@ -10,7 +10,7 @@
         components: {VueTrix},
         data: function () {
             return {
-                hello: 'world'
+                content: ''
             }
         }
     }

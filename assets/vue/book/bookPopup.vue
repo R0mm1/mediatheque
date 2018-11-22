@@ -70,6 +70,7 @@
 
 <style scoped lang="scss">
     #bookPopup {
+        flex-direction: column;
         position: absolute;
         z-index: 2;
         width: calc(100% - 20px);
@@ -82,6 +83,16 @@
     #bookPopupHeader {
         height: 4rem;
         display: flex;
+    }
+
+    #bookPopupBody {
+        flex: 1;
+        display: flex;
+
+        > div {
+            flex: 1;
+            padding: 10px;
+        }
     }
 </style>
 
@@ -110,6 +121,17 @@
             label {
                 font-size: 2rem !important;
                 line-height: 3rem;
+            }
+        }
+    }
+
+    #bookPopupBody {
+        .trix-container {
+            display: flex;
+            flex-direction: column;
+
+            .trix-content {
+                flex: 1;
             }
         }
     }
