@@ -44,6 +44,11 @@ class Book
     private $language;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $summary;
+
+    /**
      * @ORM\OneToOne(targetEntity="ElectronicBook", inversedBy="book")
      */
     private $electronicBook;
@@ -132,6 +137,16 @@ class Book
         return $this;
     }
 
+    public function getSummary()
+    {
+        return $this->summary;
+    }
+
+    public function setSummary($summary)
+    {
+        $this->summary = $summary;
+    }
+
     public function getElectronicBook()
     {
         return $this->electronicBook;
@@ -191,7 +206,7 @@ class Book
             'authors' => []
         ];
 
-        foreach (['Id', 'Title', 'Year', 'Language'] as $bookProperty) {
+        foreach (['Id', 'Title', 'Year', 'Language', 'Summary'] as $bookProperty) {
             if (is_null($aBookFields) || in_array($bookProperty, $aBookFields)) {
                 $aReturn[lcfirst($bookProperty)] = $this->{"get$bookProperty"}();
             }

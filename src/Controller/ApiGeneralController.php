@@ -35,7 +35,7 @@ class ApiGeneralController extends AbstractController
         fclose($file);
 
         return $this->json([
-            'src'=>
+            'src'=>''
         ]);
     }
 }

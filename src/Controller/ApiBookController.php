@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Author;
 use App\Entity\Book;
+use App\Entity\ElectronicBook;
+use App\Entity\PaperBook;
 use Doctrine\ORM\QueryBuilder;
 use App\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -85,7 +87,15 @@ class ApiBookController extends AbstractController
      */
     public function addBook(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $book = new Book();
+
+        $parameters = $this->getParameters($request);
+
+        if (!isset($parameters['isElectronic'])) {
+            return $this->json(['error' => 'bad_request'], 400);
+        }
 
         foreach ($this->getParameters($request) as $paramName => $paramValue) {
             $setter = 'set' . ucfirst($paramName);
@@ -96,6 +106,17 @@ class ApiBookController extends AbstractController
 
         if (empty($book->getTitle())) {
             return $this->json(['error' => 'bad_request'], 400);
+        }
+
+        if ($parameters['isElectronic']) {
+            $ebook = new ElectronicBook();
+            //todo: populate ebook properties
+            $em->persist($ebook);
+            $book->setElectronicBook($ebook);
+        } else {
+            $pBook = new PaperBook();
+            $em->persist($pBook);
+            $book->setPaperBook($pBook);
         }
 
         $aAuthor = $request->request->get('authors');
@@ -109,7 +130,6 @@ class ApiBookController extends AbstractController
             }
         }
 
-        $em = $this->getDoctrine()->getManager();
         $em->persist($book);
         $em->flush();
 

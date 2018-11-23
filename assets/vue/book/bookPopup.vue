@@ -6,11 +6,13 @@
             <input-button :element="{name: 'close', class: 'fas fa-times'}"
                           v-on:click.native="$emit('popup-wanna-close')"></input-button>
         </div>
-        <div id="bookPopupPicture">
-            <input-picture :element="{name: 'picture'}"></input-picture>
-        </div>
         <div id="bookPopupBody">
-            <wysiwyg-editor></wysiwyg-editor>
+            <div id="bookPopupPicture">
+                <input-picture :element="{name: 'picture'}"></input-picture>
+            </div>
+
+            <wysiwyg-editor v-on:content-changed="summaryChanged"></wysiwyg-editor>
+
             <div id="bookPopupGeneralData">
                 <input-switch :element="{name:'isEBook', label: 'Livre électronique'}"
                               v-on:input-switch-state-changed="setTypeBook"></input-switch>
@@ -23,7 +25,7 @@
             </div>
         </div>
         <div id="bookPopupFooter">
-            <input-button v-if="hasChanged" :element="{name: 'close', value: 'Sauvegarder'}"
+            <input-button :element="{name: 'close', value: 'Sauvegarder'}"
                           v-on:click.native="save"></input-button>
         </div>
     </div>
@@ -44,7 +46,9 @@
         data: function () {
             return {
                 'hasChanged': false,
-                'data': {}
+                'data': {
+                    'isElectronic': 0
+                }
             };
         },
         methods: {
@@ -53,20 +57,27 @@
                 this.data[field] = value;
             },
             setTypeBook: function (field, value) {
-
+                this.hasChanged = true;
+                this.data.isElectronic = value.toString();
+            },
+            summaryChanged: function (value) {
+                this.hasChanged = true;
+                this.data['summary'] = value;
             },
             save: function () {
-                Xhr.request({
-                    url: '/api/book',
-                    method: 'POST',
-                    data: this.data,
-                    success: function (xhr) {
-                        alert('Les données ont été enregistrées');
-                    },
-                    error: function (xhr) {
-                        alert('Une erreur est survenue');
-                    }
-                });
+                if (this.hasChanged) {
+                    Xhr.request({
+                        url: '/api/book',
+                        method: 'POST',
+                        data: this.data,
+                        success: function (xhr) {
+                            alert('Les données ont été enregistrées');
+                        },
+                        error: function (xhr) {
+                            alert('Une erreur est survenue');
+                        }
+                    });
+                }
             }
         }
     }
@@ -97,6 +108,15 @@
             flex: 1;
             padding: 10px;
         }
+
+        #bookPopupPicture {
+            max-width: 250px;
+        }
+    }
+
+    #bookPopupFooter {
+        height: 2.5rem;
+        text-align: right;
     }
 </style>
 
@@ -137,6 +157,12 @@
             .trix-content {
                 flex: 1;
             }
+        }
+    }
+
+    #bookPopupFooter {
+        .form_element_button {
+            height: calc(100% - 7px);
         }
     }
 </style>

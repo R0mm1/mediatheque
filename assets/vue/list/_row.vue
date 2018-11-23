@@ -62,8 +62,6 @@
                     //If path is a string, it's a property name to extract from the scope
 
                     value = scope[path];
-                } else {
-                    throw "Oups, can't find col value";
                 }
 
                 return value;

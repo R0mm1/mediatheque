@@ -12,6 +12,11 @@
             return {
                 content: ''
             }
+        },
+        watch: {
+            content: function (val, oldVal) {
+                this.$emit('content-changed', val);
+            }
         }
     }
 </script>
