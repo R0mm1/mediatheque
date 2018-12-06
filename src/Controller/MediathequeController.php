@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MediathequeController extends AbstractController
 {
     /**
+     * @Route("/", name="login_default")
      * @Route("/login", name="login")
      */
     public function index()
