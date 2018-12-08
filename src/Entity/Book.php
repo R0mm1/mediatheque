@@ -9,7 +9,7 @@ use Doctrine\ORM\PersistentCollection;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
  */
-class Book
+class Book extends AbstractEntity
 {
     /**
      * @ORM\Id()
@@ -47,6 +47,12 @@ class Book
      * @ORM\Column(type="text", nullable=true)
      */
     private $summary;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $picture;
+
 
     /**
      * @ORM\OneToOne(targetEntity="ElectronicBook", inversedBy="book")
@@ -147,6 +153,16 @@ class Book
         $this->summary = $summary;
     }
 
+    public function getPicture()
+    {
+        return $this->picture;
+    }
+
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+    }
+
     public function getElectronicBook()
     {
         return $this->electronicBook;
@@ -200,7 +216,7 @@ class Book
         return $this;
     }
 
-    public function asArray(array $aBookFields = null, array $aAuthorFields = null)
+    public function asArray(array $aBookFields = null, array $aAuthorFields = null): array
     {
         $aReturn = [
             'authors' => []

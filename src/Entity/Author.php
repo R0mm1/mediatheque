@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
  */
-class Author
+class Author extends AbstractEntity
 {
     /**
      * @ORM\Id()
@@ -106,7 +106,7 @@ class Author
         return $this;
     }
 
-    public function asArray(array $aFields = null)
+    public function asArray(array $aFields = null): array
     {
         $aReturn = [];
         foreach (['Id', 'Firstname', 'Lastname', 'BearthYear', 'DeathYear', 'Biography'] as $authorPropery) {

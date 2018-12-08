@@ -25,17 +25,17 @@ class ApiGeneralController extends AbstractController
         $fileName = sha1($data[1]);
         if (!empty($params['mime'])) {
             $extensionGuesser = new MimeTypeExtensionGuesser();
-            $fileName .= $extensionGuesser->guess($params['mime']);
+            $fileName .= '.' . $extensionGuesser->guess($params['mime']);
         }
 
-        $file = fopen($this->get('kernel')->getProjectDir() . '/public/' . $fileName, 'wb');
+        $file = fopen($this->get('kernel')->getProjectDir() . '/public/temp/' . $fileName, 'wb');
 
         fwrite($file, base64_decode($data[1]));
 
         fclose($file);
 
         return $this->json([
-            'src'=>''
+            'src' => $fileName
         ]);
     }
 }

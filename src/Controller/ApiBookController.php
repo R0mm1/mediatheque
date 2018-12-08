@@ -93,7 +93,13 @@ class ApiBookController extends AbstractController
 
         $parameters = $this->getParameters($request);
 
-        if (!isset($parameters['isElectronic'])) {
+        if (!empty($parameters['picture'])) {
+            $from = $this->get('kernel')->getProjectDir() . '/public/temp/' . $parameters['picture'];
+            $to = $this->get('kernel')->getProjectDir() . '/public/images/book/' . $parameters['picture'];
+            rename($from, $to);
+        }
+
+        if (!empty($parameters['isElectronic'])) {
             return $this->json(['error' => 'bad_request'], 400);
         }
 

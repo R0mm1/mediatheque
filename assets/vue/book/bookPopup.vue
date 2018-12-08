@@ -8,12 +8,15 @@
         </div>
         <div id="bookPopupBody">
             <div id="bookPopupPicture">
-                <input-picture :element="{name: 'picture'}"></input-picture>
+                <input-picture :element="{name: 'picture'}"
+                               v-on:picture-changed="pictureChanged"></input-picture>
             </div>
 
             <wysiwyg-editor v-on:content-changed="summaryChanged"></wysiwyg-editor>
 
             <div id="bookPopupGeneralData">
+                <input-entities :element="{}" :searchUrl="'/api/author/search'" :searchParam="'search'" :labelFields="['firstname', 'lastname']"></input-entities>
+
                 <input-switch :element="{name:'isEBook', label: 'Livre électronique'}"
                               v-on:input-switch-state-changed="setTypeBook"></input-switch>
                 <input-text :element="{name:'year', label:'Année'}"
@@ -38,10 +41,11 @@
     import InputSwitch from "../form/elements/_inputSwitch";
     import InputPicture from "../form/elements/_inputPicture";
     import Xhr from './../../js/tools/xhr';
+    import InputEntities from "../form/elements/_inputEntities";
 
     export default {
         name: "bookPopup",
-        components: {InputPicture, InputButton, InputText, WysiwygEditor, InputSwitch},
+        components: {InputEntities, InputPicture, InputButton, InputText, WysiwygEditor, InputSwitch},
         props: ['bookId'],
         data: function () {
             return {
@@ -63,6 +67,10 @@
             summaryChanged: function (value) {
                 this.hasChanged = true;
                 this.data['summary'] = value;
+            },
+            pictureChanged: function (src) {
+                this.hasChanged = true;
+                this.data['picture'] = src;
             },
             save: function () {
                 if (this.hasChanged) {

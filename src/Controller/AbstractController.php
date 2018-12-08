@@ -8,10 +8,10 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class AbstractController extends SymfonyAbstractController
+abstract class AbstractController extends SymfonyController
 {
     public function getParameters(Request $request)
     {

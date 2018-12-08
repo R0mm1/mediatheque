@@ -32,23 +32,34 @@ export default {
             }
         };
 
-        let queryParams = '';
         if (typeof params.data == 'object' && !(params.data instanceof FormData)) {
-            queryParams += '?';
+            let formData = new FormData();
             Object.keys(params.data).forEach(function (paramName) {
-                queryParams += (queryParams.length > 1 ? '&' : '') + paramName + '=' + params.data[paramName];
+                formData.append(paramName, params.data[paramName]);
+            });
+            params.data = formData;
+        }
+
+        if (typeof params.data === 'undefined') {
+            params.data = new FormData();
+        }
+
+        let method = params.method ? params.method : 'GET';
+        if (method === 'GET') {
+            params.url += '?';
+            params.data.forEach(function (value, key) {
+                params.url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
             });
         }
 
-        xhr.open(params.method ? params.method : 'GET', params.url + queryParams, (typeof params.async != "undefined" ? params.async : true));
+        xhr.open(method, params.url, (typeof params.async != "undefined" ? params.async : true));
 
         let token = localStorage.getItem('token');
         if (token && token.length > 0) {
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
         }
 
-        let sendParam = (params.data && params.data instanceof FormData) ? params.data : null;
-        xhr.send(sendParam);
+        xhr.send(params.data);
     },
 
     'login': function (username, password) {
