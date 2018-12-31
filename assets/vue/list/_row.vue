@@ -72,11 +72,14 @@
 
 <style scoped lang="scss">
     .listRow {
-        height: 1.5rem;
-        transition: height 0.3s;
+        height: calc(1.5rem - 2px);
+        transition: all 0.3s;
+        border-style: solid;
+        border-width: 1px 0px 1px 0px;
+        border-color: transparent;
     }
 
     .listRow:hover {
-        height: 2rem;
+        border-color: #d0c3a9;
     }
 </style>

@@ -4,9 +4,9 @@ import BookPopup from '../../vue/book/bookPopup';
 
 new Vue({
     el: "#appBody",
-    template: '<div style="height: 100%; position: relative">' +
+    template: '<div style="height: 100%; position: relative; overflow: auto;">' +
         '<bookPopup :style="{display: popupDisplayStyle}" :bookId="bookPopupElementId" v-on:popup-wanna-close="closePopup"></bookPopup>' +
-        '<List :apiEndpoint="\'/api/book\'" :cols="listCols" :colsProperties="listColsProperties" v-on:list-action-add="newBook"/>' +
+        '<List ref="list" :apiEndpoint="\'/api/book\'" :cols="listCols" :colsProperties="listColsProperties" v-on:list-action-add="newBook"/>' +
         '</div>',
     data: function () {
         return {
@@ -28,7 +28,9 @@ new Vue({
             this.bookPopupElementId = null;
             this.popupDisplayStyle = 'flex';
         },
-        closePopup: function () {
+        closePopup: function (dataChanged) {
+            if (typeof dataChanged == 'undefined') dataChanged = false;
+            this.$refs.list.load();
             this.popupDisplayStyle = 'none';
         }
     },

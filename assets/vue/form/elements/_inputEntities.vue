@@ -1,16 +1,20 @@
 <template>
     <div class="form_element form_element_entities">
-        <div v-for="(entity, id) in entities" class="entity">
-            <div class="entity_label">{{getEntityLabel(entity)}}</div>
-            <div class="entity_delete fas fa-times" v-on:click="deleteEntity(id)"></div>
-        </div>
-        <div class="search_container">
-            <input class="input_search" type="text" v-model="search" v-on:keyup="searchEntity"/>
-            <ul class="list_proposals" :class="{opened: isProposalsDisplayed}">
-                <li v-for="(proposal, id) in proposals" v-on:click="addEntity(id, proposal)">
-                    {{getEntityLabel(proposal)}}
-                </li>
-            </ul>
+        <label :for="inputId" class="entities_label">{{element.label}}</label>
+        <div class="entities_input">
+            <div v-for="(entity, id) in entities" class="entity">
+                <div class="entity_label">{{getEntityLabel(entity)}}</div>
+                <div class="entity_delete fas fa-times" v-on:click="deleteEntity(id)"></div>
+            </div>
+            <div class="search_container">
+                <input :id="inputId" class="input_search" type="text" v-model="search"
+                       v-on:keyup="searchEntity"/>
+                <ul class="list_proposals" :class="{opened: isProposalsDisplayed}">
+                    <li v-for="(proposal, id) in proposals" v-on:click="addEntity(id, proposal)">
+                        {{getEntityLabel(proposal)}}
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -30,6 +34,11 @@
                 isProposalsDisplayed: false
             }
         },
+        computed: {
+            inputId: function () {
+                return 'input_search_' + this.element.name;
+            }
+        },
         methods: {
             getEntityLabel: function (entity) {
                 var label = '';
@@ -42,16 +51,14 @@
                 return label;
             },
             deleteEntity: function (entityId) {
+                this.$emit('entity-removed', this.entities[entityId]);
                 Vue.delete(this.entities, entityId);
-                // console.log('hello');
-                // let entities = this.entities
-                // delete entities[entityId];
-                // this.entities = entities;
             },
             addEntity: function (entityId, entity) {
                 Vue.set(this.entities, entity.id, entity);
                 this.isProposalsDisplayed = false;
                 this.search = '';
+                this.$emit('entity-added', entity);
             },
             searchEntity: function (e) {
                 let search = e.target.value;
@@ -83,7 +90,8 @@
 </script>
 
 <style scoped lang="scss">
-    .form_element_entities {
+
+    .entities_input {
         border: 1px solid #bbb;
         border-radius: 3px;
         padding: 0.4em 0.6em;
@@ -114,7 +122,7 @@
             }
         }
 
-        .search_container{
+        .search_container {
             position: relative;
         }
 
@@ -146,4 +154,5 @@
             }
         }
     }
+
 </style>

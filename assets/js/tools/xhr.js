@@ -35,7 +35,13 @@ export default {
         if (typeof params.data == 'object' && !(params.data instanceof FormData)) {
             let formData = new FormData();
             Object.keys(params.data).forEach(function (paramName) {
-                formData.append(paramName, params.data[paramName]);
+                if (Array.isArray(params.data[paramName])) {
+                    params.data[paramName].forEach(function (value) {
+                        formData.append(paramName + '[]', value);
+                    });
+                } else {
+                    formData.append(paramName, params.data[paramName]);
+                }
             });
             params.data = formData;
         }

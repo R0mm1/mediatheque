@@ -1,29 +1,33 @@
 <template>
     <div id="bookPopup">
         <div id="bookPopupHeader">
-            <input-text :element="{name:'title', placeholder:'Titre'}"
+            <input-text ref="title" :element="{name:'title', placeholder:'Titre'}"
                         v-on:input-text-content-changed="dataChanged"></input-text>
             <input-button :element="{name: 'close', class: 'fas fa-times'}"
                           v-on:click.native="$emit('popup-wanna-close')"></input-button>
         </div>
         <div id="bookPopupBody">
             <div id="bookPopupPicture">
-                <input-picture :element="{name: 'picture'}"
+                <input-picture ref="picture" :element="{name: 'picture'}"
                                v-on:picture-changed="pictureChanged"></input-picture>
             </div>
 
-            <wysiwyg-editor v-on:content-changed="summaryChanged"></wysiwyg-editor>
+            <wysiwyg-editor ref="wysiwyg" v-on:content-changed="summaryChanged"></wysiwyg-editor>
 
             <div id="bookPopupGeneralData">
-                <input-entities :element="{}" :searchUrl="'/api/author/search'" :searchParam="'search'" :labelFields="['firstname', 'lastname']"></input-entities>
-
-                <input-switch :element="{name:'isEBook', label: 'Livre électronique'}"
+                <input-entities ref="authors" :element="{name: 'authors', label: 'Auteurs'}"
+                                :searchUrl="'/api/author/search'"
+                                :searchParam="'search'" :labelFields="['firstname', 'lastname']"
+                                v-on:entity-added="authorAdded"
+                                v-on:entity-removed="authorRemoved"></input-entities>
+                <br>
+                <input-switch ref="switch" :element="{name:'isEBook', label: 'Livre électronique'}"
                               v-on:input-switch-state-changed="setTypeBook"></input-switch>
-                <input-text :element="{name:'year', label:'Année'}"
+                <input-text ref="year" :element="{name:'year', label:'Année'}"
                             v-on:input-text-content-changed="dataChanged"></input-text>
-                <input-text :element="{name:'pageCount', label:'Nombre de pages'}"
+                <input-text ref="pageCount" :element="{name:'pageCount', label:'Nombre de pages'}"
                             v-on:input-text-content-changed="dataChanged"></input-text>
-                <input-text :element="{name:'isbn', label:'ISBN'}"
+                <input-text ref="isbn" :element="{name:'isbn', label:'ISBN'}"
                             v-on:input-text-content-changed="dataChanged"></input-text>
             </div>
         </div>
@@ -51,7 +55,8 @@
             return {
                 'hasChanged': false,
                 'data': {
-                    'isElectronic': 0
+                    'isElectronic': 0,
+                    'authors': []
                 }
             };
         },
@@ -72,19 +77,35 @@
                 this.hasChanged = true;
                 this.data['picture'] = src;
             },
+            authorAdded: function (author) {
+                this.data['authors'][author.id] = author.id;
+            },
+            authorRemoved: function (author) {
+                delete this.data['authors'][author.id];
+            },
             save: function () {
                 if (this.hasChanged) {
+                    var self = this;
                     Xhr.request({
                         url: '/api/book',
                         method: 'POST',
                         data: this.data,
                         success: function (xhr) {
-                            alert('Les données ont été enregistrées');
+                            self.$emit('popup-wanna-close', true)
+                            self.clearAll();
                         },
                         error: function (xhr) {
                             alert('Une erreur est survenue');
                         }
                     });
+                }
+            },
+            clearAll: function () {
+                for (var refName in this.$refs) {
+                    let ref = this.$refs[refName];
+                    if (typeof ref.clear == 'function') {
+                        ref.clear();
+                    }
                 }
             }
         }
@@ -95,7 +116,7 @@
     #bookPopup {
         flex-direction: column;
         position: absolute;
-        z-index: 2;
+        z-index: 3;
         width: calc(100% - 20px);
         height: calc(100% - 20px);
         margin: 10px;
@@ -111,6 +132,7 @@
     #bookPopupBody {
         flex: 1;
         display: flex;
+        overflow: auto;
 
         > div {
             flex: 1;

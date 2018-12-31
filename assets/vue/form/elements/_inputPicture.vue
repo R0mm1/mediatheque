@@ -75,5 +75,12 @@
 
     .picture_preview {
         max-width: 250px;
+        min-width: 150px;
+        min-height: 235px;
+        box-shadow: 2px 2px 5px black;
+    }
+
+    .picture_buttons {
+        margin-top: 5px;
     }
 </style>

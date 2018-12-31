@@ -1,8 +1,8 @@
 <template>
     <div class="form_element form_element_text">
         <label v-if="typeof element.label != 'undefined'" :for="element.name">{{element.label}}</label>
-        <input type="text" :name="element.name" v-model="element.value" :placeholder="element.placeholder"
-               v-on:change="$emit('input-text-content-changed', element.name, element.value)"/>
+        <input type="text" :name="element.name" v-model="value" :placeholder="element.placeholder"
+               v-on:change="$emit('input-text-content-changed', element.name, value)"/>
     </div>
 </template>
 
@@ -12,7 +12,12 @@
         props: ['element'],
         data: function () {
             return {
-                content: ''
+                'value': this.element.value
+            }
+        },
+        methods: {
+            clear: function () {
+                this.value = '';
             }
         }
     }

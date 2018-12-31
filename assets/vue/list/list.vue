@@ -1,19 +1,22 @@
 <template>
+
     <span id="vueListContainer">
         <left-action-bar id="vueListLeftActionBar" :hasAddButton="labHasAddButton"
                          :hasDeleteButton="labHasDeleteButton"
                          :customButtons="labCustomButtons"></left-action-bar>
         <div id="vueListContent">
             <table id="vueList">
-            <list-header :cols="cols" :colsProperties="colsProperties"
-                         v-on:list-header-sort-up="sortUp"
-                         v-on:list-header-sort-down="sortDown"
-                         v-on:list-header-search="search">
-            </list-header>
-            <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
-        </table>
+                <thead>
+                <list-header :cols="cols" :colsProperties="colsProperties"
+                             v-on:list-header-sort-up="sortUp"
+                             v-on:list-header-sort-down="sortDown"
+                             v-on:list-header-search="search"/>
+                </thead>
+                <tbody>
+                    <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
+                </tbody>
+            </table>
         </div>
-
     </span>
 
 </template>
@@ -32,7 +35,7 @@
                 'searchParams': {}
             };
         },
-        props: {'leftActionBarProperties': {'default': {}}, 'cols': {}, 'colsProperties': {}, 'apiEndpoint': {}},
+        props: {'bus': {}, 'leftActionBarProperties': {'default': {}}, 'cols': {}, 'colsProperties': {}, 'apiEndpoint': {}},
         components: {
             LeftActionBar, Row, ListHeader
         },
@@ -112,37 +115,67 @@
 </style>
 
 <style lang="scss">
+    $leftActionBarWidth: 30px;
+
     #vueListContainer {
         display: flex;
         height: 100%;
     }
 
     #vueListLeftActionBar {
-        width: 30px;
+        position: fixed;
         display: flex;
         flex-direction: column;
-        transition: width .3s;
+        width: $leftActionBarWidth;
         height: 100%;
+        transition: width .3s;
         background-color: #eeeae1;
+        z-index: 2;
 
-        &:hover{
+        &:hover {
             width: 170px;
         }
     }
 
     #vueListContent {
         flex-grow: 1;
+        overflow: auto;
+        margin-left: $leftActionBarWidth;
 
         #vueList {
+            display: block;
             border-collapse: collapse;
             width: 100%;
+            height: 100%;
+
+            thead {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+            }
+
+           tbody tr {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+            }
+
+            thread{
+                height: 34px;
+            }
+
+            tbody{
+                display: block;
+                height: calc(100% - 34px);
+                overflow: auto;
+            }
 
             td.cell {
                 padding: 5px 3px 5px 5px;
             }
 
-            tr:not(.listListHeader):nth-child(2) {
-                background-color: #f8f5ef;
+            tr:not(.listListHeader):nth-child(2n) {
+                background-color: #fcfcfa;
             }
         }
     }
