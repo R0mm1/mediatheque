@@ -1,11 +1,13 @@
 <template>
     <div class="form_element form_element_picture">
-        <img class="picture_preview" v-on:click="displayFileChooser" :src="src"/>
+        <div class="picture_preview" v-on:click="displayFileChooser" :style="'background-image: url('+src+')'">
+            <div class="preview_default" v-if="displayDefault"><i class="far fa-image"></i></div>
+        </div>
         <div class="picture_buttons">
             <input-button :element="{class: 'fas fa-file-upload'}"
                           v-on:click.native="displayFileChooser"></input-button>
-            <input-button :element="{class: 'fas fa-file-download'}"></input-button>
-            <input-button :element="{class: 'fas fa-trash-alt'}"></input-button>
+            <input-button :element="{class: 'fas fa-file-download'}" v-if="false"></input-button> <!--todo: à faire -->
+            <input-button :element="{class: 'fas fa-trash-alt'}" v-on:click.native="clear"></input-button>
         </div>
         <input type="file" :name="element.name" v-on:change="reloadPreview">
     </div>
@@ -23,7 +25,8 @@
             return {
                 src: '',
                 mime: '',
-                tempUrl: ''
+                tempUrl: '',
+                displayDefault: true
             }
         },
         methods: {
@@ -50,6 +53,7 @@
                             let data = JSON.parse(xhr.response);
                             if (data.src) {
                                 self.tempUrl = data.src;
+                                self.displayDefault = false;
                             }
                             self.$emit('picture-changed', self.tempUrl);
                         },
@@ -62,7 +66,12 @@
 
 
                 fileReader.readAsDataURL(e.target.files[0]);
-
+            },
+            clear: function () {
+                this.src = '';
+                this.mime = '';
+                this.tempUrl = '';
+                this.displayDefault = true;
             }
         }
     }
@@ -74,13 +83,22 @@
     }
 
     .picture_preview {
-        max-width: 250px;
-        min-width: 150px;
-        min-height: 235px;
-        box-shadow: 2px 2px 5px black;
+        display: flex;
+        width: 160px;
+        height: 251px;
+        margin: auto;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+
+        .preview_default {
+            margin: auto;
+            font-size: 5rem;
+            color: #4d4d4d;
+        }
     }
 
     .picture_buttons {
-        margin-top: 5px;
+        text-align: center;
     }
 </style>

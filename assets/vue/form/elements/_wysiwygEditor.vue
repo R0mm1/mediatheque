@@ -1,22 +1,30 @@
 <template>
-    <VueTrix v-model="content"/>
+    <trix-editor v-on:trix-change="contentChanged" ref="trix"></trix-editor>
 </template>
 
 <script>
-    import VueTrix from 'vue-trix';
+    import Trix from 'trix';
 
     export default {
         name: "wysiwygEditor",
-        components: {VueTrix},
+        components: {Trix},
         data: function () {
             return {
                 content: ''
             }
         },
-        watch: {
-            content: function (val, oldVal) {
-                this.$emit('content-changed', val);
+        methods: {
+            clear: function () {
+                this.$refs.trix.value = '';
+            },
+            contentChanged: function (e) {
+                this.$emit('content-changed', e.target.innerHTML);
             }
-        }
+        },
+
     }
 </script>
+
+<style scoped lang="scss">
+    @import "~trix/dist/trix.css";
+</style>

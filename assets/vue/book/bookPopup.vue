@@ -50,14 +50,19 @@
     export default {
         name: "bookPopup",
         components: {InputEntities, InputPicture, InputButton, InputText, WysiwygEditor, InputSwitch},
-        props: ['bookId'],
-        data: function () {
-            return {
-                'hasChanged': false,
-                'data': {
+        props: {
+            'bookId': {},
+            'defaultData': {
+                'default': {
                     'isElectronic': 0,
                     'authors': []
                 }
+            }
+        },
+        data: function () {
+            return {
+                hasChanged: false,
+                data: JSON.parse(JSON.stringify(this.defaultData))
             };
         },
         methods: {
@@ -78,9 +83,11 @@
                 this.data['picture'] = src;
             },
             authorAdded: function (author) {
+                this.hasChanged = true;
                 this.data['authors'][author.id] = author.id;
             },
             authorRemoved: function (author) {
+                this.hasChanged = true;
                 delete this.data['authors'][author.id];
             },
             save: function () {
@@ -107,6 +114,8 @@
                         ref.clear();
                     }
                 }
+                this.data = JSON.parse(JSON.stringify(this.defaultData));
+                this.hasChanged = false;
             }
         }
     }

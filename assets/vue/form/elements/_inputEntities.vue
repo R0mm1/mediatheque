@@ -84,6 +84,9 @@
                         }
                     });
                 }
+            },
+            clear: function () {
+                this.entities = {};
             }
         }
     }

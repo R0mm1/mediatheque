@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "vue": "^2.5.17",
-    "vue-trix": "^0.5.0",
-    "vue-wysiwyg": "^1.7.2"
+    "trix": "^1.0.0",
+    "vue": "^2.5.17"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
