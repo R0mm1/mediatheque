@@ -20,7 +20,7 @@
     export default {
         name: "inputPicture",
         components: {InputButton},
-        props: {element: {default: {}}},
+        props: {element: {default: {}}, value: {default: {}}},
         data: function () {
             return {
                 src: '',
@@ -72,12 +72,18 @@
                 this.mime = '';
                 this.tempUrl = '';
                 this.displayDefault = true;
+            },
+            load: function (url) {
+                this.src = (typeof url != 'string') ? '' : url;
+                this.displayDefault = (this.src.length == 0);
             }
         }
     }
 </script>
 
 <style scoped lang="scss">
+    @import "../../../css/form/element";
+
     input[type="file"] {
         display: none;
     }

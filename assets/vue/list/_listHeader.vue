@@ -17,7 +17,7 @@
                  :class="{headerRowHidden: !listDisplayRowTwo[colDataAttribute]}">
                 <div class="headerRowContent">
                     <input-text
-                            :element="{name: 'search_'+getSearchName(colName), placeholder: 'Rechercher...'}"></input-text>
+                            :element="{name: 'search_'+getSearchName(colName), placeholder: 'Rechercher...', autoMargin: false}"></input-text>
                     <button :name="'submitSearch_'+getSearchName(colName)"
                             v-on:click="search"
                             class="fas fa-search"></button>

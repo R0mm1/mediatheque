@@ -1,5 +1,7 @@
 <template>
-    <trix-editor v-on:trix-change="contentChanged" ref="trix"></trix-editor>
+    <div>
+        <trix-editor v-on:trix-change="contentChanged" ref="trix"></trix-editor>
+    </div>
 </template>
 
 <script>
@@ -8,6 +10,7 @@
     export default {
         name: "wysiwygEditor",
         components: {Trix},
+        props: ['value'],
         data: function () {
             return {
                 content: ''
@@ -21,7 +24,11 @@
                 this.$emit('content-changed', e.target.innerHTML);
             }
         },
-
+        watch: {
+            value: function (newVal) {
+                this.$refs.trix.value = newVal;
+            }
+        }
     }
 </script>
 

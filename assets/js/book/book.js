@@ -5,8 +5,8 @@ import BookPopup from '../../vue/book/bookPopup';
 new Vue({
     el: "#appBody",
     template: '<div style="height: 100%; position: relative; overflow: auto;">' +
-        '<bookPopup :style="{display: popupDisplayStyle}" :bookId="bookPopupElementId" v-on:popup-wanna-close="closePopup"></bookPopup>' +
-        '<List ref="list" :apiEndpoint="\'/api/book\'" :cols="listCols" :colsProperties="listColsProperties" v-on:list-action-add="newBook"/>' +
+        '<bookPopup :style="{display: popupDisplayStyle}" :bookId="bookPopupElementId" v-on:popup-wanna-close="closePopup" v-on:book-saved="bookSaved"></bookPopup>' +
+        '<List ref="list" :apiEndpoint="\'/api/book\'" :cols="listCols" :colsProperties="listColsProperties" v-on:list-action-add="newBook" v-on:list-action-set="setBook"/>' +
         '</div>',
     data: function () {
         return {
@@ -28,8 +28,15 @@ new Vue({
             this.bookPopupElementId = null;
             this.popupDisplayStyle = 'flex';
         },
-        closePopup: function (dataChanged) {
-            if (typeof dataChanged == 'undefined') dataChanged = false;
+        setBook: function (bookId) {
+            this.bookPopupElementId = bookId;
+            this.popupDisplayStyle = 'flex';
+        },
+        bookSaved: function () {
+            this.bookPopupElementId = null;
+            this.closePopup();
+        },
+        closePopup: function () {
             this.$refs.list.load();
             this.popupDisplayStyle = 'none';
         }

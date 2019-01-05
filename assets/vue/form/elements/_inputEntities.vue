@@ -7,13 +7,32 @@
                 <div class="entity_delete fas fa-times" v-on:click="deleteEntity(id)"></div>
             </div>
             <div class="search_container">
-                <input :id="inputId" class="input_search" type="text" v-model="search"
-                       v-on:keyup="searchEntity"/>
-                <ul class="list_proposals" :class="{opened: isProposalsDisplayed}">
-                    <li v-for="(proposal, id) in proposals" v-on:click="addEntity(id, proposal)">
-                        {{getEntityLabel(proposal)}}
-                    </li>
-                </ul>
+                <div>
+                    <input :id="inputId" class="input_search" type="text" v-model="search"
+                           v-on:keyup="searchEntity"/>
+
+                    <ul class="list_proposals" :class="{opened: isProposalsDisplayed}">
+                        <li v-for="(proposal, id) in proposals" v-on:click="addEntity(id, proposal)">
+                            {{getEntityLabel(proposal)}}
+                        </li>
+                    </ul>
+                </div>
+
+                <div v-if="createUrl.length>0">
+                    <input-button class="openCreate" :element="{name:'openCreate', class: 'fas fa-plus'}"
+                                  v-on:click.native="toggleFormCreation"></input-button>
+
+                    <div class="form_creation" :class="{displayed: isFormCreationDisplayed}">
+                        <input-text v-for="(fieldName, fieldLabel) in labelFields"
+                                    :element="{name:fieldName, label:fieldLabel}"
+                                    v-on:input-text-content-changed="setCreationParam"
+                                    :ref="fieldName"></input-text>
+
+                        <input-button :element="{name: 'create', value: 'Créer'}"
+                                      v-on:click.native="createEntity"></input-button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -22,16 +41,21 @@
 <script>
     import Xhr from '../../../js/tools/xhr';
     import Vue from 'vue';
+    import InputText from "./_inputText";
+    import InputButton from "./_inputButton";
 
     export default {
         name: "inputEntities",
-        props: ['element', 'searchUrl', 'searchParam', 'labelFields'],
+        components: {InputButton, InputText},
+        props: ['element', 'searchUrl', 'searchParam', 'labelFields', 'createUrl'],
         data: function () {
             return {
                 search: '',
                 entities: {},
                 proposals: {},
-                isProposalsDisplayed: false
+                isProposalsDisplayed: false,
+                isFormCreationDisplayed: false,
+                creationParams: {}
             }
         },
         computed: {
@@ -42,7 +66,7 @@
         methods: {
             getEntityLabel: function (entity) {
                 var label = '';
-                this.labelFields.forEach(function (field) {
+                Object.values(this.labelFields).forEach(function (field) {
                     if (entity[field]) {
                         if (label.length > 0) label += ' ';
                         label += entity[field];
@@ -85,6 +109,31 @@
                     });
                 }
             },
+            createEntity: function () {
+                var self = this;
+                Xhr.request({
+                    url: this.createUrl,
+                    method: 'POST',
+                    data: this.creationParams,
+                    success: function (xhr) {
+                        let newEntity = JSON.parse(xhr.response);
+                        self.addEntity(newEntity.id, newEntity);
+                        self.isFormCreationDisplayed = false;
+                        Object.values(self.labelFields).forEach(function (fieldName) {
+                            self.$refs[fieldName][0].clear();
+                        });
+                    },
+                    error: function (xhr) {
+                        alert('Une erreur est survenue');
+                    }
+                });
+            },
+            toggleFormCreation: function () {
+                this.isFormCreationDisplayed = !this.isFormCreationDisplayed;
+            },
+            setCreationParam: function (elementName, value) {
+                this.creationParams[elementName] = value;
+            },
             clear: function () {
                 this.entities = {};
             }
@@ -93,6 +142,7 @@
 </script>
 
 <style scoped lang="scss">
+    @import "../../../css/form/element";
 
     .entities_input {
         border: 1px solid #bbb;
@@ -127,6 +177,21 @@
 
         .search_container {
             position: relative;
+
+            > div {
+                display: inline-block;
+            }
+
+            .form_creation {
+                position: absolute;
+                min-width: 150px;
+                background-color: #e4dccc;
+                padding: 5px;
+
+                &:not(.displayed) {
+                    display: none;
+                }
+            }
         }
 
         .input_search {
@@ -158,4 +223,10 @@
         }
     }
 
+</style>
+
+<style lang="scss">
+    .form_element_entities .openCreate {
+        padding: 2px 4px !important;
+    }
 </style>

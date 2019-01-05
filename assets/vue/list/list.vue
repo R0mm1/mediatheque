@@ -13,7 +13,7 @@
                              v-on:list-header-search="search"/>
                 </thead>
                 <tbody>
-                    <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols"></row>
+                    <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols" v-on:click.native="$emit('list-action-set', dataRow.id)"></row>
                 </tbody>
             </table>
         </div>

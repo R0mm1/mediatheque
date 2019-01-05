@@ -1,7 +1,7 @@
 <template>
     <div id="bookPopup">
         <div id="bookPopupHeader">
-            <input-text ref="title" :element="{name:'title', placeholder:'Titre'}"
+            <input-text ref="title" :element="{name:'title', placeholder:'Titre'}" :value="data.title"
                         v-on:input-text-content-changed="dataChanged"></input-text>
             <input-button :element="{name: 'close', class: 'fas fa-times'}"
                           v-on:click.native="$emit('popup-wanna-close')"></input-button>
@@ -12,22 +12,27 @@
                                v-on:picture-changed="pictureChanged"></input-picture>
             </div>
 
-            <wysiwyg-editor ref="wysiwyg" v-on:content-changed="summaryChanged"></wysiwyg-editor>
+            <wysiwyg-editor ref="wysiwyg" v-on:content-changed="summaryChanged" :value="data.summary"></wysiwyg-editor>
 
             <div id="bookPopupGeneralData">
                 <input-entities ref="authors" :element="{name: 'authors', label: 'Auteurs'}"
                                 :searchUrl="'/api/author/search'"
-                                :searchParam="'search'" :labelFields="['firstname', 'lastname']"
+                                :searchParam="'search'" :labelFields="{'Prénom': 'firstname', 'Nom': 'lastname'}"
+                                :create-url="'/api/author'"
                                 v-on:entity-added="authorAdded"
                                 v-on:entity-removed="authorRemoved"></input-entities>
                 <br>
                 <input-switch ref="switch" :element="{name:'isEBook', label: 'Livre électronique'}"
                               v-on:input-switch-state-changed="setTypeBook"></input-switch>
-                <input-text ref="year" :element="{name:'year', label:'Année'}"
+
+                <input-text ref="year" :element="{name:'year', label:'Année'}" :value="data.year"
                             v-on:input-text-content-changed="dataChanged"></input-text>
+
                 <input-text ref="pageCount" :element="{name:'pageCount', label:'Nombre de pages'}"
+                            :value="data.pageCount"
                             v-on:input-text-content-changed="dataChanged"></input-text>
-                <input-text ref="isbn" :element="{name:'isbn', label:'ISBN'}"
+
+                <input-text ref="isbn" :element="{name:'isbn', label:'ISBN'}" :value="data.isbn"
                             v-on:input-text-content-changed="dataChanged"></input-text>
             </div>
         </div>
@@ -44,8 +49,9 @@
     import WysiwygEditor from "../form/elements/_wysiwygEditor";
     import InputSwitch from "../form/elements/_inputSwitch";
     import InputPicture from "../form/elements/_inputPicture";
-    import Xhr from './../../js/tools/xhr';
     import InputEntities from "../form/elements/_inputEntities";
+    import Xhr from './../../js/tools/xhr';
+    import Vue from 'vue';
 
     export default {
         name: "bookPopup",
@@ -55,7 +61,7 @@
             'defaultData': {
                 'default': {
                     'isElectronic': 0,
-                    'authors': []
+                    'authors': {}
                 }
             }
         },
@@ -67,24 +73,30 @@
         },
         methods: {
             dataChanged: function (field, value) {
-                this.hasChanged = true;
-                this.data[field] = value;
+                if (!this.data[field] || this.data[field] !== value) {
+                    this.hasChanged = true;
+                    this.data[field] = value;
+                }
             },
             setTypeBook: function (field, value) {
                 this.hasChanged = true;
                 this.data.isElectronic = value.toString();
             },
             summaryChanged: function (value) {
-                this.hasChanged = true;
-                this.data['summary'] = value;
+                if (!this.data['summary'] || this.data['summary'] != value) {
+                    this.hasChanged = true;
+                    this.data['summary'] = value;
+                }
             },
             pictureChanged: function (src) {
                 this.hasChanged = true;
                 this.data['picture'] = src;
             },
             authorAdded: function (author) {
-                this.hasChanged = true;
-                this.data['authors'][author.id] = author.id;
+                if (!this.data['authors'][author.id]) {
+                    this.hasChanged = true;
+                    this.data['authors'][author.id] = author.id;
+                }
             },
             authorRemoved: function (author) {
                 this.hasChanged = true;
@@ -93,12 +105,16 @@
             save: function () {
                 if (this.hasChanged) {
                     var self = this;
+
+                    let method = (!self.bookId || self.bookId.length == 0) ? 'POST' : 'PUT';
+                    let url = '/api/book' + (method == 'PUT' ? '/' + self.bookId : '');
+
                     Xhr.request({
-                        url: '/api/book',
-                        method: 'POST',
+                        url: url,
+                        method: method,
                         data: this.data,
                         success: function (xhr) {
-                            self.$emit('popup-wanna-close', true)
+                            self.$emit('book-saved');
                             self.clearAll();
                         },
                         error: function (xhr) {
@@ -116,6 +132,41 @@
                 }
                 this.data = JSON.parse(JSON.stringify(this.defaultData));
                 this.hasChanged = false;
+            }
+        },
+        watch: {
+            'bookId': function (val, oldval) {
+
+                this.clearAll();
+
+                if (val == null  || val.length == 0) {
+                    return;
+                }
+
+                var self = this;
+
+                Xhr.request({
+                    url: '/api/book/' + val,
+                    method: 'GET',
+                    success: function (xhr) {
+                        let data = JSON.parse(xhr.response);
+
+                        ['year', 'title', 'pageCount', 'isbn', 'summary'].forEach(function (element) {
+                            Vue.set(self.data, element, data[element]);
+                        });
+
+                        if (Array.isArray(data.authors)) {
+                            data.authors.forEach(function (author) {
+                                self.$refs.authors.addEntity(author.id, author);
+                            });
+                        }
+
+                        self.$refs.picture.load(data.picture);
+                    },
+                    error: function (xhr) {
+                        alert('Une erreur est survenue');
+                    }
+                });
             }
         }
     }
@@ -173,7 +224,6 @@
         }
 
         .form_element_button {
-            height: 100%;
             width: 4rem;
             text-align: center;
 
@@ -196,12 +246,6 @@
             .trix-content {
                 flex: 1;
             }
-        }
-    }
-
-    #bookPopupFooter {
-        .form_element_button {
-            height: calc(100% - 7px);
         }
     }
 </style>

@@ -222,7 +222,7 @@ class Book extends AbstractEntity
             'authors' => []
         ];
 
-        foreach (['Id', 'Title', 'Year', 'Language', 'Summary'] as $bookProperty) {
+        foreach (['Id', 'Title', 'Year', 'Language', 'PageCount', 'Isbn', 'Summary', 'Picture'] as $bookProperty) {
             if (is_null($aBookFields) || in_array($bookProperty, $aBookFields)) {
                 $aReturn[lcfirst($bookProperty)] = $this->{"get$bookProperty"}();
             }

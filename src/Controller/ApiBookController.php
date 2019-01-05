@@ -74,7 +74,11 @@ class ApiBookController extends AbstractController
             ->getRepository(Book::class)
             ->find($id);
         if (is_object($book)) {
-            return $this->json($book->asArray());
+            $aBook = $book->asArray();
+            if (!empty($aBook['picture'])) {
+                $aBook['picture'] = 'images/book/' . $aBook['picture'];
+            }
+            return $this->json($aBook);
         } else {
             return $this->json([], 404);
         }
@@ -172,18 +176,37 @@ class ApiBookController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        /**@var $book Book */
         $book = $em->getRepository(Book::class)->find($id);
 
         if (!is_object($book)) {
             return $this->json(['error' => 'bad_book'], 404);
         }
 
-        $data = json_decode($request->getContent());
+        $data = $this->getParameters($request);
 
         foreach ($data as $paramName => $paramValue) {
             $setter = 'set' . ucfirst($paramName);
             if (is_callable([$book, $setter])) {
                 $book->$setter($paramValue);
+            }
+        }
+
+        if (!empty($data['authors'])) {
+
+            /**@var $author Author */
+            foreach ($book->getAuthors() as $author) {
+                if (!in_array($author->getId(), $data['authors'])) {
+                    $book->removeAuthor($author);
+                }
+            }
+
+            $repo = $this->getDoctrine()->getManager()->getRepository(Author::class);
+            foreach ($data['authors'] as $authorId) {
+                $author = $repo->find($authorId);
+                if (is_object($author)) {
+                    $book->addAuthor($author);
+                }
             }
         }
 

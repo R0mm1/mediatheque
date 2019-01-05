@@ -29,6 +29,8 @@
 </script>
 
 <style scoped lang="scss">
+    @import "../../../css/form/element";
+
     input[type="checkbox"] {
         display: none;
     }

@@ -17,6 +17,8 @@ export default {
     },
 
     'request': function (params) {
+        let method = params.method ? params.method : 'GET';
+
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function (event) {
             if (this.readyState === XMLHttpRequest.DONE) {
@@ -32,7 +34,7 @@ export default {
             }
         };
 
-        if (typeof params.data == 'object' && !(params.data instanceof FormData)) {
+        if (typeof params.data == 'object' && !(params.data instanceof FormData) && (method == 'GET' || method == 'POST')) {
             let formData = new FormData();
             Object.keys(params.data).forEach(function (paramName) {
                 if (Array.isArray(params.data[paramName])) {
@@ -46,11 +48,14 @@ export default {
             params.data = formData;
         }
 
+        if (method == 'PUT') {
+            params.data = (params.data) ? JSON.stringify(params.data) : '';
+        }
+
         if (typeof params.data === 'undefined') {
             params.data = new FormData();
         }
 
-        let method = params.method ? params.method : 'GET';
         if (method === 'GET') {
             params.url += '?';
             params.data.forEach(function (value, key) {

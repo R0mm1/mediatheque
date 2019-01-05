@@ -12,6 +12,8 @@
 </script>
 
 <style scoped lang="scss">
+    @import "../../../css/form/element";
+
     input {
         width: 100%;
         border: 1px solid #f8f3ea;
