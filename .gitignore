@@ -47,12 +47,13 @@
 # Embedded web-server pid file
 /.web-server-pid
 
-###> symfony/web-server-bundle ###
-/.web-server-pid
-###< symfony/web-server-bundle ###
-
 # Config
 /config/packages/dev/config.yaml
 
 /.env
-/public/js/config.json
+/.idea
+/public/
+!public/images/logo.png
+!public/js/_config.json
+!public/index.php
+/node_modules/
