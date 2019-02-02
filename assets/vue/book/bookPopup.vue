@@ -22,8 +22,6 @@
                                 v-on:entity-added="authorAdded"
                                 v-on:entity-removed="authorRemoved"></input-entities>
                 <br>
-                <input-switch ref="switch" :element="{name:'isEBook', label: 'Livre électronique'}"
-                              v-on:input-switch-state-changed="setTypeBook"></input-switch>
 
                 <input-text ref="year" :element="{name:'year', label:'Année'}" :value="data.year"
                             v-on:input-text-content-changed="dataChanged"></input-text>
@@ -34,6 +32,14 @@
 
                 <input-text ref="isbn" :element="{name:'isbn', label:'ISBN'}" :value="data.isbn"
                             v-on:input-text-content-changed="dataChanged"></input-text>
+
+
+                <input-switch ref="switch" :element="{name:'isEBook', label: 'Livre électronique'}"
+                              v-on:input-switch-state-changed="setTypeBook"></input-switch>
+
+                <input-files ref="eBooks" :element="{name: 'eBooks', label: '', maxFiles: 1}"
+                             :class="{displayed: isElectronic}"
+                             v-on:file-added="eBookAdded" v-on:file-removed="eBookRemoved"></input-files>
             </div>
         </div>
         <div id="bookPopupFooter">
@@ -50,12 +56,13 @@
     import InputSwitch from "../form/elements/_inputSwitch";
     import InputPicture from "../form/elements/_inputPicture";
     import InputEntities from "../form/elements/_inputEntities";
+    import InputFiles from "../form/elements/_inputFiles";
     import Xhr from './../../js/tools/xhr';
     import Vue from 'vue';
 
     export default {
         name: "bookPopup",
-        components: {InputEntities, InputPicture, InputButton, InputText, WysiwygEditor, InputSwitch},
+        components: {InputEntities, InputPicture, InputButton, InputText, WysiwygEditor, InputSwitch, InputFiles},
         props: {
             'bookId': {},
             'defaultData': {
@@ -68,6 +75,7 @@
         data: function () {
             return {
                 hasChanged: false,
+                isElectronic: false,
                 data: JSON.parse(JSON.stringify(this.defaultData))
             };
         },
@@ -79,6 +87,7 @@
                 }
             },
             setTypeBook: function (field, value) {
+                this.isElectronic = value;
                 this.hasChanged = true;
                 this.data.isElectronic = value.toString();
             },
@@ -102,6 +111,14 @@
                 this.hasChanged = true;
                 delete this.data['authors'][author.id];
             },
+            eBookAdded: function (ebookId) {
+                this.hasChanged = true;
+                this.data['ebook'] = ebookId;
+            },
+            eBookRemoved: function (ebookId) {
+                this.hasChanged = true;
+                delete this.data['ebook'][ebookId];
+            },
             save: function () {
                 if (this.hasChanged) {
                     var self = this;
@@ -109,18 +126,16 @@
                     let method = (!self.bookId || self.bookId.length == 0) ? 'POST' : 'PUT';
                     let url = '/api/book' + (method == 'PUT' ? '/' + self.bookId : '');
 
-                    Xhr.request({
-                        url: url,
-                        method: method,
-                        data: this.data,
-                        success: function (xhr) {
-                            self.$emit('book-saved');
-                            self.clearAll();
-                        },
-                        error: function (xhr) {
-                            alert('Une erreur est survenue');
-                        }
-                    });
+                    Xhr.fetch(url, {
+                        'method': method,
+                        'body': JSON.stringify(this.data)
+                    })
+                        .then(() => {
+                                self.$emit('book-saved');
+                                self.clearAll();
+                            }
+                        )
+                        .catch(() => alert('Une erreur est survenue'));
                 }
             },
             clearAll: function () {
@@ -139,7 +154,7 @@
 
                 this.clearAll();
 
-                if (val == null  || val.length == 0) {
+                if (val == null || val.length == 0) {
                     return;
                 }
 
@@ -162,6 +177,12 @@
                         }
 
                         self.$refs.picture.load(data.picture);
+
+                        if (typeof data.ebook != 'undefined') {
+                            this.isElectronic = true;
+                            self.$refs.switch.initTo(true);
+                            self.$refs.eBooks.loadFile(data.ebook.file, data.title);
+                        }
                     },
                     error: function (xhr) {
                         alert('Une erreur est survenue');
@@ -246,6 +267,10 @@
             .trix-content {
                 flex: 1;
             }
+        }
+
+        .form_element_files:not(.displayed) {
+            display: none;
         }
     }
 </style>

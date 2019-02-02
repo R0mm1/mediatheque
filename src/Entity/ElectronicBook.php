@@ -89,5 +89,12 @@ class ElectronicBook
         return $this;
     }
 
-
+    public function asArray()
+    {
+        return [
+            'file' => $this->getFile(),
+            'size' => $this->getSize(),
+            'mime' => $this->getMimeType()
+        ];
+    }
 }

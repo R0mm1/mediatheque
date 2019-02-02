@@ -73,6 +73,20 @@ export default {
         xhr.send(params.data);
     },
 
+    'fetch': function (url, params) {
+        if (typeof params.headers == 'undefined') params.headers = new Headers();
+        params.headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+        return fetch(url, params)
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return Promise.resolve(response);
+                } else {
+                    return Promise.reject(new Error(response.statusText));
+                }
+            })
+            .then(response => response.json());
+    },
+
     'login': function (username, password) {
         var self = this;
         this.loadConf();

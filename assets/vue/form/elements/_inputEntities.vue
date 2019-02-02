@@ -2,7 +2,7 @@
     <div class="form_element form_element_entities">
         <label :for="inputId" class="entities_label">{{element.label}}</label>
         <div class="entities_input">
-            <div v-for="(entity, id) in entities" class="entity">
+            <div v-for="(entity, id) in entities" class="entity" :key="id">
                 <div class="entity_label">{{getEntityLabel(entity)}}</div>
                 <div class="entity_delete fas fa-times" v-on:click="deleteEntity(id)"></div>
             </div>
@@ -26,7 +26,7 @@
                         <input-text v-for="(fieldName, fieldLabel) in labelFields"
                                     :element="{name:fieldName, label:fieldLabel}"
                                     v-on:input-text-content-changed="setCreationParam"
-                                    :ref="fieldName"></input-text>
+                                    :ref="fieldName" :key="fieldName"></input-text>
 
                         <input-button :element="{name: 'create', value: 'Créer'}"
                                       v-on:click.native="createEntity"></input-button>

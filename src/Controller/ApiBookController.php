@@ -97,16 +97,14 @@ class ApiBookController extends AbstractController
 
         $parameters = $this->getParameters($request);
 
+        //Get and move book cover
         if (!empty($parameters['picture'])) {
             $from = $this->get('kernel')->getProjectDir() . '/public/temp/' . $parameters['picture'];
             $to = $this->get('kernel')->getProjectDir() . '/public/images/book/' . $parameters['picture'];
             rename($from, $to);
         }
 
-        if (!empty($parameters['isElectronic'])) {
-            return $this->json(['error' => 'bad_request'], 400);
-        }
-
+        //Set book parameters
         foreach ($this->getParameters($request) as $paramName => $paramValue) {
             $setter = 'set' . ucfirst($paramName);
             if (is_callable([$book, $setter])) {
@@ -118,17 +116,31 @@ class ApiBookController extends AbstractController
             return $this->json(['error' => 'bad_request'], 400);
         }
 
+        //Handling specific type of book
         if ($parameters['isElectronic']) {
             $ebook = new ElectronicBook();
-            //todo: populate ebook properties
-            $em->persist($ebook);
-            $book->setElectronicBook($ebook);
+
+            if (!empty($parameters['ebook'])) {
+                //Get and move ebook file
+                $from = $this->get('kernel')->getProjectDir() . '/public/temp/' . $parameters['ebook'];
+                $to = $this->get('kernel')->getProjectDir() . '/public/book/ebook/' . $parameters['ebook'];
+                rename($from, $to);
+
+                //Set ebook information
+                $ebook->setFile($parameters['ebook']);
+                $ebook->setMimeType(mime_content_type($to));
+                $ebook->setSize(filesize($to));
+
+                $em->persist($ebook);
+                $book->setElectronicBook($ebook);
+            }
         } else {
             $pBook = new PaperBook();
             $em->persist($pBook);
             $book->setPaperBook($pBook);
         }
 
+        //Set authors
         $aAuthor = $request->request->get('authors');
         if (!empty($aAuthor)) {
             $repo = $this->getDoctrine()->getManager()->getRepository(Author::class);

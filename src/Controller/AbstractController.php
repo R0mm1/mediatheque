@@ -17,8 +17,9 @@ abstract class AbstractController extends SymfonyController
     {
         $params = array_merge($request->query->all(), $request->request->all());
 
-        if (in_array($request->getMethod(), [Request::METHOD_PUT, Request::METHOD_DELETE])) {
-            $params += json_decode($request->getContent(), true);
+        $requestContent = json_decode($request->getContent(), true);
+        if (json_last_error() == JSON_ERROR_NONE) {
+            $params = array_merge($params, $requestContent);
         }
 
         return $params;

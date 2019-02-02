@@ -20,6 +20,12 @@
             toggleSwitch: function () {
                 this.switchState = !this.switchState;
                 this.$emit('input-switch-state-changed', this.element.name, this.switchState);
+            },
+            initTo: function (initValue) {
+                this.switchState = initValue;
+            },
+            clear: function () {
+                this.switchState = false;
             }
         },
         mounted: function () {

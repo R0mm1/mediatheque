@@ -112,9 +112,6 @@
 </script>
 
 <style scoped lang="scss">
-</style>
-
-<style lang="scss">
     $leftActionBarWidth: 30px;
 
     #vueListContainer {
@@ -154,7 +151,7 @@
                 table-layout: fixed;
             }
 
-           tbody tr {
+            tbody tr {
                 display: table;
                 width: 100%;
                 table-layout: fixed;
@@ -179,6 +176,4 @@
             }
         }
     }
-
-
 </style>

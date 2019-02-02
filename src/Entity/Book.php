@@ -163,7 +163,10 @@ class Book extends AbstractEntity
         $this->picture = $picture;
     }
 
-    public function getElectronicBook()
+    /**
+     * @return ElectronicBook|null
+     */
+    public function getElectronicBook(): ?ElectronicBook
     {
         return $this->electronicBook;
     }
@@ -175,7 +178,10 @@ class Book extends AbstractEntity
         return $this;
     }
 
-    public function getPaperBook()
+    /**
+     * @return PaperBook|null
+     */
+    public function getPaperBook(): ?PaperBook
     {
         return $this->paperBook;
     }
@@ -226,6 +232,11 @@ class Book extends AbstractEntity
             if (is_null($aBookFields) || in_array($bookProperty, $aBookFields)) {
                 $aReturn[lcfirst($bookProperty)] = $this->{"get$bookProperty"}();
             }
+        }
+
+        $eBook = $this->getElectronicBook();
+        if (is_object($eBook)) {
+            $aReturn['ebook'] = $eBook->asArray();
         }
 
         $authors = $this->getAuthors();
