@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ElectronicBookRepository")
@@ -36,6 +38,22 @@ class ElectronicBook
      */
     private $book;
 
+    /**
+     * @Assert\File(
+     *     mimeTypes = {"application/epub+zip"},
+     *     mimeTypesMessage = "Veuillez sélectionner un fichier epub"
+     * )
+     */
+    private $newFile;
+
+    public function changeFile(File $filepath)
+    {
+        $this->newFile = $filepath;
+        $this->setFile($this->newFile->getFilename());
+        $this->setMimeType($this->newFile->getMimeType());
+        $this->setSize($this->newFile->getSize());
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,7 +64,7 @@ class ElectronicBook
         return $this->file;
     }
 
-    public function setFile(string $file): self
+    private function setFile(string $file): self
     {
         $this->file = $file;
 
@@ -58,7 +76,7 @@ class ElectronicBook
         return $this->mimeType;
     }
 
-    public function setMimeType(?string $mimeType): self
+    private function setMimeType(?string $mimeType): self
     {
         $this->mimeType = $mimeType;
 
@@ -70,7 +88,7 @@ class ElectronicBook
         return $this->size;
     }
 
-    public function setSize($size): self
+    private function setSize($size): self
     {
         $this->size = $size;
 

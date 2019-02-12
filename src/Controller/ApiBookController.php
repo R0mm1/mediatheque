@@ -8,8 +8,11 @@ use App\Entity\ElectronicBook;
 use App\Entity\PaperBook;
 use Doctrine\ORM\QueryBuilder;
 use App\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ApiBookController extends AbstractController
 {
@@ -82,15 +85,18 @@ class ApiBookController extends AbstractController
     /**
      * @Route("/api/book", name="api_add_book", methods="POST")
      * @param Request $request
+     * @param ValidatorInterface $validator
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function addBook(Request $request)
+    public function addBook(Request $request, ValidatorInterface $validator)
     {
         $em = $this->getDoctrine()->getManager();
 
         $book = new Book();
 
         $parameters = $this->getParameters($request);
+
+        $aError = [];
 
         //Get and move book cover
         if (!empty($parameters['picture'])) {
@@ -107,27 +113,36 @@ class ApiBookController extends AbstractController
             }
         }
 
-        if (empty($book->getTitle())) {
-            return $this->json(['error' => 'bad_request'], 400);
-        }
-
         //Handling specific type of book
         if ($parameters['isElectronic']) {
             $ebook = new ElectronicBook();
 
             if (!empty($parameters['ebook'])) {
-                //Get and move ebook file
+                //Setting file
                 $from = $this->get('kernel')->getProjectDir() . '/public/temp/' . $parameters['ebook'];
-                $to = $this->get('kernel')->getProjectDir() . '/public/book/ebook/' . $parameters['ebook'];
-                rename($from, $to);
+                $file = new File($from);
+                $ebook->changeFile($file);
 
-                //Set ebook information
-                $ebook->setFile($parameters['ebook']);
-                $ebook->setMimeType(mime_content_type($to));
-                $ebook->setSize(filesize($to));
+                //Validating
+                $aEbookError = $validator->validate($ebook);
+                if (count($aEbookError) === 0) {
+                    //If no error, persisting ebook and moving file from temp directory to public directory
+                    $em->persist($ebook);
+                    $book->setElectronicBook($ebook);
 
-                $em->persist($ebook);
-                $book->setElectronicBook($ebook);
+                    $to = $this->get('kernel')->getProjectDir() . '/public/book/ebook/' . $parameters['ebook'];
+                    rename($from, $to);
+                } else {
+                    /**@var $error ConstraintViolationInterface */
+                    foreach ($aEbookError as $error) {
+                        $property = $error->getPropertyPath();
+                        if ($property == 'newFile') {
+                            //Set property name to match with the parameter name originally received
+                            $property = 'ebook';
+                        }
+                        $aError[$property] = $error->getMessage();
+                    }
+                }
             }
         } else {
             $pBook = new PaperBook();
@@ -147,10 +162,22 @@ class ApiBookController extends AbstractController
             }
         }
 
-        $em->persist($book);
-        $em->flush();
+        $aBookError = $validator->validate($book);
+        if (empty($aError) && count($aBookError) === 0) {
+            $em->persist($book);
+            $em->flush();
+        } else {
+            /**@var $error ConstraintViolationInterface */
+            foreach ($aBookError as $error) {
+                $aError[$error->getPropertyPath()] = $error->getMessage();
+            }
+        }
 
-        return $this->json($book->asArray());
+        if (empty($aError)) {
+            return $this->json($book->asArray());
+        } else {
+            return $this->json(['errors' => $aError], 400);
+        }
     }
 
     /**

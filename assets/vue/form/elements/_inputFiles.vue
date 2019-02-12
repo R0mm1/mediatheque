@@ -69,7 +69,7 @@
             },
             removeFile: function (fileId) {
                 Vue.delete(this.files, fileId);
-                self.$emit('file-removed', fileId);
+                this.$emit('file-removed', fileId);
             },
             clear: function () {
                 this.files = {};

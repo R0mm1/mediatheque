@@ -182,6 +182,10 @@
                             this.isElectronic = true;
                             self.$refs.switch.initTo(true);
                             self.$refs.eBooks.loadFile(data.ebook.file, data.title);
+
+                            let ebook = {};
+                            ebook[data.ebook.file] = data.title;
+                            Vue.set(self.data, 'ebook', ebook);
                         }
                     },
                     error: function (xhr) {
