@@ -1,6 +1,6 @@
 var gulp = require("gulp"),
     util = require("gulp-util"),
-    sass = require("gulp-sass"),
+    gulpSass = require("gulp-sass"),
     autoprefixer = require('gulp-autoprefixer'),
     minifycss = require('gulp-minify-css'),
     rename = require('gulp-rename'),
@@ -8,15 +8,14 @@ var gulp = require("gulp"),
 
 var sassFiles = './assets/css/*.scss';
 
-gulp.task("sass", function () {
-
+function sass() {
     var getDestFilepath = function (sourceFilepath) {
         return './public' + sourceFilepath.split('assets')[1];
     };
 
     log("Generate CSS files " + (new Date()).toString());
     gulp.src(sassFiles)
-        .pipe(sass({style: 'expanded'}))
+        .pipe(gulpSass({style: 'expanded'}))
         .pipe(autoprefixer("last 3 version"))
         .pipe(gulp.dest(function (file) {
             return getDestFilepath(file.base);
@@ -26,10 +25,10 @@ gulp.task("sass", function () {
         .pipe(gulp.dest(function (file) {
             return file.base;
         }));
-});
+};
 
-gulp.task("watch", function () {
-    gulp.watch(sassFiles, ["sass"]);
-});
+function watch(){
+    gulp.watch(sassFiles, gulp.series(sass));
+}
 
-gulp.task('default', ['watch']);
+gulp.task('default', gulp.series(watch, sass));
