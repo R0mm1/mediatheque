@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Author;
+use App\Repository\AuthorRepository;
+use App\Specification\Like;
+use App\Specification\OrX;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,20 +63,17 @@ class ApiAuthorController extends AbstractController
      */
     public function searchAuthor(Request $request)
     {
-        /**@var $qb QueryBuilder */
-        $qb = $this->getDoctrine()
+        $search = $request->query->get('search');
+        $specification = new OrX([
+            new Like('firstname', $search),
+            new Like('lastname', $search)
+        ]);
+
+        /**@var $bookRepository AuthorRepository */
+        $bookRepository = $this->getDoctrine()
             ->getManager()
-            ->getRepository(Author::class)
-            ->createQueryBuilder('a');
-
-        $qb->select('a')
-            ->where($qb->expr()->orX(
-                $qb->expr()->like('a.firstname', ':authorSearch'),
-                $qb->expr()->like('a.lastname', ':authorSearch')
-            ))
-            ->setParameter(':authorSearch', '%' . $request->query->get('search') . '%');
-
-        $aAuthor = $qb->getQuery()->getResult();
+            ->getRepository(Author::class);
+        $aAuthor = $bookRepository->match($specification, []);
 
         $aReturn = [];
         /**@var $author \App\Entity\Author */

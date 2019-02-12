@@ -15,17 +15,13 @@ class ApiBookController extends AbstractController
 {
     /**
      * @Route("/api/book", name="api_list_book", methods="GET")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function listBook(Request $request)
     {
-        /**@var $qb QueryBuilder */
-        $qb = $this->getDoctrine()
-            ->getManager()
-            ->getRepository(Book::class)
-            ->createQueryBuilder('b');
-
-        $qb->select('b')
-            ->leftJoin('b.authors', 'a');
+        $aSpecification = [];
+        $aSort = [];
 
         foreach ($request->query->all() as $paramName => $paramValue) {
             if (strpos($paramName, 'sort_') === 0) {
@@ -63,7 +59,6 @@ class ApiBookController extends AbstractController
 
     /**
      * @Route("/api/book/{id}", name="api_get_book", methods="GET")
-     * @param Request $request
      * @param $id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
