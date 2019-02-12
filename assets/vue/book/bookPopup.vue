@@ -117,7 +117,7 @@
             },
             eBookRemoved: function (ebookId) {
                 this.hasChanged = true;
-                delete this.data['ebook'][ebookId];
+                this.data['ebook'] = null;
             },
             save: function () {
                 if (this.hasChanged) {
@@ -183,9 +183,7 @@
                             self.$refs.switch.initTo(true);
                             self.$refs.eBooks.loadFile(data.ebook.file, data.title);
 
-                            let ebook = {};
-                            ebook[data.ebook.file] = data.title;
-                            Vue.set(self.data, 'ebook', ebook);
+                            self.eBookAdded(data.ebook.file);
                         }
                     },
                     error: function (xhr) {

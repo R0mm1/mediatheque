@@ -162,6 +162,7 @@ class ApiBookController extends AbstractController
             }
         }
 
+        //Validation
         $aBookError = $validator->validate($book);
         if (empty($aError) && count($aBookError) === 0) {
             $em->persist($book);
@@ -203,15 +204,18 @@ class ApiBookController extends AbstractController
     /**
      * @Route("/api/book/{id}", name="api_set_book", methods="PUT")
      * @param Request $request
+     * @param ValidatorInterface $validator
      * @param $id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function setBook(Request $request, $id)
+    public function setBook(Request $request, ValidatorInterface $validator, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
         /**@var $book Book */
         $book = $em->getRepository(Book::class)->find($id);
+
+        $aError = [];
 
         if (!is_object($book)) {
             return $this->json(['error' => 'bad_book'], 404);
@@ -226,6 +230,7 @@ class ApiBookController extends AbstractController
             }
         }
 
+        //Handling authors modifications
         if (!empty($data['authors'])) {
 
             /**@var $author Author */
@@ -244,10 +249,48 @@ class ApiBookController extends AbstractController
             }
         }
 
-        $em->persist($book);
-        $em->flush();
+        //Handling ebook modifications
+        $ebook = $book->getElectronicBook();
+        if (array_key_exists('ebook', $data) && $data['ebook'] != $ebook->getFile()) {
+            $newBook = null;
+            $from = '';
+            if (!empty($data['ebook']) && is_string($data['ebook'])) {
+                $from = $this->get('kernel')->getProjectDir() . '/public/temp/' . $data['ebook'];
+                $newBook = new File($from);
+            }
+            $ebook->changeFile($newBook);
 
-        return $this->json($book->asArray());
+            //Validation and persisting if no errors
+            $aEbookError = $validator->validate($ebook);
+            if (count($aEbookError) === 0) {
+                $em->persist($ebook);
+
+                $to = $this->get('kernel')->getProjectDir() . '/public/book/ebook/' . $data['ebook'];
+                rename($from, $to);
+            } else {
+                /**@var $error ConstraintViolationInterface */
+                foreach ($aEbookError as $error) {
+                    $aError[$error->getPropertyPath()] = $error->getMessage();
+                }
+            }
+        }
+
+        $aBookError = $validator->validate($book);
+        if (empty($aError) && count($aBookError) === 0) {
+            $em->persist($book);
+            $em->flush();
+        } else {
+            /**@var $error ConstraintViolationInterface */
+            foreach ($aBookError as $error) {
+                $aError[$error->getPropertyPath()] = $error->getMessage();
+            }
+        }
+
+        if (empty($aError)) {
+            return $this->json($book->asArray());
+        } else {
+            return $this->json(['errors' => $aError], 400);
+        }
     }
 
     /**

@@ -39,6 +39,7 @@ class ElectronicBook
     private $book;
 
     /**
+     * @Assert\NotBlank
      * @Assert\File(
      *     mimeTypes = {"application/epub+zip"},
      *     mimeTypesMessage = "Veuillez sélectionner un fichier epub"
@@ -46,12 +47,14 @@ class ElectronicBook
      */
     private $newFile;
 
-    public function changeFile(File $filepath)
+    public function changeFile(File $filepath = null)
     {
         $this->newFile = $filepath;
-        $this->setFile($this->newFile->getFilename());
-        $this->setMimeType($this->newFile->getMimeType());
-        $this->setSize($this->newFile->getSize());
+        if (!is_null($filepath)) {
+            $this->setFile($this->newFile->getFilename());
+            $this->setMimeType($this->newFile->getMimeType());
+            $this->setSize($this->newFile->getSize());
+        }
     }
 
     public function getId(): ?int

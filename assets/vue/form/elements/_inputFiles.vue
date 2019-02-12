@@ -7,6 +7,8 @@
                     <div class="name">{{fileName}}</div>
                     <input-button :element="{name: 'delete', class: 'fas fa-trash-alt'}"
                                   v-on:click.native="removeFile(fileId)"></input-button>
+                    <input-button :element="{name: 'download', class: 'fas fa-file-download'}"
+                                  v-on:click.native="downloadFile(fileId)"></input-button>
                 </div>
             </template>
             <input-button :element="{name: 'add', value: 'Ajouter'}"
@@ -70,6 +72,9 @@
             removeFile: function (fileId) {
                 Vue.delete(this.files, fileId);
                 this.$emit('file-removed', fileId);
+            },
+            downloadFile: function (fileId) {
+
             },
             clear: function () {
                 this.files = {};
