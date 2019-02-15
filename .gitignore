@@ -57,3 +57,4 @@
 !public/js/_config.json
 !public/index.php
 /node_modules/
+/data/book/ebook/*

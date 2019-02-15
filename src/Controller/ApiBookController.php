@@ -115,7 +115,7 @@ class ApiBookController extends AbstractController
         }
 
         //Set book parameters
-        foreach ($this->getParameters($request) as $paramName => $paramValue) {
+        foreach ($parameters as $paramName => $paramValue) {
             $setter = 'set' . ucfirst($paramName);
             if (is_callable([$book, $setter])) {
                 $book->$setter($paramValue);
@@ -139,7 +139,7 @@ class ApiBookController extends AbstractController
                     $em->persist($ebook);
                     $book->setElectronicBook($ebook);
 
-                    $to = $this->get('kernel')->getProjectDir() . '/public/book/ebook/' . $parameters['ebook'];
+                    $to = $this->get('kernel')->getProjectDir() . '/assets/data/book/ebook/' . $parameters['ebook'];
                     rename($from, $to);
                 } else {
                     /**@var $error ConstraintViolationInterface */
@@ -160,10 +160,9 @@ class ApiBookController extends AbstractController
         }
 
         //Set authors
-        $aAuthor = $request->request->get('authors');
-        if (!empty($aAuthor)) {
+        if (!empty($parameters['authors'])) {
             $repo = $this->getDoctrine()->getManager()->getRepository(Author::class);
-            foreach ($aAuthor as $authorId) {
+            foreach ($parameters['authors'] as $authorId) {
                 $author = $repo->find($authorId);
                 if (is_object($author)) {
                     $book->addAuthor($author);
@@ -274,7 +273,7 @@ class ApiBookController extends AbstractController
             if (count($aEbookError) === 0) {
                 $em->persist($ebook);
 
-                $to = $this->get('kernel')->getProjectDir() . '/public/book/ebook/' . $data['ebook'];
+                $to = $this->get('kernel')->getProjectDir() . '/assets/data/book/ebook/' . $data['ebook'];
                 rename($from, $to);
             } else {
                 /**@var $error ConstraintViolationInterface */

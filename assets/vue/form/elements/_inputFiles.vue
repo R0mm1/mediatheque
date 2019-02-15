@@ -8,6 +8,7 @@
                     <input-button :element="{name: 'delete', class: 'fas fa-trash-alt'}"
                                   v-on:click.native="removeFile(fileId)"></input-button>
                     <input-button :element="{name: 'download', class: 'fas fa-file-download'}"
+                                  v-if="isDownloadEnabled"
                                   v-on:click.native="downloadFile(fileId)"></input-button>
                 </div>
             </template>
@@ -27,7 +28,7 @@
     export default {
         name: "inputFiles",
         components: {InputButton, InputText},
-        props: {element: {default: {}}, value: {default: {}}},
+        props: {element: {default: {}}, value: {default: {}}, downloadAction: {default: false}},
         data: function () {
             return {
                 files: {}
@@ -74,7 +75,9 @@
                 this.$emit('file-removed', fileId);
             },
             downloadFile: function (fileId) {
-
+                if (this.isDownloadEnabled) {
+                    this.downloadAction(fileId);
+                }
             },
             clear: function () {
                 this.files = {};
@@ -86,6 +89,9 @@
                     return false;
                 }
                 return Object.keys(this.files).length >= this.element.maxFiles;
+            },
+            isDownloadEnabled: function () {
+                return (typeof this.downloadAction === 'function');
             }
         }
     }

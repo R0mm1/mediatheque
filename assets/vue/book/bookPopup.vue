@@ -39,6 +39,7 @@
 
                 <input-files ref="eBooks" :element="{name: 'eBooks', label: '', maxFiles: 1}"
                              :class="{displayed: isElectronic}"
+                             :download-action="downloadEbook"
                              v-on:file-added="eBookAdded" v-on:file-removed="eBookRemoved"></input-files>
             </div>
         </div>
@@ -118,6 +119,30 @@
             eBookRemoved: function (ebookId) {
                 this.hasChanged = true;
                 this.data['ebook'] = null;
+            },
+            downloadEbook: function () {
+                Xhr.fetch('/api/book/' + this.bookId + '/ebook', {
+                    method: 'GET'
+                }).then(response => {
+                    response.blob()
+                        .then(blob => {
+                            let filename = 'book.epub'; //default file name
+
+                            //Retrieving file name from Content-Disposition Header
+                            let contentDisposition = response.headers.get('Content-Disposition');
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(contentDisposition);
+                            if (matches != null && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, '');
+                            }
+
+                            //Trigger file download
+                            let file = new File([blob], filename);
+                            let objectUrl = URL.createObjectURL(file);
+                            window.open(objectUrl);
+                        })
+                        .catch(error => console.log(error));
+                }).catch(() => alert('Une erreur est survenue'));
             },
             save: function () {
                 if (this.hasChanged) {

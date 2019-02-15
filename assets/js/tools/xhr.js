@@ -84,7 +84,13 @@ export default {
                     return Promise.reject(new Error(response.statusText));
                 }
             })
-            .then(response => response.json());
+            .then(response => {
+                if (response.headers.get('Content-Type') === 'application/json') {
+                    return response.json()
+                } else {
+                    return Promise.resolve(response);
+                }
+            });
     },
 
     'login': function (username, password) {
