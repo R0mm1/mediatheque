@@ -6,6 +6,11 @@ use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\ElectronicBook;
 use App\Entity\PaperBook;
+use App\Repository\BookRepository;
+use App\Specification\AndX;
+use App\Specification\Book\SearchAuthor;
+use App\Specification\Like;
+use App\Specification\None;
 use Doctrine\ORM\QueryBuilder;
 use App\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
@@ -29,27 +34,31 @@ class ApiBookController extends AbstractController
         foreach ($request->query->all() as $paramName => $paramValue) {
             if (strpos($paramName, 'sort_') === 0) {
                 list(, $field) = explode('sort_', $paramName);
-                $qb->addOrderBy("b.$field", $paramValue);
+                $aSort[$field] = $paramValue;
             } else if (strpos($paramName, 'search_') === 0) {
                 list(, $searchName) = explode('search_', $paramName);
                 switch ($searchName) {
                     case 'author':
-                        $qb
-                            ->where($qb->expr()->orX(
-                                $qb->expr()->like('a.firstname', ':authorSearch'),
-                                $qb->expr()->like('a.lastname', ':authorSearch')
-                            ))
-                            ->setParameter('authorSearch', "%$paramValue%");
+                        $aSpecification[] = new SearchAuthor($paramValue);
                         break;
                     default:
-                        $qb
-                            ->where($qb->expr()->like("b.$searchName", ":{$searchName}Search"))
-                            ->setParameter(":{$searchName}Search", "%$paramValue%");
+                        $aSpecification[] = new Like($searchName, $paramValue);
                 }
             }
         }
 
-        $aBook = $qb->getQuery()->getResult();
+        if (!empty($aSpecification)) {
+            $specification = new AndX($aSpecification);
+        } else {
+            $specification = new None();
+        }
+
+        /**@var $bookRepository BookRepository */
+        $bookRepository = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(Book::class);
+        $aBook = $bookRepository->match($specification, $aSort);
+
 
         $return = [];
         /**@var $book \App\Entity\Book */
