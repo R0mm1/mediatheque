@@ -257,8 +257,32 @@ class ApiBookController extends AbstractController
             }
         }
 
-        //Handling ebook modifications
         $ebook = $book->getElectronicBook();
+        $paperBook = $book->getPaperBook();
+
+        //Switching type of book
+        $isElectronic = is_object($ebook);
+        $data['isElectronic'] = $data['isElectronic'] === 'false' ? false : true;
+
+        if (array_key_exists('isElectronic', $data) && $data['isElectronic'] != $isElectronic) {
+            if ($isElectronic && !$data['isElectronic']) {
+                //Switching from electronic book to paper book
+                $book->setElectronicBook(null);
+                $em->persist($book);
+                $em->flush(); //Not sure why i have to persist the book then flush before ebook deletion but not before paper book deletion
+                $em->remove($ebook);
+                $paperBook = new PaperBook();
+                $book->setPaperBook($paperBook);
+            } else {
+                //Switching from paper book to electronic book
+                $book->setPaperBook(null);
+                $em->remove($paperBook);
+                $ebook = new ElectronicBook();
+                $book->setElectronicBook($ebook);
+            }
+        }
+
+        //Handling ebook modifications
         if (array_key_exists('ebook', $data) && $data['ebook'] != $ebook->getFile()) {
             $newBook = null;
             $from = '';

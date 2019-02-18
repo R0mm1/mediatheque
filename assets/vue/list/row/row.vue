@@ -3,16 +3,37 @@
         <td v-for="(col, index) in cols" :key="index" class="cell">
             {{getValueFromColDef(col)}}
         </td>
+
+        <td v-if="hasRowAction" class="listRowCustomActions">
+            <CustomAction v-for="(actionData, actionName) in rowActions"
+                          :key="actionName"
+                          :data="actionData"
+                          :name="actionName"
+                          :rowData="dataRow"
+                          v-on:custom-action-triggered="customActionTriggered"></CustomAction>
+        </td>
     </tr>
 </template>
 
 <script>
+    import InputButton from "../../form/elements/_inputButton";
+    import CustomAction from "./_customAction";
+
     export default {
         name: 'row',
-        props: ['dataRow', 'cols'],
+        components: {CustomAction, InputButton},
+        props: ['dataRow', 'cols', 'rowActions'],
+        data: function () {
+            return {
+                'rowActionClicks': {}
+            }
+        },
         computed: {
             elementId: function () {
                 return 'el' + (this.dataRow['id'] ? this.dataRow['id'] : Math.random().toString());
+            },
+            hasRowAction: function () {
+                return Object.keys(this.rowActions).length > 0;
             }
         },
         methods: {
@@ -65,6 +86,9 @@
                 }
 
                 return value;
+            },
+            customActionTriggered: function (actionName) {
+                this.$parent.$emit('custom-action-triggered', actionName, this.dataRow['id']);
             }
         }
     }
@@ -81,5 +105,17 @@
 
     .listRow:hover {
         border-color: #d0c3a9;
+
+        .listRowCustomActions {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+
+    .listRowCustomActions {
+        display: flex;
+        opacity: 0;
+        visibility: hidden;
+        transition: all .3s;
     }
 </style>

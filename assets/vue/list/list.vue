@@ -7,13 +7,14 @@
         <div id="vueListContent">
             <table id="vueList">
                 <thead>
-                <list-header :cols="cols" :colsProperties="colsProperties"
+                <list-header :cols="cols" :colsProperties="colsProperties" :hasRowAction="hasRowAction"
                              v-on:list-header-sort-up="sortUp"
                              v-on:list-header-sort-down="sortDown"
                              v-on:list-header-search="search"/>
                 </thead>
                 <tbody>
-                    <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols" v-on:click.native="$emit('list-action-set', dataRow.id)"></row>
+                    <row v-for="dataRow in listData" :key="dataRow.id" :dataRow="dataRow" :cols="cols" :rowActions="rowActions"
+                         v-on:click.native="$emit('list-action-set', dataRow.id)"></row>
                 </tbody>
             </table>
         </div>
@@ -22,7 +23,7 @@
 </template>
 
 <script>
-    import Row from './_row'
+    import Row from './row/row'
     import ListHeader from './_listHeader'
     import Xhr from './../../js/tools/xhr';
     import LeftActionBar from "./leftActionBar/leftActionBar";
@@ -35,7 +36,14 @@
                 'searchParams': {}
             };
         },
-        props: {'bus': {}, 'leftActionBarProperties': {'default': {}}, 'cols': {}, 'colsProperties': {}, 'apiEndpoint': {}},
+        props: {
+            'bus': {},
+            'leftActionBarProperties': {'default': {}},
+            'cols': {},
+            'colsProperties': {},
+            'apiEndpoint': {},
+            'rowActions': []
+        },
         components: {
             LeftActionBar, Row, ListHeader
         },
@@ -48,6 +56,9 @@
             },
             labCustomButtons: function () {
                 return (typeof this.leftActionBarProperties.customButtons != 'undefined' ? this.leftActionBarProperties.customButtons : {});
+            },
+            hasRowAction: function () {
+                return Object.keys(this.rowActions).length > 0;
             }
         },
         methods: {
@@ -157,11 +168,11 @@
                 table-layout: fixed;
             }
 
-            thread{
+            thread {
                 height: 34px;
             }
 
-            tbody{
+            tbody {
                 display: block;
                 height: calc(100% - 34px);
                 overflow: auto;

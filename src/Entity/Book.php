@@ -57,12 +57,12 @@ class Book extends AbstractEntity
 
 
     /**
-     * @ORM\OneToOne(targetEntity="ElectronicBook", inversedBy="book")
+     * @ORM\OneToOne(targetEntity="ElectronicBook", inversedBy="book", cascade={"persist"})
      */
     private $electronicBook;
 
     /**
-     * @ORM\OneToOne(targetEntity="PaperBook", inversedBy="book")
+     * @ORM\OneToOne(targetEntity="PaperBook", inversedBy="book", cascade={"persist"})
      */
     private $paperBook;
 
