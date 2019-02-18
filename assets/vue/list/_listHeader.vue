@@ -24,6 +24,8 @@
                 </div>
             </div>
         </th>
+
+        <th v-if="hasRowAction"></th>
     </tr>
 </template>
 
@@ -33,7 +35,7 @@
     export default {
         name: 'header',
         components: {InputText},
-        props: ['cols', 'colsProperties'],
+        props: ['cols', 'colsProperties', 'hasRowAction'],
         data() {
             return {
                 listDisplayRowTwo: {}
