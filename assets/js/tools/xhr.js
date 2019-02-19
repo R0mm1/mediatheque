@@ -178,6 +178,20 @@ const Xhr = {
         localStorage.setItem('refresh_token', refreshToken);
         localStorage.setItem('expires_in', expiresIn);
         localStorage.setItem('created_at', Math.floor(Date.now() / 1000));
+    },
+
+    buildGetUrl(url, params) {
+        url += '?';
+        let isFirst = true;
+        console.log(params);
+        Object.keys(params).forEach((paramName) => {
+            if (!isFirst) {
+                url += '&';
+                isFirst = false;
+            }
+            url += paramName + '=' + params[paramName];
+        });
+        return url;
     }
 };
 
