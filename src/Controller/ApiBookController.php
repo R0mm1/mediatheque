@@ -70,7 +70,7 @@ class ApiBookController extends AbstractController
     }
 
     /**
-     * @Route("/api/book/{id}", name="api_get_book", methods="GET")
+     * @Route("/api/book/{id}", name="api_get_book", methods="GET", requirements={"id"="\d+"})
      * @param $id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */

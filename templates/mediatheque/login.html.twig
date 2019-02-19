@@ -4,12 +4,13 @@
     <link rel="stylesheet" href="{{ asset('css/login.min.css') }}">
 {% endblock %}
 
-{% block header%}
+{% block header %}
     <div id="headerWelcome">
         Bienvenue!
     </div>
 {% endblock %}
 
-{% block javascripts%}
+{% block javascripts %}
+    {{ parent() }}
     <script type="module" src="{{ asset('js/mediatheque/login.js') }}"></script>
 {% endblock %}

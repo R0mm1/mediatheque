@@ -1,36 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <meta charset="UTF-8">
-    <title>{% block title %}Médiathèque{% endblock %}</title>
-    <link rel="stylesheet" href="{{ asset('css/main.min.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    {% block stylesheets %}{% endblock %}
-</head>
-<body>
-<div id="app">
-    <header>
-        <div id="mainLogo">
-            <img src="{{ asset('images/logo.png') }}" alt="Médiathèque"/>
+    <head>
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <meta charset="UTF-8">
+        <title>{% block title %}Médiathèque{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('css/main.min.css') }}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+              integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        <div id="app">
+            <header>
+                <div id="mainLogo">
+                    <img src="{{ asset('images/logo.png') }}" alt="Médiathèque"/>
+                </div>
+                {% block header %}
+                    <div id="appHeader"></div>
+                {% endblock %}
+            </header>
+            {% block body %}
+                <div id="appBody"></div>
+            {% endblock %}
+
+            {% block javascripts %}
+                <script type="module" src="{{ asset('js/mediatheque/header.js') }}"></script>
+            {% endblock %}
         </div>
-        {% block header %}
-            <ul id="mainMenu">
-                <li>Livres
-                    <ul class="subMenu l1Menu">
-                        <li>Par livre</li>
-                        <li>Par auteur</li>
-                    </ul>
-                </li>
-            </ul>
-        {% endblock %}
-    </header>
-    {% block body %}
-        <div id="appBody"></div>
-    {% endblock %}
-    {% block javascripts %}
-    {% endblock %}
-</div>
-</body>
+    </body>
 </html>
