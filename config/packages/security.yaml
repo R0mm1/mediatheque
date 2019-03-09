@@ -13,7 +13,7 @@ security:
       pattern:    ^/oauth/v2/token
       security:   false
     install:
-      pattern: ^/api/install$
+      pattern: ^/api/install
       security: false
     api:
       pattern:    ^/api

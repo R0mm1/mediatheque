@@ -1,13 +1,20 @@
 <template>
     <div class="form_element">
-        <input type="password" :name="element.name" :placeholder="element.placeholder"/>
+        <label v-if="typeof element.label != 'undefined'" :for="element.name">{{element.label}}</label>
+        <input type="password" :name="element.name" :placeholder="element.placeholder" v-model="password"
+               v-on:change="$emit('input-password-changed', element.name, password)"/>
     </div>
 </template>
 
 <script>
     export default {
         name: "inputPassword",
-        props: ['element']
+        props: ['element'],
+        data: function () {
+            return {
+                password: ''
+            }
+        }
     }
 </script>
 
