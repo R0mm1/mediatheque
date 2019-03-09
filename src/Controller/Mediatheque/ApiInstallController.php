@@ -59,6 +59,8 @@ class ApiInstallController extends AbstractController
 
         $this->oAuthConfiguration();
 
+        $this->directoriesCreation();
+
         $this->medVar->setVar($varKey, true);
 
         return $this->json([
@@ -140,5 +142,16 @@ class ApiInstallController extends AbstractController
         $config['auth']['client_secret'] = $client->getSecret();
 
         file_put_contents($configFilepath, json_encode($config, JSON_PRETTY_PRINT));
+    }
+
+    private function directoriesCreation()
+    {
+        $assetsDirectory = $this->kernel->getProjectDir() . '/assets/';
+        $publicDirectory = $this->kernel->getProjectDir() . '/public/';
+
+        @mkdir($assetsDirectory . 'data/book/ebook', 0777, true);
+
+        @mkdir($publicDirectory . 'images/book', 0777, true);
+        @mkdir($publicDirectory . 'temp', 0777, true);
     }
 }
