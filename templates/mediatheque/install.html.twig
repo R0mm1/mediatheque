@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/login.min.css') }}">
+{% endblock %}
+
+{% block header%}
+    <div id="headerWelcome">
+        Installation
+    </div>
+{% endblock %}
+
+{% block javascripts%}
+    <script type="module" src="{{ asset('js/mediatheque/install.js') }}"></script>
+{% endblock %}
