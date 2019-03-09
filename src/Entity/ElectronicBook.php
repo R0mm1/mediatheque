@@ -29,7 +29,7 @@ class ElectronicBook
     private $mimeType;
 
     /**
-     * @ORM\Column(type="decimal", precision=6, scale=2, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $size;
 

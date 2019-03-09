@@ -6,7 +6,7 @@ namespace App\Controller\Mediatheque;
 use App\Controller\AbstractController;
 use App\Service\MedVar;
 use FOS\OAuthServerBundle\Model\ClientManagerInterface;
-use FOS\UserBundle\Model\UserManager;
+use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -26,7 +26,7 @@ class ApiInstallController extends AbstractController
     private $clientManager;
 
     /**
-     * @var UserManager
+     * @var UserManagerInterface
      */
     private $userManager;
 
@@ -35,11 +35,12 @@ class ApiInstallController extends AbstractController
      */
     private $medVar;
 
-    public function __construct(KernelInterface $kernel, ClientManagerInterface $clientManager, UserManager $userManager, MedVar $medVar)
+    public function __construct(KernelInterface $kernel, ClientManagerInterface $clientManager, UserManagerInterface $userManager, MedVar $medVar)
     {
         $this->kernel = $kernel;
         $this->clientManager = $clientManager;
         $this->userManager = $userManager;
+        $this->medVar = $medVar;
     }
 
     /**
@@ -58,8 +59,10 @@ class ApiInstallController extends AbstractController
 
         $this->oAuthConfiguration();
 
+        $this->directoriesCreation();
+
         $this->medVar->setVar($varKey, true);
-        
+
         return $this->json([
             'follow' => [
                 'route' => '/api/install/user',
@@ -88,6 +91,12 @@ class ApiInstallController extends AbstractController
         $user = $this->userManager->createUser();
         $user->setUsername($params['username']);
         $user->setPlainPassword($params['password']);
+        $user->setEnabled(true);
+
+        //generate default email from login
+        $addressBody = str_replace(' ', '', iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $params['username']));
+        $user->setEmail("$addressBody@romtheque.ovh");
+
         $this->userManager->updateUser($user);
 
         $this->medVar->setVar($varKey, true);
@@ -133,5 +142,16 @@ class ApiInstallController extends AbstractController
         $config['auth']['client_secret'] = $client->getSecret();
 
         file_put_contents($configFilepath, json_encode($config, JSON_PRETTY_PRINT));
+    }
+
+    private function directoriesCreation()
+    {
+        $assetsDirectory = $this->kernel->getProjectDir() . '/assets/';
+        $publicDirectory = $this->kernel->getProjectDir() . '/public/';
+
+        @mkdir($assetsDirectory . 'data/book/ebook', 0777, true);
+
+        @mkdir($publicDirectory . 'images/book', 0777, true);
+        @mkdir($publicDirectory . 'temp', 0777, true);
     }
 }
