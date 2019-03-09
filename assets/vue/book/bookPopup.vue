@@ -59,6 +59,7 @@
     import InputEntities from "../form/elements/_inputEntities";
     import InputFiles from "../form/elements/_inputFiles";
     import Xhr from './../../js/tools/xhr';
+    import Book from './../../js/tools/book';
     import Vue from 'vue';
 
     export default {
@@ -121,28 +122,7 @@
                 this.data['ebook'] = null;
             },
             downloadEbook: function () {
-                Xhr.fetch('/api/book/' + this.bookId + '/ebook', {
-                    method: 'GET'
-                }).then(response => {
-                    response.blob()
-                        .then(blob => {
-                            let filename = 'book.epub'; //default file name
-
-                            //Retrieving file name from Content-Disposition Header
-                            let contentDisposition = response.headers.get('Content-Disposition');
-                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                            var matches = filenameRegex.exec(contentDisposition);
-                            if (matches != null && matches[1]) {
-                                filename = matches[1].replace(/['"]/g, '');
-                            }
-
-                            //Trigger file download
-                            let file = new File([blob], filename);
-                            let objectUrl = URL.createObjectURL(file);
-                            window.open(objectUrl);
-                        })
-                        .catch(error => console.log(error));
-                }).catch(() => alert('Une erreur est survenue'));
+                Book.downloadEBook(this.bookId);
             },
             save: function () {
                 if (this.hasChanged) {
@@ -204,11 +184,13 @@
                         self.$refs.picture.load(data.picture);
 
                         if (typeof data.ebook != 'undefined') {
-                            this.isElectronic = true;
+                            self.isElectronic = true;
                             self.$refs.switch.initTo(true);
                             self.$refs.eBooks.loadFile(data.ebook.file, data.title);
 
                             self.eBookAdded(data.ebook.file);
+                        } else {
+                            self.isElectronic = false;
                         }
                     },
                     error: function (xhr) {
@@ -221,41 +203,7 @@
 </script>
 
 <style scoped lang="scss">
-    #bookPopup {
-        flex-direction: column;
-        position: absolute;
-        z-index: 3;
-        width: calc(100% - 20px);
-        height: calc(100% - 20px);
-        margin: 10px;
-        box-shadow: 1px 1px 5px black;
-        background-color: #f8f5ef;
-    }
-
-    #bookPopupHeader {
-        height: 4rem;
-        display: flex;
-    }
-
-    #bookPopupBody {
-        flex: 1;
-        display: flex;
-        overflow: auto;
-
-        > div {
-            flex: 1;
-            padding: 10px;
-        }
-
-        #bookPopupPicture {
-            max-width: 250px;
-        }
-    }
-
-    #bookPopupFooter {
-        height: 2.5rem;
-        text-align: right;
-    }
+    @import "./../../css/popup";
 </style>
 
 <style lang="scss">

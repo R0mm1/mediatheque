@@ -37,6 +37,24 @@ var bookBookConfig = Object.assign({}, config, {
     }
 });
 
+var bookAuthorConfig = Object.assign({}, config, {
+    name: 'bookAuthor',
+    entry: './assets/js/book/author.js',
+    output: {
+        path: path.resolve(__dirname, 'public/js/book/'),
+        filename: 'author.js'
+    }
+});
+
+var mediathequeHeaderConfig = Object.assign({}, config, {
+    name: 'mediathequeHeader',
+    entry: './assets/js/mediatheque/header.js',
+    output: {
+        path: path.resolve(__dirname, 'public/js/mediatheque/'),
+        filename: 'header.js'
+    }
+});
+
 var mediathequeLoginConfig = Object.assign({}, config, {
     name: 'mediathequeLogin',
     entry: './assets/js/mediatheque/login.js',
@@ -47,5 +65,5 @@ var mediathequeLoginConfig = Object.assign({}, config, {
 });
 
 module.exports = [
-    bookBookConfig, mediathequeLoginConfig
+    bookBookConfig, bookAuthorConfig, mediathequeHeaderConfig, mediathequeLoginConfig
 ];

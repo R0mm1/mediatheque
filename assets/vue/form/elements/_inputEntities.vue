@@ -87,26 +87,26 @@
             searchEntity: function (e) {
                 let search = e.target.value;
                 if (search.length > 2) {
-                    var self = this;
 
                     var data = {};
                     data[this.searchParam] = search;
 
-                    Xhr.request({
-                        url: this.searchUrl,
-                        data: data,
-                        success: function (xhr) {
-                            self.proposals = {};
-                            let data = JSON.parse(xhr.response);
-                            data.forEach(function (entity) {
-                                Vue.set(self.proposals, entity.id, entity);
+
+                    let url = Xhr.buildGetUrl(this.searchUrl, data);
+                    Xhr.fetch(url, {
+                        method: 'GET'
+                    })
+                        .then(response=>{
+                            this.proposals = {};
+                            response.forEach(entity=> {
+                                Vue.set(this.proposals, entity.id, entity);
                             });
-                            self.isProposalsDisplayed = true;
-                        },
-                        error: function (xhr) {
+                            this.isProposalsDisplayed = true;
+                        })
+                        .catch(error=>{
+                            console.error(error);
                             alert('Une erreur est survenue');
-                        }
-                    });
+                        });
                 }
             },
             createEntity: function () {
