@@ -60,8 +60,6 @@ services:
     environment:
       PMA_PORT: 3306
       PMA_HOST: db
-      PMA_USER: ${MYSQL_ROOT_USER}
-      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - ${PMA_EXPOSED_PORT}:80
     depends_on:
