@@ -23,6 +23,9 @@
                                 v-on:entity-removed="authorRemoved"></input-entities>
                 <br>
 
+                <input-text ref="language" :element="{name:'language', label:'Langue'}" :value="data.language"
+                            v-on:input-text-content-changed="dataChanged"></input-text>
+
                 <input-text ref="year" :element="{name:'year', label:'Année'}" :value="data.year"
                             v-on:input-text-content-changed="dataChanged"></input-text>
 
@@ -171,7 +174,7 @@
                     success: function (xhr) {
                         let data = JSON.parse(xhr.response);
 
-                        ['year', 'title', 'pageCount', 'isbn', 'summary'].forEach(function (element) {
+                        ['language', 'year', 'title', 'pageCount', 'isbn', 'summary'].forEach(function (element) {
                             Vue.set(self.data, element, data[element]);
                         });
 
