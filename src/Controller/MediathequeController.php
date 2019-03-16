@@ -22,4 +22,11 @@ class MediathequeController extends AbstractController
     public function install(){
         return $this->render('mediatheque/install.html.twig');
     }
+
+    /**
+     * @Route("/account", name="account")
+     */
+    public function account(){
+        return $this->render('mediatheque/account.html.twig');
+    }
 }

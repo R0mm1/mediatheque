@@ -73,6 +73,15 @@ var mediathequeInstallConfig = Object.assign({}, config, {
     }
 });
 
+var mediathequeAccountConfig = Object.assign({}, config, {
+    name: 'mediathequeAccount',
+    entry: './assets/js/mediatheque/account.js',
+    output: {
+        path: path.resolve(__dirname, 'public/js/mediatheque/'),
+        filename: 'account.js'
+    }
+});
+
 module.exports = [
-    bookBookConfig, bookAuthorConfig, mediathequeHeaderConfig, mediathequeLoginConfig, mediathequeInstallConfig
+    bookBookConfig, bookAuthorConfig, mediathequeHeaderConfig, mediathequeLoginConfig, mediathequeInstallConfig, mediathequeAccountConfig
 ];

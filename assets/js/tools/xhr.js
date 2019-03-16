@@ -183,7 +183,6 @@ const Xhr = {
     buildGetUrl(url, params) {
         url += '?';
         let isFirst = true;
-        console.log(params);
         Object.keys(params).forEach((paramName) => {
             if (!isFirst) {
                 url += '&';
