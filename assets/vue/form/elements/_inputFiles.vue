@@ -1,7 +1,9 @@
 <template>
     <div class="form_element form_element_files">
         <label class="files_label">{{element.label}}</label>
+
         <div class="files_input">
+
             <template v-for="(fileName, fileId) in files">
                 <div class="file_row">
                     <div class="name">{{fileName}}</div>
@@ -12,8 +14,14 @@
                                   v-on:click.native="downloadFile(fileId)"></input-button>
                 </div>
             </template>
-            <input-button :element="{name: 'add', value: 'Ajouter'}"
-                          v-on:click.native="displayFileChooser" :disabled="maxFilesReached"></input-button>
+
+            <input-button v-if="!isFileLoading"
+                          v-on:click.native="displayFileChooser"
+                          :element="{name: 'add', value: 'Ajouter'}"
+                          :disabled="maxFilesReached"></input-button>
+
+            <loader class="loader" v-if="isFileLoading" :type="'s'"></loader>
+
             <input type="file" :name="element.name" v-on:change="addFile">
         </div>
     </div>
@@ -24,13 +32,15 @@
     import InputText from "./_inputText";
     import Xhr from './../../../js/tools/xhr';
     import Vue from 'vue';
+    import Loader from "../../loader";
 
     export default {
         name: "inputFiles",
-        components: {InputButton, InputText},
+        components: {Loader, InputButton, InputText},
         props: {element: {default: {}}, value: {default: {}}, downloadAction: {default: false}},
         data: function () {
             return {
+                isFileLoading: false,
                 files: {}
             }
         },
@@ -41,6 +51,8 @@
                 }
             },
             addFile: function (e) {
+                this.isFileLoading = true;
+
                 //Add a new file
                 var self = this;
                 var name = e.target.files[0].name;
@@ -59,7 +71,11 @@
                     }).then((response) => {
                         self.$emit('file-added', response.src);
                         self.loadFile(response.src, name);
-                    }).catch((why) => console.error('Une erreur est survenue ', why));
+                        self.isFileLoading = false;
+                    }).catch((why) => {
+                        self.isFileLoading = false;
+                        console.error('Une erreur est survenue ', why);
+                    });
 
                 };
 
@@ -99,6 +115,10 @@
 
 <style scoped lang="scss">
     @import "../../../css/form/element";
+
+    .loader {
+        height: 18px;
+    }
 
     .files_input {
         border: 1px solid #bbb;

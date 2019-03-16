@@ -52,9 +52,5 @@
 
 /.env
 /.idea
-/public/
-!public/images/logo.png
-!public/js/_config.json
-!public/index.php
 /node_modules/
 /data/book/ebook/*
