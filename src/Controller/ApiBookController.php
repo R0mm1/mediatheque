@@ -6,6 +6,7 @@ use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\ElectronicBook;
 use App\Entity\PaperBook;
+use App\Entity\User;
 use App\Repository\BookRepository;
 use App\Specification\AndX;
 use App\Specification\Book\SearchAuthor;
@@ -76,6 +77,7 @@ class ApiBookController extends AbstractController
      */
     public function getBook($id)
     {
+        /**@var $book Book */
         $book = $this->getDoctrine()
             ->getManager()
             ->getRepository(Book::class)
@@ -155,7 +157,14 @@ class ApiBookController extends AbstractController
             }
         } else {
             $pBook = new PaperBook();
+
+            if (!empty($parameters['owner'])) {
+                $owner = $em->getRepository(User::class)->find($parameters['owner']);
+                $pBook->setOwner($owner);
+            }
+
             $em->persist($pBook);
+
             $book->setPaperBook($pBook);
         }
 
@@ -262,9 +271,11 @@ class ApiBookController extends AbstractController
 
         //Switching type of book
         $isElectronic = is_object($ebook);
-        $data['isElectronic'] = $data['isElectronic'] === 'false' ? false : true;
+
+        $data['isElectronic'] = ($data['isElectronic'] == true);
 
         if (array_key_exists('isElectronic', $data) && $data['isElectronic'] != $isElectronic) {
+
             if ($isElectronic && !$data['isElectronic']) {
                 //Switching from electronic book to paper book
                 $book->setElectronicBook(null);
@@ -303,6 +314,18 @@ class ApiBookController extends AbstractController
                 /**@var $error ConstraintViolationInterface */
                 foreach ($aEbookError as $error) {
                     $aError[$error->getPropertyPath()] = $error->getMessage();
+                }
+            }
+        }
+
+        if (is_object($paperBook)) {
+            $currentOwner = $paperBook->getOwner();
+            $currentOwnerId = is_object($currentOwner) ? $currentOwner->getId() : null;
+            if (!empty($data['owner']) && $data['owner'] != $currentOwnerId) {
+                $newOwner = $em->getRepository(User::class)->find($data['owner']);
+                if (is_object($newOwner)) {
+                    $paperBook->setOwner($newOwner);
+                    $em->persist($paperBook);
                 }
             }
         }

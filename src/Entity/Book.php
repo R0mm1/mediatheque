@@ -224,7 +224,7 @@ class Book extends AbstractEntity
         return $this;
     }
 
-    public function asArray(array $aBookFields = null, array $aAuthorFields = null): array
+    public function asArray(array $aBookFields = null, array $aAuthorFields = null, array $aOwnerFields = null): array
     {
         $aReturn = [
             'authors' => []
@@ -246,6 +246,16 @@ class Book extends AbstractEntity
             foreach ($authors as $author) {
                 $aReturn['authors'][] = $author->asArray($aAuthorFields);
             }
+        }
+
+        $paperBook = $this->getPaperBook();
+        if (is_object($paperBook)) {
+            $aOwner = null;
+            $owner = $paperBook->getOwner();
+            if (is_object($owner)) {
+                $aOwner = $owner->asArray($aOwnerFields);
+            }
+            $aReturn['owner'] = $aOwner;
         }
 
         return $aReturn;

@@ -23,6 +23,10 @@
                                 v-on:entity-removed="authorRemoved"></input-entities>
                 <br>
 
+                <input-select v-if="!isElectronic" :label="'Propriétaire'" :name="'owner'"
+                              :options="loadUsersSelectOptions" :default-value="data.owner"
+                              v-on:select-changed="ownerChanged"></input-select>
+
                 <input-text ref="language" :element="{name:'language', label:'Langue'}" :value="data.language"
                             v-on:input-text-content-changed="dataChanged"></input-text>
 
@@ -64,16 +68,21 @@
     import Xhr from './../../js/tools/xhr';
     import Book from './../../js/tools/book';
     import Vue from 'vue';
+    import InputSelect from "../form/elements/_inputSelect";
 
     export default {
         name: "bookPopup",
-        components: {InputEntities, InputPicture, InputButton, InputText, WysiwygEditor, InputSwitch, InputFiles},
+        components: {
+            InputSelect,
+            InputEntities, InputPicture, InputButton, InputText, WysiwygEditor, InputSwitch, InputFiles
+        },
         props: {
             'bookId': {},
             'defaultData': {
                 'default': {
                     'isElectronic': 0,
-                    'authors': {}
+                    'authors': {},
+                    'owner': null
                 }
             }
         },
@@ -116,6 +125,10 @@
                 this.hasChanged = true;
                 delete this.data['authors'][author.id];
             },
+            ownerChanged: function (ownerId) {
+                this.hasChanged = true;
+                this.data['owner'] = ownerId;
+            },
             eBookAdded: function (ebookId) {
                 this.hasChanged = true;
                 this.data['ebook'] = ebookId;
@@ -126,6 +139,11 @@
             },
             downloadEbook: function () {
                 Book.downloadEBook(this.bookId);
+            },
+            loadUsersSelectOptions: function () {
+                return Xhr.fetch('/api/user/', {
+                    method: 'GET'
+                });
             },
             save: function () {
                 if (this.hasChanged) {
@@ -194,6 +212,10 @@
                             self.eBookAdded(data.ebook.file);
                         } else {
                             self.isElectronic = false;
+                        }
+
+                        if (typeof data.owner != 'undefined' && typeof data.owner.id != 'undefined') {
+                            Vue.set(self.data, 'owner', data.owner.id);
                         }
                     },
                     error: function (xhr) {

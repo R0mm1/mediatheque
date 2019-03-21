@@ -2,12 +2,38 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Specification\None;
+use App\Specification\Order;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ApiUserController extends AbstractController
 {
+    /**
+     * @Route("/api/user/", name="api_list_user", methods="GET")
+     */
+    public function listUser()
+    {
+        /**@var $userRepository UserRepository */
+        $userRepository = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository(User::class);
+
+        /**@var $aUser User[] */
+        $aUser = $userRepository->match(new None(), ['username' => 'ASC']);
+
+        $aReturn = [];
+        foreach ($aUser as $user) {
+            $aReturn[$user->getId()] = $user->getUsername();
+        }
+
+        return $this->json($aReturn);
+    }
+
     /**
      * @Route("/api/user/menu", name="api_user_menu", methods="GET")
      */
@@ -46,9 +72,9 @@ class ApiUserController extends AbstractController
             $user->setPlainPassword($params['password']);
             $userManager->updateUser($user);
             return $this->json([]);
-        }else{
+        } else {
             return $this->json([
-                'password'=>'Les mots de passe ne correspondent pas'
+                'password' => 'Les mots de passe ne correspondent pas'
             ], 400);
         }
     }
