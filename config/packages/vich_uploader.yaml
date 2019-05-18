@@ -1,0 +1,13 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        file:
+            uri_prefix: /files
+            upload_destination: '%kernel.project_dir%/assets/files/global'
+        book_cover:
+            uri_prefix: /book/cover
+            upload_destination: '%kernel.project_dir%/assets/files/book/cover'
+        book_electronicBook:
+            uri_prefix: /book/electronicBook
+            upload_destination: '%kernel.project_dir%/assets/files/book/electronicBook'

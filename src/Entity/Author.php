@@ -2,9 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Filter\Author\FullName;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource(attributes={"filters"={"fullname"}})
+ * @ApiFilter(SearchFilter::class, properties={"firstname": "partial", "lastname": "partial"})
+ * @ApiFilter(FullName::class, properties={"fullname"})
  * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
  */
 class Author extends AbstractEntity
@@ -13,31 +21,37 @@ class Author extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"book"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"book"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"book"})
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
+     * @Groups({"book"})
      */
     private $bearthYear;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
+     * @Groups({"book"})
      */
     private $deathYear;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"book"})
      */
     private $biography;
 

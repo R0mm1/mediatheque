@@ -27,5 +27,16 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    app.filter.author.fullname:
+        class: App\Filter\Author\FullName
+        arguments:
+            - '@doctrine'
+            - '@request_stack'
+            - '@?logger'
+            - { city: ~ }
+            - '@doctrine.orm.entity_manager'
+        tags: [ { name: 'api_platform.filter', id: 'fullname' } ]
+
+    app.service.mediatheque.file_directory_namer:
+        class: App\Service\Mediatheque\FileDirectoryNamer
+        public: true

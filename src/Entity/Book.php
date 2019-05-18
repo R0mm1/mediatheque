@@ -2,12 +2,33 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
+use App\Entity\Book\ReferenceGroup;
+use App\Entity\Mediatheque\File;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource(
+ *     attributes={
+ *          "normalization_context"={"groups"={"book"}, "enable_max_depth"=true},
+ *          "denormalization_context"={"groups"={"book"}, "enable_max_depth"=true}
+ *     },
+ *     itemOperations={"GET", "PUT", "DELETE"}
+ *)
+ * @ApiFilter(SearchFilter::class, properties={"title": "partial", "year": "partial", "pageCount": "exact",
+ *     "isbn": "partial", "language": "partial", "summary": "partial", "author.firstname": "partial",
+ *     "author.lastname": "partial"})
+ * @ApiFilter(OrderFilter::class, properties={"title": "ASC", "year": "ASC", "language": "ASC", "pageCount": "ASC", "isbn": "ASC"})
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
  */
 class Book extends AbstractEntity
@@ -16,53 +37,68 @@ class Book extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"book", "referenceGroup"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
+     * @Groups({"book", "referenceGroup"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
+     * @Groups({"book"})
      */
     private $year;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"book"})
      */
     private $pageCount;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"book"})
      */
     private $isbn;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups({"book"})
      */
     private $language;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"book"})
      */
     private $summary;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @var File|null
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Mediatheque\File", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     * @ApiProperty(iri="http://schema.org/cover")
+     * @Groups({"book"})
      */
-    private $picture;
+    private $cover = null;
 
 
     /**
      * @ORM\OneToOne(targetEntity="ElectronicBook", inversedBy="book", cascade={"persist"})
+     * @Groups({"book"})
+     * @@MaxDepth(1)
      */
     private $electronicBook;
 
     /**
      * @ORM\OneToOne(targetEntity="PaperBook", inversedBy="book", cascade={"persist"})
+     * @Groups({"book"})
      */
     private $paperBook;
 
@@ -72,12 +108,21 @@ class Book extends AbstractEntity
      *     joinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="author_id", referencedColumnName="id")}
      *     )
+     * @Groups({"book"})
      */
     private $authors;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Book\ReferenceGroup", mappedBy="books")
+     * @Groups({"book"})
+     */
+    private $groups;
 
     public function __construct()
     {
         $this->authors = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -116,7 +161,7 @@ class Book extends AbstractEntity
 
     public function setPageCount(?int $pageCount): self
     {
-        $this->pageCount = $pageCount;
+        $this->pageCount = (integer)$pageCount;
 
         return $this;
     }
@@ -153,16 +198,6 @@ class Book extends AbstractEntity
     public function setSummary($summary)
     {
         $this->summary = $summary;
-    }
-
-    public function getPicture()
-    {
-        return $this->picture;
-    }
-
-    public function setPicture($picture)
-    {
-        $this->picture = $picture;
     }
 
     /**
@@ -224,13 +259,39 @@ class Book extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getCover(): ?File
+    {
+        return $this->cover;
+    }
+
+    /**
+     * @param $cover
+     * @return self
+     */
+    public function setCover(?File $cover): Book
+    {
+        $this->cover = $cover;
+        return $this;
+    }
+
     public function asArray(array $aBookFields = null, array $aAuthorFields = null, array $aOwnerFields = null): array
     {
         $aReturn = [
             'authors' => []
         ];
 
-        foreach (['Id', 'Title', 'Year', 'Language', 'PageCount', 'Isbn', 'Summary', 'Picture'] as $bookProperty) {
+        foreach (['Id', 'Title', 'Year', 'Language', 'PageCount', 'Isbn', 'Summary'] as $bookProperty) {
             if (is_null($aBookFields) || in_array($bookProperty, $aBookFields)) {
                 $aReturn[lcfirst($bookProperty)] = $this->{"get$bookProperty"}();
             }
