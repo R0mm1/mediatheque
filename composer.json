@@ -8,7 +8,6 @@
         "api-platform/api-pack": "^1.2",
         "doctrine/annotations": "^1.6",
         "friendsofsymfony/oauth-server-bundle": "dev-master",
-        "friendsofsymfony/user-bundle": "~2.0",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "*",
         "symfony/console": "*",

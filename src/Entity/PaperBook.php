@@ -2,10 +2,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ApiResource(
+ *     attributes={
+ *          "normalization_context"={"groups"={"book"}, "enable_max_depth"=true},
+ *          "denormalization_context"={"groups"={"book"}, "enable_max_depth"=true}
+ *     },
+ *     itemOperations={"GET", "PUT", "DELETE"}
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\PaperBookRepository")
  */
 class PaperBook
@@ -14,6 +23,7 @@ class PaperBook
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"book"})
      */
     private $id;
 
@@ -21,18 +31,6 @@ class PaperBook
      * @ORM\OneToOne(targetEntity="Book", mappedBy="paperBook")
      */
     private $book;
-
-    /**
-     * @Assert\Expression(
-     *     "is_null(value) or value instanceof \App\Entity\User",
-     *     message="L'utilisateur est invalide"
-     * )
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="books", cascade={"persist", "remove", "merge"})
-     * @ORM\JoinColumns({
-     *  @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
-     * })
-     */
-    private $owner;
 
     public function getId(): ?int
     {
@@ -47,25 +45,6 @@ class PaperBook
     public function setBook($book): self
     {
         $this->book = $book;
-
-        return $this;
-    }
-
-    /**
-     * @return null|User
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
-     * @param $owner User|null
-     * @return PaperBook
-     */
-    public function setOwner($owner): self
-    {
-        $this->owner = $owner;
 
         return $this;
     }

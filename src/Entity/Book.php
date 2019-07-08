@@ -119,6 +119,12 @@ class Book extends AbstractEntity
      */
     private $groups;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="books")
+     * @Groups({"book"})
+     */
+    private $owner;
+
     public function __construct()
     {
         $this->authors = new ArrayCollection();
@@ -320,5 +326,17 @@ class Book extends AbstractEntity
         }
 
         return $aReturn;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 }
