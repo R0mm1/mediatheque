@@ -27,10 +27,6 @@
 !bin/symfony_requirements
 /vendor/
 
-# Assets and user uploads
-/web/bundles/
-/web/uploads/
-
 # PHPUnit
 /app/phpunit.xml
 /phpunit.xml
@@ -52,5 +48,4 @@
 
 /.env
 /.idea
-/node_modules/
 /data/book/ebook/*
