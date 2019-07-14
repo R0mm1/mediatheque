@@ -4,3 +4,6 @@ api_platform:
         enabled: true
     mapping:
         paths: ['%kernel.project_dir%/src/Entity', '%kernel.project_dir%/config/packages/api_platform']
+    collection:
+        pagination:
+            client_items_per_page: true

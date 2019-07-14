@@ -15,48 +15,7 @@ use App\Controller\Book\GetElectronicBookRawData;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- *
- * @ApiResource(
- *     iri="http://schema.org/ElectronicBook",
- *     normalizationContext={
- *          "groups"={"file_read"}
- *     },
- *     collectionOperations={
- *          "post": {
- *              "controller"=Post::class,
- *              "defaults"={
- *                 "_api_receive"=false
- *             },
- *             "swagger_context"={
- *                 "consumes"={
- *                     "multipart/form-data",
- *                 },
- *                 "parameters"={
- *                     {
- *                         "in"="formData",
- *                         "name"="file",
- *                         "type"="file",
- *                         "description"="The book to upload",
- *                     },
- *                 },
- *             }
- *          }
- *     },
- *     itemOperations={
- *          "get": {
- *              "controller"=Get::class
- *          },
- *          "get_rawData"={
- *              "method"="GET",
- *              "controller"=GetElectronicBookRawData::class,
- *              "path"="/electronic_books/{id}/raw"
- *          },
- *          "delete": {
- *              "controller"=Delete::class
- *          }
- *     }
- * )
- * @ORM\Entity(repositoryClass="App\Repository\ElectronicBookRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Mediatheque\FileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Vich\Uploadable
  */
