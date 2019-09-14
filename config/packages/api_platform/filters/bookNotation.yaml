@@ -1,0 +1,7 @@
+services:
+  app.filters.book_notation.search_filter:
+    parent:        'api_platform.doctrine.orm.search_filter'
+    arguments:     [ { 'book.id': 'exact'} ]
+    tags:          [ { name: 'api_platform.filter', id: 'book_notation.search_filter' } ]
+    autowire:      false
+    autoconfigure: false
