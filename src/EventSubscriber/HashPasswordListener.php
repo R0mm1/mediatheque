@@ -31,7 +31,6 @@ class HashPasswordListener implements EventSubscriberInterface
     public function setPassword(GetResponseForControllerResultEvent $event)
     {
         $user = $event->getControllerResult();
-        dump($user);
         if ($user instanceof User && !empty($user->getPlainPassword())) {
             $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);

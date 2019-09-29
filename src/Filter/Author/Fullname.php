@@ -8,7 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use Doctrine\ORM\QueryBuilder;
 
-class FullName extends AbstractFilter
+class Fullname extends AbstractFilter
 {
     /**
      * Passes a property through the filter.

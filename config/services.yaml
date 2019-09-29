@@ -25,15 +25,13 @@ services:
     resource: '../src/Controller'
     tags: ['controller.service_arguments']
 
-  app.filter.author.fullname:
-    class: App\Filter\Author\FullName
-    arguments:
-      - '@doctrine'
-      - '@request_stack'
-      - '@?logger'
-      - { city: ~ }
-      - '@doctrine.orm.entity_manager'
-    tags: [ { name: 'api_platform.filter', id: 'fullname' } ]
+  App\Filter\Author\Fullname:
+    bind:
+      $requestStack: '@request_stack'
+
+  App\Filter\Book\AuthorFullName:
+    bind:
+      $requestStack: '@request_stack'
 
   app.security.provider.user:
     class: App\Security\Provider\UserProvider

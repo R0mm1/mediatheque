@@ -10,9 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(attributes={"filters"={"fullname"}})
+ * @ApiResource(attributes={"filters"={"App\Filter\Author\Fullname"}})
  * @ApiFilter(SearchFilter::class, properties={"firstname": "partial", "lastname": "partial"})
- * @ApiFilter(FullName::class, properties={"fullname"})
  * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
  */
 class Author extends AbstractEntity

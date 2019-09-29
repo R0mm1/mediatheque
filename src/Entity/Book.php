@@ -21,7 +21,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     attributes={
  *          "normalization_context"={"groups"={"book"}, "enable_max_depth"=true},
- *          "denormalization_context"={"groups"={"book"}, "enable_max_depth"=true}
+ *          "denormalization_context"={"groups"={"book"}, "enable_max_depth"=true},
+ *          "filters"={"App\Filter\Book\AuthorFullName"}
  *     },
  *     itemOperations={"GET", "PUT", "DELETE"}
  *)
