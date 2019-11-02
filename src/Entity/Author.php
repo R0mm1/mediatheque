@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use App\Filter\Author\FullName;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -12,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(attributes={"filters"={"App\Filter\Author\Fullname"}})
  * @ApiFilter(SearchFilter::class, properties={"firstname": "partial", "lastname": "partial"})
+ * @ApiFilter(OrderFilter::class, properties={"lastname": "ASC", "firstname": "ASC"})
  * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
  */
 class Author extends AbstractEntity
