@@ -14,7 +14,7 @@ class AuthorFullName extends AbstractFilter
     {
         if ($property !== 'authorFullname') return;
 
-        $queryBuilder->join($queryBuilder->getRootAlias().'.authors', 'a')
+        $queryBuilder->join($queryBuilder->getRootAliases()[0].'.authors', 'a')
             ->andWhere($queryBuilder->expr()->orX(
                 $queryBuilder->expr()->like("a.firstname", ':authorSearchValue'),
                 $queryBuilder->expr()->like("a.lastname", ':authorSearchValue')

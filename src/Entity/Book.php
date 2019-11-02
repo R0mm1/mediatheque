@@ -22,7 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     attributes={
  *          "normalization_context"={"groups"={"book"}, "enable_max_depth"=true},
  *          "denormalization_context"={"groups"={"book"}, "enable_max_depth"=true},
- *          "filters"={"App\Filter\Book\AuthorFullName"}
+ *          "filters"={"App\Filter\Book\AuthorFullName", "App\Filter\Book\BookType"}
  *     },
  *     itemOperations={"GET", "PUT", "DELETE"}
  *)
