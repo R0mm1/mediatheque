@@ -8,7 +8,9 @@ use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
 use ApiPlatform\Core\Util\RequestAttributesExtractor;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\Mediatheque\File;
+use App\Entity\Mediatheque\FileInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -29,6 +31,8 @@ abstract class AbstractCreateFile
     public function __invoke(Request $request)
     {
         $uploadedFile = $request->files->get('file');
+
+        dump($uploadedFile);
 
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
@@ -55,5 +59,5 @@ abstract class AbstractCreateFile
         $this->validator->validate($file, ['groups' => $validationGroups]);
     }
 
-    abstract protected function getEntity(): \App\Entity\Mediatheque\FileInterface;
+    abstract protected function getEntity(): FileInterface;
 }

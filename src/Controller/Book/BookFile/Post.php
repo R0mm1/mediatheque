@@ -1,18 +1,17 @@
 <?php
 
 
-namespace App\Controller\Book;
+namespace App\Controller\Book\BookFile;
 
 
 use App\Controller\Mediatheque\AbstractCreateFile;
-use App\Entity\Book\Cover;
+use App\Entity\Book\BookFile;
 use App\Entity\Mediatheque\FileInterface;
 
-class CreateCover extends AbstractCreateFile
+class Post extends AbstractCreateFile
 {
-
     protected function getEntity(): FileInterface
     {
-        return new Cover();
+        return new BookFile();
     }
 }

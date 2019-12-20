@@ -11,5 +11,4 @@ namespace App\Entity;
 
 abstract class AbstractEntity
 {
-    abstract public function asArray(): array;
 }

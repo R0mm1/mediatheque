@@ -22,37 +22,34 @@ class Author extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"book"})
+     * @Groups({"book:get"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"book"})
+     * @Groups({"book:get"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"book"})
+     * @Groups({"book:get"})
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
-     * @Groups({"book"})
      */
     private $bearthYear;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
-     * @Groups({"book"})
      */
     private $deathYear;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"book"})
      */
     private $biography;
 
@@ -119,16 +116,5 @@ class Author extends AbstractEntity
         $this->biography = $biography;
 
         return $this;
-    }
-
-    public function asArray(array $aFields = null): array
-    {
-        $aReturn = [];
-        foreach (['Id', 'Firstname', 'Lastname', 'BearthYear', 'DeathYear', 'Biography'] as $authorPropery) {
-            if (is_null($aFields) || in_array($authorPropery, $aFields)) {
-                $aReturn[lcfirst($authorPropery)] = $this->{"get$authorPropery"}();
-            }
-        }
-        return $aReturn;
     }
 }

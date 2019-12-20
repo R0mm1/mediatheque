@@ -2,48 +2,73 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\File as HttpFile;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
-use App\Controller\ElectronicBook\Post;
-use App\Controller\ElectronicBook\Get;
-use App\Controller\ElectronicBook\Delete;
-use App\Controller\Book\GetElectronicBookRawData;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Mediatheque\FileRepository")
- * @ORM\HasLifecycleCallbacks
+ * @ORM\Entity(repositoryClass="App\Repository\ElectronicBookRepository")
+ * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
-class ElectronicBook extends \App\Entity\Mediatheque\File
+class ElectronicBook extends Book
 {
     /**
-     * @var HttpFile|null
+     * @var \App\Entity\Mediatheque\File|null
      *
-     * @Assert\NotNull(groups={"file_create"})
-     * @Vich\UploadableField(mapping="book_electronicBook", fileNameProperty="path")
+     * @ORM\OneToOne(targetEntity="App\Entity\Book\BookFile", cascade={"remove", "persist"}, inversedBy="electronicBook")
+     * @Groups({"book:get", "book:set"})
      */
-    protected $file;
+    private $bookFile;
+
+//    /**
+//     * @Groups({"book:get"})
+//     */
+    private $hasBookFile;
 
     /**
-     * @ORM\OneToOne(targetEntity="Book", mappedBy="electronicBook")
+     * @return Mediatheque\File|null
      */
-    private $book;
-
-
-    public function getBook()
+    public function getBookFile(): ?Mediatheque\File
     {
-        return $this->book;
+        return $this->bookFile;
     }
 
-    public function setBook($book): self
+    /**
+     * @param Mediatheque\File|null $bookFile
+     * @return $this
+     */
+    public function setBookFile(?Mediatheque\File $bookFile): self
     {
-        $this->book = $book;
+        $this->bookFile = $bookFile;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHasBookFile(): bool
+    {
+        return $this->hasBookFile;
+    }
+
+    /**
+     * @param bool $hasBookFile
+     * @return $this
+     */
+    public function setHasBookFile(bool $hasBookFile): self
+    {
+        $this->hasBookFile = $hasBookFile;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function postLoad()
+    {
+        $this->setHasBookFile(is_object($this->bookFile));
     }
 }

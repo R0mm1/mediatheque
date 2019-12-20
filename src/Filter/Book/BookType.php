@@ -6,6 +6,8 @@ namespace App\Filter\Book;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use App\Entity\ElectronicBook;
+use App\Entity\PaperBook;
 use Doctrine\ORM\QueryBuilder;
 
 class BookType extends AbstractFilter
@@ -23,11 +25,14 @@ class BookType extends AbstractFilter
 
         $alias = $queryBuilder->getRootAliases()[0];
 
-        if ($value === self::OPTIONS[self::OPT_PAPER]) {
-            $queryBuilder->where($queryBuilder->expr()->isNotNull("$alias.paperBook"));
-        } else if ($value === self::OPTIONS[self::OPT_ELECTRONIC]) {
-            $queryBuilder->where($queryBuilder->expr()->isNotNull("$alias.electronicBook"));
-        }
+        $class = $value === self::OPT_PAPER ? PaperBook::class : ElectronicBook::class;
+        $classMetadata = $queryBuilder->getEntityManager()->getClassMetadata($class);
+
+        $queryBuilder->where($queryBuilder->expr()->isInstanceOf($alias, ':bookTypeClass'))
+            ->setParameter('bookTypeClass', $classMetadata);
+
+
+        dump($queryBuilder->getQuery()->getSQL(), $queryBuilder->getQuery()->getParameters());
     }
 
     public function getDescription(string $resourceClass): array

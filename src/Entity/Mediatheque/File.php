@@ -3,7 +3,9 @@
 namespace App\Entity\Mediatheque;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -66,6 +68,7 @@ class File implements FileInterface
      * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"file_read"})
      */
     protected $path;
 
@@ -84,6 +87,13 @@ class File implements FileInterface
      * @Vich\UploadableField(mapping="file", fileNameProperty="path")
      */
     protected $file;
+
+    /**
+     * @ORM\Column(type="datetime")
+     *
+     * @var DateTime|null
+     */
+    protected $updatedAt;
 
     /**
      * @return mixed
@@ -127,10 +137,12 @@ class File implements FileInterface
 
     /**
      * @param HttpFile|null $file
+     * @throws Exception
      */
     public function setFile(?HttpFile $file): void
     {
         $this->file = $file;
+        $this->updatedAt = new DateTime('now');
     }
 
     /**

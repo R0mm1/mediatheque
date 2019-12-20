@@ -1,26 +1,17 @@
 resources:
   App\Entity\ElectronicBook:
     attributes:
-      normalization_context:
-        groups: ['file_read']
+      denormalization_context:
+        groups: ['book:set']
     itemOperations:
+      put: ~
       get:
-        controller: App\Controller\ElectronicBook\Get
-      get_raw_data:
+        normalization_context:
+          groups: ['electronicBook:get', 'book:get', 'file_read']
+      get_file_raw:
         method: GET
-        controller: App\Controller\Book\GetElectronicBookRawData
-        path: /electronic_books/{id}/raw
-      delete:
-        controller: App\Controller\ElectronicBook\Delete
+        path: /electronic_books/{id}/rawFile
+        normalization_context:
+          groups: [file_read]
     collectionOperations:
-      post:
-        controller: App\Controller\ElectronicBook\Post
-        defaults:
-          _api_receive: false
-        swagger_context:
-          consumes: ["multipart/form-data"]
-          parameters:
-            - name: file
-              in: formData
-              type: file
-              description: "The book to upload"
+      post: ~
