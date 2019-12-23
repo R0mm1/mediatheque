@@ -83,6 +83,8 @@ final class Version20191102162259 extends AbstractMigration
                     LEAVE booksLoop;
                 END IF;
                 
+                SELECT IF(_electronic_book_id IS NOT NULL, 'electronicbook', 'paperbook') INTO _discr;
+                
                 INSERT INTO book (`title`, `year`, `page_count`, `isbn`, `language`, `summary`, `cover_id`, `owner_id`, `discr`) 
                     VALUES(_title, _year, _page_count, _isbn, _language, _summary, _cover_id, _owner_id, _discr);
                     
