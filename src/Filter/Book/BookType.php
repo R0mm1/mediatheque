@@ -28,11 +28,8 @@ class BookType extends AbstractFilter
         $class = $value === self::OPT_PAPER ? PaperBook::class : ElectronicBook::class;
         $classMetadata = $queryBuilder->getEntityManager()->getClassMetadata($class);
 
-        $queryBuilder->where($queryBuilder->expr()->isInstanceOf($alias, ':bookTypeClass'))
+        $queryBuilder->andWhere($queryBuilder->expr()->isInstanceOf($alias, ':bookTypeClass'))
             ->setParameter('bookTypeClass', $classMetadata);
-
-
-        dump($queryBuilder->getQuery()->getSQL(), $queryBuilder->getQuery()->getParameters());
     }
 
     public function getDescription(string $resourceClass): array
