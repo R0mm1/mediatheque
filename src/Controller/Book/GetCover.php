@@ -7,6 +7,7 @@ namespace App\Controller\Book;
 use App\Entity\Book\Cover;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Vich\UploaderBundle\Storage\StorageInterface;
@@ -17,9 +18,14 @@ class GetCover extends Controller
     {
         $cover = $em->getRepository(Cover::class)->find($id);
         if (!is_object($cover)) {
-            throw new NotFoundHttpException('Not Found');
+            throw new NotFoundHttpException('get_cover_entity_not_found');
         }
         $path = $storage->resolvePath($cover, 'file');
-        return $this->file($path);
+
+        try {
+            return $this->file($path);
+        } catch (FileNotFoundException $exception) {
+            throw new NotFoundHttpException('get_cover_file_not_found');
+        }
     }
 }

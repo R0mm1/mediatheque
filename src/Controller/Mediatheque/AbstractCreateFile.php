@@ -32,8 +32,6 @@ abstract class AbstractCreateFile
     {
         $uploadedFile = $request->files->get('file');
 
-        dump($uploadedFile);
-
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
         }

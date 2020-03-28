@@ -10,17 +10,24 @@ security:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
-    oauth_token:
-      pattern:    ^/oauth/v2/token
-      security:   false
-    install:
-      pattern: ^/api/install
-      security: false
+    login:
+      pattern: ^/api/security
+      stateless: true
+      anonymous: true
+      json_login:
+        check_path: /api/security/login
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+    refresh:
+      pattern: ^/api/security/token/refresh
+      stateless: true
+      anonymous: true
     api:
       pattern:    ^/api
-      fos_oauth:  true
       stateless:  true
-      anonymous:  false
+      guard:
+        authenticators:
+          - lexik_jwt_authentication.jwt_token_authenticator
 
 
   # Easy way to control access for large sections of your site
@@ -30,6 +37,7 @@ security:
   - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
   - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
   - { path: ^/admin/, role: ROLE_ADMIN }
+  - { path: ^/api/security/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
   encoders:
     App\Entity\User:
