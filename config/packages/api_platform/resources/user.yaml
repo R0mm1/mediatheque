@@ -8,7 +8,6 @@ resources:
     itemOperations:
       put: ~
       delete: ~
-      get: ~
       get_current:
         method: GET
         path: /users/loggedIn
@@ -26,3 +25,4 @@ resources:
           responses:
             200:
               description: "json array with personal profile"
+      get: ~
