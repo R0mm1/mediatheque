@@ -5,3 +5,8 @@ swagger_ui:
 gesdinet_jwt_refresh_token:
   path: /api/security/token/refresh
   controller: gesdinet.jwtrefreshtoken::refresh
+
+stats:
+  methods: [GET]
+  path: /api/stats
+  controller: App\Controller\StatsController::getStats
