@@ -22,19 +22,19 @@ class Author extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"book:get"})
+     * @Groups({"book:get", "book:list"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"book:get"})
+     * @Groups({"book:get", "book:list"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"book:get"})
+     * @Groups({"book:get", "book:list"})
      */
     private $lastname;
 

@@ -15,3 +15,6 @@ resources:
           groups: [file_read]
     collectionOperations:
       post: ~
+      get:
+        normalization_context:
+          groups: [ 'book:list' ]

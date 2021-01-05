@@ -18,18 +18,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(
- *     attributes={
- *          "normalization_context"={"groups"={"book:get"}},
- *          "denormalization_context"={"groups"={"book:set"}},
- *          "filters"={"App\Filter\Book\AuthorFullName", "App\Filter\Book\BookType"}
- *     },
- *     itemOperations={"GET", "PUT", "DELETE"}
- *)
- * @ApiFilter(SearchFilter::class, properties={"title": "partial", "year": "partial", "pageCount": "exact",
- *     "isbn": "partial", "language": "partial", "summary": "partial", "author.firstname": "partial",
- *     "author.lastname": "partial"})
- * @ApiFilter(OrderFilter::class, properties={"title": "ASC", "year": "ASC", "language": "ASC", "pageCount": "ASC", "isbn": "ASC"})
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
@@ -40,20 +28,20 @@ class Book extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"book:get", "book:set", "referenceGroup"})
+     * @Groups({"book:get", "book:list", "book:set", "referenceGroup"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
-     * @Groups({"book:get", "book:set", "referenceGroup"})
+     * @Groups({"book:get", "book:list", "book:set", "referenceGroup"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
-     * @Groups({"book:get", "book:set"})
+     * @Groups({"book:get", "book:list", "book:set"})
      */
     private $year;
 
@@ -71,7 +59,7 @@ class Book extends AbstractEntity
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
-     * @Groups({"book:get", "book:set"})
+     * @Groups({"book:get", "book:list", "book:set"})
      */
     private $language;
 
@@ -97,7 +85,7 @@ class Book extends AbstractEntity
      *     joinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="author_id", referencedColumnName="id")}
      *     )
-     * @Groups({"book:get", "book:set"})
+     * @Groups({"book:get", "book:list", "book:set"})
      */
     private $authors;
 
