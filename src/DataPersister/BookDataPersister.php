@@ -28,7 +28,7 @@ class BookDataPersister implements ContextAwareDataPersisterInterface
     {
         return $data instanceof Book &&
             isset($context['item_operation_name']) &&
-            $context['item_operation_name'] === 'delete';
+            in_array($context['item_operation_name'], ['delete']);
     }
 
     /**
