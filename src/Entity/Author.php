@@ -53,6 +53,15 @@ class Author extends AbstractEntity
      */
     private $biography;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Book", mappedBy="authors", cascade={"persist"})
+     * @ORM\JoinTable(name="books_authors",
+     *     joinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="author_id", referencedColumnName="id")}
+     *     )
+     */
+    private $books;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -116,5 +125,15 @@ class Author extends AbstractEntity
         $this->biography = $biography;
 
         return $this;
+    }
+
+    public function getBooks()
+    {
+        return $this->books;
+    }
+
+    public function setBooks($books)
+    {
+        $this->books = $books;
     }
 }

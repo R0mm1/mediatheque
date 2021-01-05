@@ -80,7 +80,7 @@ class Book extends AbstractEntity
     private $cover = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Author")
+     * @ORM\ManyToMany(targetEntity="Author", inversedBy="books")
      * @ORM\JoinTable(name="books_authors",
      *     joinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="author_id", referencedColumnName="id")}
