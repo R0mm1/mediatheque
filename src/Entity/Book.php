@@ -249,4 +249,22 @@ class Book extends AbstractEntity
 
         return $this;
     }
+
+    /**
+     * @Groups({"book:list"})
+     */
+    public function getShortSummary():string
+    {
+        $summary = strip_tags($this->summary);
+        $summary = html_entity_decode($summary, ENT_QUOTES);
+
+        if (is_string($summary)) {
+            if (strlen($summary) > 120)
+                $summary = mb_substr($summary, 0, 240);
+
+            return $summary;
+        }
+
+        return '';
+    }
 }
