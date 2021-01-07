@@ -28,14 +28,14 @@ class Book extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"book:get", "book:list", "book:set", "referenceGroup"})
+     * @Groups({"book:get", "book:list", "book:set", "referenceGroup", "author:get"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
-     * @Groups({"book:get", "book:list", "book:set", "referenceGroup"})
+     * @Groups({"book:get", "book:list", "book:set", "referenceGroup", "author:get"})
      */
     private $title;
 

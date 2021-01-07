@@ -1,0 +1,16 @@
+resources:
+  App\Entity\Author:
+    attributes:
+      denormalization_context:
+        groups: [ 'author:set' ]
+      normalization_context:
+        groups: [ 'author:get' ]
+    itemOperations:
+      put: ~
+      get: ~
+      delete: ~
+    collectionOperations:
+      get:
+        normalization_context:
+          groups: [ 'author:list' ]
+        filters: [ 'App\Filter\Author\Fullname', 'app.filters.author.search_filter', 'app.filters.author.order_filter' ]
