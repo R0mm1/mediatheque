@@ -2,48 +2,28 @@ security:
   # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
   providers:
     app_user_provider:
-        entity:
-            class: App\Entity\User
-            property: username
+      entity:
+        class: App\Entity\User
+        property: username
 
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
-    login:
-      pattern: ^/api/security
-      stateless: true
-      anonymous: true
-      json_login:
-        check_path: /api/security/login
-        success_handler: lexik_jwt_authentication.handler.authentication_success
-        failure_handler: lexik_jwt_authentication.handler.authentication_failure
-    refresh:
-      pattern: ^/api/security/token/refresh
-      stateless: true
-      anonymous: true
-    api:
-      pattern:    ^/api
-      stateless:  true
-      guard:
-        authenticators:
-          - lexik_jwt_authentication.jwt_token_authenticator
+    #api:
+    #  pattern:    ^/
+    #  stateless:  true
 
 
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-  - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-  - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-  - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-  - { path: ^/admin/, role: ROLE_ADMIN }
-  - { path: ^/api/security/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/, role: ROLE_USER }
 
   encoders:
     App\Entity\User:
-        algorithm: argon2i
-
+      algorithm: argon2i
 
   role_hierarchy:
-    ROLE_ADMIN:       ROLE_USER
+    ROLE_ADMIN: ROLE_USER
     ROLE_SUPER_ADMIN: ROLE_ADMIN
