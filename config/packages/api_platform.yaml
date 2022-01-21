@@ -1,4 +1,5 @@
 api_platform:
+    enable_swagger_ui: false
     title: "Mediatheque API"
     doctrine:
         enabled: true

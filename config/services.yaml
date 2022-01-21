@@ -1,35 +1,19 @@
-imports:
-  - {resource: packages/api_platform/filters/*}
-
 parameters:
-  locale: 'en'
+    keycloak_internal_base_url: '%env(resolve:KEYCLOAK_INTERNAL_BASE_URL)%'
+    keycloak_expected_issuer: '%env(resolve:KEYCLOAK_EXPECTED_ISSUER)%'
 
 services:
-  # default configuration for services in *this* file
-  _defaults:
-    autowire: true
-    autoconfigure: true
-    public: false
-    bind:
-      $requestStack: '@request_stack'
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $keycloakInternalBaseUrl: '%keycloak_internal_base_url%'
+            string $keycloakExpectedIssuer: '%keycloak_expected_issuer%'
 
-  # makes classes in src/ available to be used as services
-  # this creates a service per class whose id is the fully-qualified class name
-  App\:
-    resource: '../src/*'
-    exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
-
-  # controllers are imported separately to make sure services can be injected
-  # as action arguments even if you don't extend any base controller class
-  App\Controller\:
-    resource: '../src/Controller'
-    tags: ['controller.service_arguments']
-
-  app.security.provider.user:
-    class: App\Security\Provider\UserProvider
-    arguments: ['@doctrine.orm.entity_manager', App\Entity\User]
-
-  app.event_listener.book_notation_request_received_listener:
-    class: App\EventListener\BookNotationRequestReceivedListener
-    tags:
-      - {name: kernel.event_listener, event: kernel.view, priority: 65}
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'

@@ -2,132 +2,130 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use App\Controller\User\GetCurrent;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Entity()
  */
 class User implements UserInterface
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      * @Groups({"get_user", "book"})
      */
-    private $id;
+    private string $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"get_user", "create_user", "book"})
-     */
-    private $username;
-
-    /**
-     * @ORM\Column(type="json")
-     * @Groups({"create_user"})
-     */
-    private $roles = [];
-
-    /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private $password;
+    private string $sub;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $last_jit = null;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"get_user", "book"})
+     */
+    private ?string $firstname = null;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"get_user", "book"})
+     */
+    private ?string $lastname = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Book", mappedBy="owner")
      */
-    private $books;
+    private Collection $books;
 
-    /**
-     * @Groups({"create_user"})
-     */
-    private $plainPassword;
-
-    public function __construct()
+    public function __construct(string $sub)
     {
         $this->books = new ArrayCollection();
+        $this->sub = $sub;
     }
 
-    public function getId(): ?int
+    /**
+     * @return string
+     */
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
+     * @return string
      */
-    public function getUsername(): string
+    public function getSub(): string
     {
-        return (string) $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
+        return $this->sub;
     }
 
     /**
-     * @see UserInterface
+     * @param string $sub
      */
-    public function getRoles(): array
+    public function setSub(string $sub): void
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
+        $this->sub = $sub;
     }
 
     /**
-     * @see UserInterface
+     * @return string|null
      */
-    public function getPassword(): string
+    public function getLastJit(): ?string
     {
-        return (string) $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
+        return $this->last_jit;
     }
 
     /**
-     * @see UserInterface
+     * @param string|null $last_jit
      */
-    public function getSalt()
+    public function setLastJit(?string $last_jit): void
     {
-        // not needed when using the "bcrypt" algorithm in security.yaml
+        $this->last_jit = $last_jit;
     }
 
     /**
-     * @see UserInterface
+     * @return string|null
      */
-    public function eraseCredentials()
+    public function getFirstname(): ?string
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        return $this->firstname;
+    }
+
+    /**
+     * @param string|null $firstname
+     */
+    public function setFirstname(?string $firstname): void
+    {
+        $this->firstname = $firstname;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * @param string|null $lastname
+     */
+    public function setLastname(?string $lastname): void
+    {
+        $this->lastname = $lastname;
     }
 
     /**
@@ -161,21 +159,18 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPlainPassword()
+    public function getRoles(): array
     {
-        return $this->plainPassword;
+        return ['ROLE_USER'];
     }
 
-    /**
-     * @param $plainPassword
-     * @return User
-     */
-    public function setPlainPassword($plainPassword): self
+    public function eraseCredentials()
     {
-        $this->plainPassword = $plainPassword;
-        return $this;
+        return null;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getId();
     }
 }

@@ -1,3 +1,0 @@
-[mysqld]
-log-error   = /var/log/mysql/error.log
-general_log  = /var/log/mysql/log_output.log

@@ -1,1 +1,0 @@
-php /mediatheque/bin/console doctrine:migrations:migrate

@@ -1,0 +1,15 @@
+services:
+  app.filters.book.search_filter:
+    parent:        'api_platform.doctrine.orm.search_filter'
+    arguments:     [ {"title": "partial", "year": "partial", "pageCount": "exact", "isbn": "partial", "language": "partial", "summary": "partial", "author.firstname": "partial", "author.lastname": "partial"} ]
+    tags:          [ { name: 'api_platform.filter', id: 'book.search_filter' } ]
+    autowire:      false
+    autoconfigure: false
+
+
+  app.filters.book.order_filter:
+    parent:        'api_platform.doctrine.orm.order_filter'
+    arguments:     [ {"title": "ASC", "year": "ASC", "language": "ASC", "pageCount": "ASC", "isbn": "ASC"} ]
+    tags:          [ { name: 'api_platform.filter', id: 'book.order_filter' } ]
+    autowire:      false
+    autoconfigure: false
