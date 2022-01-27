@@ -10,22 +10,18 @@ use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\Mediatheque\File;
 use App\Entity\Mediatheque\FileInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 abstract class AbstractCreateFile
 {
-
-    protected $managerRegistry;
-    protected $validator;
-    protected $resourceMetadataFactory;
-
-    public function __construct(ManagerRegistry $managerRegistry, ValidatorInterface $validator, ResourceMetadataFactoryInterface $resourceMetadataFactory)
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        protected ValidatorInterface $validator,
+        protected ResourceMetadataFactoryInterface $resourceMetadataFactory)
     {
-        $this->managerRegistry = $managerRegistry;
-        $this->validator = $validator;
-        $this->resourceMetadataFactory = $resourceMetadataFactory;
     }
 
     public function __invoke(Request $request)
@@ -41,9 +37,8 @@ abstract class AbstractCreateFile
 
         $this->validate($fileObject, $request);
 
-        $em = $this->managerRegistry->getManager();
-        $em->persist($fileObject);
-        $em->flush();
+        $this->entityManager->persist($fileObject);
+        $this->entityManager->flush();
 
         return $fileObject;
     }

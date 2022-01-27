@@ -13,7 +13,7 @@ use App\Controller\Book\GetCover;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Mediatheque\FileRepository")
+ * @ORM\Entity()
  * @package App\Entity\Book
  * @Vich\Uploadable
  */

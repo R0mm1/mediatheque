@@ -8,21 +8,4 @@ resources:
     itemOperations:
       put: ~
       delete: ~
-      get_current:
-        method: GET
-        path: /users/loggedIn
-        controller: App\Controller\User\GetCurrent
-        defaults:
-          _api_receive: false
-        swagger_context:
-          public: false
-          summary: "Returns the profile of the logged in user."
-          parameters:
-            - name: 'Authorization'
-              required: true
-              in: 'header'
-              description: 'Bearer token'
-          responses:
-            200:
-              description: "json array with personal profile"
       get: ~

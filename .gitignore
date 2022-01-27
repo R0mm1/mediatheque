@@ -2,3 +2,5 @@
 .env
 vendor
 var
+assets/files/book/cover
+assets/files/book/electronicBook
