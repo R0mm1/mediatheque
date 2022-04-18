@@ -25,7 +25,7 @@ class BookFile extends File
      * @Assert\NotNull(groups={"file_create"})
      * @Vich\UploadableField(mapping="book_electronicBook", fileNameProperty="path")
      * @Assert\File(
-     *     mimeTypes = {"application/epub+zip"},
+     *     mimeTypes = {"application/zip", "application/epub+zip"},
      *     )
      */
     protected $file;

@@ -26,7 +26,7 @@ class ElectronicBookFileDataProvider implements ItemDataProviderInterface, Restr
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
         //Check on $context['resource_class'] required to avoid errors on electronic book denormalization
-        return BookFile::class === $resourceClass && $operationName === 'get' && $context['resource_class'] === BookFile::class;
+        return BookFile::class === $resourceClass && $operationName === 'get' && $context['item_operation_name'] === 'get' && $context['resource_class'] === BookFile::class;
     }
 
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = [])
