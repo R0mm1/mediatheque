@@ -4,7 +4,9 @@ resources:
       denormalization_context:
         groups: ['book:set']
     itemOperations:
-      put: ~
+      put:
+        normalization_context:
+          groups: ['electronicBook:get', 'book:get', 'file_read']
       get:
         normalization_context:
           groups: ['electronicBook:get', 'book:get', 'file_read']
