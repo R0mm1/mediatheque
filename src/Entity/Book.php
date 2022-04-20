@@ -67,7 +67,7 @@ class Book extends AbstractEntity
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"book:get", "book:set"})
      */
-    private $summary;
+    private ?string $summary = null;
 
     /**
      * @var File|null
@@ -173,12 +173,12 @@ class Book extends AbstractEntity
         return $this;
     }
 
-    public function getSummary()
+    public function getSummary(): ?string
     {
         return $this->summary;
     }
 
-    public function setSummary($summary)
+    public function setSummary(?string $summary)
     {
         $this->summary = $summary;
     }
@@ -255,16 +255,12 @@ class Book extends AbstractEntity
      */
     public function getShortSummary():string
     {
-        $summary = strip_tags($this->summary);
-        $summary = html_entity_decode($summary, ENT_QUOTES);
-
-        if (is_string($summary)) {
-            if (strlen($summary) > 120)
-                $summary = mb_substr($summary, 0, 240);
-
-            return $summary;
+        if(!is_string($this->getSummary())){
+            return '';
         }
 
-        return '';
+        $summary = strip_tags($this->getSummary());
+        $summary = html_entity_decode($summary, ENT_QUOTES);
+        return mb_substr($summary, 0, 240);
     }
 }
