@@ -1,3 +1,6 @@
+imports:
+    - { resource: './packages/api_platform/filters/*.yaml' }
+
 parameters:
     keycloak_internal_base_url: '%env(resolve:KEYCLOAK_INTERNAL_BASE_URL)%'
     keycloak_expected_issuer: '%env(resolve:KEYCLOAK_EXPECTED_ISSUER)%'
@@ -18,7 +21,7 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
             - '../src/Controller/'
-              
+
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
