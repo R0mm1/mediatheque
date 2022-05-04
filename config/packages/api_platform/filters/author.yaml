@@ -2,7 +2,7 @@ services:
   app.filters.author.search_filter:
     parent:        'api_platform.doctrine.orm.search_filter'
     arguments:     [ { "firstname": "partial", "lastname": "partial" } ]
-    tags:          [ { name: 'api_platform.filter', id: 'book.search_filter' } ]
+    tags:          [ { name: 'api_platform.filter', id: 'author.search_filter' } ]
     autowire:      false
     autoconfigure: false
 
@@ -10,6 +10,6 @@ services:
   app.filters.author.order_filter:
     parent:        'api_platform.doctrine.orm.order_filter'
     arguments:     [ { "lastname": "ASC", "firstname": "ASC" } ]
-    tags:          [ { name: 'api_platform.filter', id: 'book.order_filter' } ]
+    tags:          [ { name: 'api_platform.filter', id: 'author.order_filter' } ]
     autowire:      false
     autoconfigure: false

@@ -14,4 +14,4 @@ resources:
       get:
         normalization_context:
           groups: [ 'author:list' ]
-        filters: [ 'App\Filter\Author\Fullname', 'app.filters.author.search_filter', 'app.filters.author.order_filter' ]
+        filters: [ 'App\Filter\Author\Fullname', 'author.search_filter', 'author.order_filter' ]
