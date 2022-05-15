@@ -1,0 +1,16 @@
+resources:
+  App\Entity\Book:
+    attributes:
+      denormalization_context:
+        groups: ['book:set']
+      normalization_context:
+        groups: [ 'book:get' ]
+    itemOperations:
+      put: ~
+      get: ~
+      delete: ~
+    collectionOperations:
+      get:
+        normalization_context:
+          groups: [ 'book:list' ]
+        filters: ['App\Filter\Book\AuthorFullName', 'App\Filter\Book\BookType', 'book.search_filter', 'book.order_filter']

@@ -13,7 +13,7 @@ use App\Controller\Book\GetCover;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Mediatheque\FileRepository")
+ * @ORM\Entity()
  * @package App\Entity\Book
  * @Vich\Uploadable
  */
@@ -25,7 +25,7 @@ class BookFile extends File
      * @Assert\NotNull(groups={"file_create"})
      * @Vich\UploadableField(mapping="book_electronicBook", fileNameProperty="path")
      * @Assert\File(
-     *     mimeTypes = {"application/epub+zip"},
+     *     mimeTypes = {"application/zip", "application/epub+zip"},
      *     )
      */
     protected $file;

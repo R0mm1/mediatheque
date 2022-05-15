@@ -1,0 +1,10 @@
+resources:
+  App\Dto\Resources\Stats:
+    itemOperations:
+      get:
+        controller: ApiPlatform\Core\Action\NotFoundAction
+        read: false
+        output: false
+
+    collectionOperations:
+      get: ~

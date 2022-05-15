@@ -1,5 +1,0 @@
-parameters:
-  user.menu:
-    books:
-      - per_book
-      - per_author

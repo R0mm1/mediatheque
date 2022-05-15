@@ -9,13 +9,12 @@ resources:
       post:
         controller: App\Controller\Book\BookFile\Post
         defaults:
-          _api_receivce: false
+          _api_receive: false
         validation_groups: [Default, file_create]
         swagger_context:
           consumes: [multipart/form-data]
           parameters:
-            -
-              in: formData
+            - in: formData
               name: file
               type: file
               description: The file to upload
