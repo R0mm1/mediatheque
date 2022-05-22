@@ -6,6 +6,6 @@ api_platform:
         clientSecret: '%env(resolve:KEYCLOAK_SWAGGER_CLIENT_SECRET)%'
         type: 'oauth2'
         flow: 'application'
-        tokenUrl: '%env(resolve:KEYCLOAK_EXTERNAL_BASE_URL)%/auth/realms/mediatheque/protocol/openid-connect/token'
-        authorizationUrl: '%env(resolve:KEYCLOAK_EXTERNAL_BASE_URL)%/auth/realms/mediatheque/protocol/openid-connect/auth'
+        tokenUrl: '%env(resolve:KEYCLOAK_EXTERNAL_BASE_URL)%/realms/mediatheque/protocol/openid-connect/token'
+        authorizationUrl: '%env(resolve:KEYCLOAK_EXTERNAL_BASE_URL)%/realms/mediatheque/protocol/openid-connect/auth'
         scopes: [ ]

@@ -43,7 +43,7 @@ abstract class AbstractCreateFile
         return $fileObject;
     }
 
-    private function validate(File $file, Request $request)
+    protected function validate(File $file, Request $request)
     {
         $attributes = RequestAttributesExtractor::extractAttributes($request);
         $resourceMetadata = $this->resourceMetadataFactory->create(File::class);

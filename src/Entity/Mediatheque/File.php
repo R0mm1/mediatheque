@@ -17,6 +17,12 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
  * @ORM\Entity(repositoryClass="App\Repository\Mediatheque\FileRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({
+ *     "electronicBookInformation_image" = "\App\Entity\Book\ElectronicBookInformation\Image",
+ *     "cover" = "\App\Entity\Book\Cover",
+ *     "bookfile" = "\App\Entity\Book\BookFile",
+ *     "electronicBookInformation_book" = "\App\Entity\Book\ElectronicBookInformation\Book",
+ * })
  * @ORM\HasLifecycleCallbacks
  * @ApiResource(
  *     iri="http://schema.org/File",
