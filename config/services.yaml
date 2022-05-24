@@ -10,6 +10,8 @@ services:
         autowire: true
         autoconfigure: true
         bind:
+            string $projectDir: '%kernel.project_dir%'
+
             string $keycloakInternalBaseUrl: '%keycloak_internal_base_url%'
             string $keycloakExpectedIssuer: '%keycloak_expected_issuer%'
 

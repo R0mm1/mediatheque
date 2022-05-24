@@ -29,7 +29,7 @@ class TokenDecoder implements TokenDecoderInterface
             $jwksResponse = $this->client->request(
                 'GET',
                 sprintf(
-                    '%s/auth/realms/mediatheque/protocol/openid-connect/certs',
+                    '%s/realms/mediatheque/protocol/openid-connect/certs',
                     $this->keycloakInternalBaseUrl
                 )
             );
