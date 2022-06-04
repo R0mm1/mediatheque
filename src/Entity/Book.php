@@ -102,6 +102,12 @@ class Book extends AbstractEntity
      */
     private $owner;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Editor")
+     * @Groups({"book:get", "book:set"})
+     */
+    private ?Editor $editor;
+
     public function __construct()
     {
         $this->authors = new ArrayCollection();
@@ -247,6 +253,24 @@ class Book extends AbstractEntity
     {
         $this->owner = $owner;
 
+        return $this;
+    }
+
+    /**
+     * @return Editor|null
+     */
+    public function getEditor(): ?Editor
+    {
+        return $this->editor;
+    }
+
+    /**
+     * @param Editor|null $editor
+     * @return Book
+     */
+    public function setEditor(?Editor $editor): Book
+    {
+        $this->editor = $editor;
         return $this;
     }
 
