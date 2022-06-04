@@ -1,23 +1,21 @@
 <?php
 
 
-namespace App\Entity\Book;
+namespace App\Entity\Book\ElectronicBook;
 
+use App\Entity\Mediatheque\File as BaseFile;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Entity\Mediatheque\File;
 use Symfony\Component\HttpFoundation\File\File as HttpFile;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Controller\Book\CreateCover;
-use App\Controller\Book\GetCover;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity()
+ * @ORM\Table(name="book_file")
  * @package App\Entity\Book
  * @Vich\Uploadable
  */
-class BookFile extends File
+class File extends BaseFile
 {
     /**
      * @var HttpFile|null
@@ -31,7 +29,7 @@ class BookFile extends File
     protected $file;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ElectronicBook", mappedBy="bookFile")
+     * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBook\Book", mappedBy="bookFile")
      */
     protected $electronicBook;
 

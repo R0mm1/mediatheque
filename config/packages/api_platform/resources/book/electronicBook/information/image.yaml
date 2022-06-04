@@ -1,5 +1,5 @@
 resources:
-  App\Entity\Book\ElectronicBookInformation\Image:
+  App\Entity\Book\ElectronicBook\Information\Image:
     attributes:
       route_prefix: /electronic_book_information
       normalization_context:

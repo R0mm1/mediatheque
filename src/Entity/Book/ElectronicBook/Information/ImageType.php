@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Book\ElectronicBookInformation;
+namespace App\Entity\Book\ElectronicBook\Information;
 
 enum ImageType
 {

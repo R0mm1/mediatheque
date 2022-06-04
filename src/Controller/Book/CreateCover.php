@@ -8,14 +8,13 @@ use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Controller\Mediatheque\AbstractCreateFile;
 use App\Entity\Book\Cover;
-use App\Entity\Book\ElectronicBookInformation\Image;
+use App\Entity\Book\ElectronicBook\Information\Image;
 use App\Entity\Mediatheque\FileInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Vich\UploaderBundle\Storage\StorageInterface;
 
 class CreateCover extends AbstractCreateFile
 {

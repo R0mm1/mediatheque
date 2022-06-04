@@ -1,5 +1,6 @@
 resources:
-  App\Entity\Book\BookFile:
+  App\Entity\Book\ElectronicBook\File:
+    shortName: BookFile
     attributes:
       iri: http://schema.org/Book/BookFile
       normalization_context:

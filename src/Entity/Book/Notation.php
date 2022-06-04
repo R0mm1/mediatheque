@@ -2,16 +2,16 @@
 
 namespace App\Entity\Book;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Book;
-use App\Entity\Notation;
+use App\Entity\Notation as BaseNotation;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\BookNotationRepository")
+ * @ORM\Entity
+ * @ORM\Table(name="book_notation")
  */
-class BookNotation extends Notation
+class Notation extends BaseNotation
 {
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Book")
@@ -30,7 +30,7 @@ class BookNotation extends Notation
 
     /**
      * @param Book $book
-     * @return BookNotation
+     * @return Notation
      */
     public function setBook(Book $book): self
     {

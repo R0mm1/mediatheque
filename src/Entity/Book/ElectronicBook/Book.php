@@ -1,22 +1,24 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Book\ElectronicBook;
 
+use App\Entity\Book as BaseBook;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ElectronicBookRepository")
+ * @ORM\Entity()
+ * @ORM\Table(name="electronic_book")
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
-class ElectronicBook extends Book
+class Book extends BaseBook
 {
     /**
-     * @var \App\Entity\Mediatheque\File|null
+     * @var File|null
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\Book\BookFile", cascade={"remove", "persist"}, inversedBy="electronicBook")
+     * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBook\File", cascade={"remove", "persist"}, inversedBy="electronicBook")
      * @Groups({"book:get", "book:set"})
      */
     private $bookFile;
@@ -27,18 +29,18 @@ class ElectronicBook extends Book
     private $hasBookFile;
 
     /**
-     * @return Mediatheque\File|null
+     * @return File|null
      */
-    public function getBookFile(): ?Mediatheque\File
+    public function getBookFile(): ?File
     {
         return $this->bookFile;
     }
 
     /**
-     * @param Mediatheque\File|null $bookFile
+     * @param File|null $bookFile
      * @return $this
      */
-    public function setBookFile(?Mediatheque\File $bookFile): self
+    public function setBookFile(?File $bookFile): self
     {
         $this->bookFile = $bookFile;
 

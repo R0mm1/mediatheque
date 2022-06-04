@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Entity\Book\ElectronicBookInformation;
+namespace App\Entity\Book\ElectronicBook\Information;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\HttpFoundation\File\File as HttpFile;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity()
@@ -25,13 +24,13 @@ class ElectronicBookInformation
 
 
     /**
-     * @ORM\OneToOne(targetEntity="\App\Entity\Book\ElectronicBookInformation\Book", inversedBy="electronicBookInformation")
+     * @ORM\OneToOne(targetEntity="\App\Entity\Book\ElectronicBook\Information\Book", inversedBy="electronicBookInformation")
      * @Groups({"electronicBookInformation:set"})
      */
     private ?Book $bookFile;
 
     /**
-     * @ORM\ManyToMany(targetEntity="\App\Entity\Book\ElectronicBookInformation\Image", cascade={"remove", "persist"})
+     * @ORM\ManyToMany(targetEntity="\App\Entity\Book\ElectronicBook\Information\Image", cascade={"remove", "persist"})
      * @ORM\JoinTable(name="electronic_book_information_electronic_book_information_image",
      *      joinColumns={@ORM\JoinColumn(name="electronic_book_information_id", referencedColumnName="id", onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="electronic_book_information_image_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}

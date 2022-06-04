@@ -1,5 +1,5 @@
 resources:
-  App\Entity\Book\ElectronicBookInformation\ElectronicBookInformation:
+  App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation:
     attributes:
       route_prefix: /electronic_book_information
       denormalization_context:

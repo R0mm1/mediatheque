@@ -1,5 +1,6 @@
 resources:
-  App\Entity\Book\BookNotation:
+  App\Entity\Book\Notation:
+    shortName: BookNotation
     attributes:
       normalization_context:
         groups: ['notation_read']

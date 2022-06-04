@@ -4,7 +4,7 @@ namespace App\DataProvider\ElectronicBookInformation;
 
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use App\Entity\Book\ElectronicBookInformation\Image;
+use App\Entity\Book\ElectronicBook\Information\Image;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
