@@ -6,7 +6,7 @@ namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Book;
-use App\Entity\ElectronicBook;
+use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
 use App\Entity\Mediatheque\File;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;

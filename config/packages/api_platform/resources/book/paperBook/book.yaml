@@ -1,10 +1,11 @@
 resources:
-  App\Entity\PaperBook:
+  App\Entity\Book\PaperBook\Book:
+    shortName: PaperBook
     attributes:
       denormalization_context:
         groups: ['book:set']
       normalization_context:
-        groups: [ 'electronicBook:get', 'book:get', 'file_read' ]
+        groups: ['book:get', 'file_read' ]
     itemOperations:
       put: ~
       get: ~

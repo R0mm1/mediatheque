@@ -6,7 +6,7 @@ namespace App\DataProvider;
 
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use App\Entity\Book\BookFile;
+use App\Entity\Book\ElectronicBook\File;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -25,16 +25,16 @@ class ElectronicBookFileDataProvider implements ItemDataProviderInterface, Restr
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        return BookFile::class === $resourceClass
+        return File::class === $resourceClass
             && $operationName === 'get'
             && (isset($context['item_operation_name']) && $context['item_operation_name'] === 'get')
             //Check on $context['resource_class'] required to avoid errors on electronic book denormalization
-            && $context['resource_class'] === BookFile::class;
+            && $context['resource_class'] === File::class;
     }
 
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = [])
     {
-        $bookFile = $this->entityManager->getRepository(BookFile::class)->find($id);
+        $bookFile = $this->entityManager->getRepository(File::class)->find($id);
 
         $path = $this->storage->resolvePath($bookFile, 'file');
 

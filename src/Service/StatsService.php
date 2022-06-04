@@ -6,8 +6,8 @@ namespace App\Service;
 
 use App\Entity\Author;
 use App\Entity\Book;
-use App\Entity\ElectronicBook;
-use App\Entity\PaperBook;
+use App\Entity\Book\PaperBook\Book as PaperBook;
+use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
 use App\Repository\AuthorRepository;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;

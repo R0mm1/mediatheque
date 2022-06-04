@@ -2,8 +2,8 @@
 
 namespace App\Service\ElectronicBookInformationFinder;
 
-use App\Entity\Book\ElectronicBookInformation\Book;
-use App\Entity\Book\ElectronicBookInformation\ElectronicBookInformation;
+use App\Entity\Book\ElectronicBook\Information\Book;
+use App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation;
 use App\Service\ElectronicBookInformationFinder\EpubFinder\FinderV20Interface;
 use App\Service\ElectronicBookInformationFinder\EpubFinder\FinderV30Interface;
 use App\Service\ElectronicBookInformationFinder\EpubFinder\RootFileFinderInterface;

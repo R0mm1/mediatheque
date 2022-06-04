@@ -1,5 +1,6 @@
 resources:
-  App\Entity\ElectronicBook:
+  App\Entity\Book\ElectronicBook\Book:
+    shortName: ElectronicBook
     attributes:
       denormalization_context:
         groups: ['book:set']

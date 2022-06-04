@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity\Book\ElectronicBookInformation;
+namespace App\Entity\Book\ElectronicBook\Information;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity()

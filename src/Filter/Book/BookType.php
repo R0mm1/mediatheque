@@ -6,8 +6,8 @@ namespace App\Filter\Book;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use App\Entity\ElectronicBook;
-use App\Entity\PaperBook;
+use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
+use App\Entity\Book\PaperBook\Book as PaperBook;
 use Doctrine\ORM\QueryBuilder;
 
 class BookType extends AbstractFilter
@@ -21,6 +21,7 @@ class BookType extends AbstractFilter
 
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
     {
+        dump(__CLASS__);
         if ($property !== 'bookType' || $value === self::OPTIONS[self::OPT_ALL]) return;
 
         $alias = $queryBuilder->getRootAliases()[0];

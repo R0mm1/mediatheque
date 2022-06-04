@@ -6,7 +6,7 @@ namespace App\DataProvider;
 
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use App\Entity\ElectronicBook;
+use App\Entity\Book\ElectronicBook\Book;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -21,12 +21,12 @@ class ElectronicBookRawFileDataProvider implements ItemDataProviderInterface, Re
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        return ElectronicBook::class === $resourceClass && $operationName === 'get_file_raw';
+        return Book::class === $resourceClass && $operationName === 'get_file_raw';
     }
 
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = [])
     {
-        $electronicBook = $this->entityManager->getRepository(ElectronicBook::class)->find($id);
+        $electronicBook = $this->entityManager->getRepository(Book::class)->find($id);
         $file = $electronicBook->getBookFile();
 
         if (!is_object($file)) {

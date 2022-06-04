@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Entity\Book\ElectronicBookInformation;
+namespace App\Entity\Book\ElectronicBook\Information;
 
 use App\Entity\Mediatheque\File;
-use Symfony\Component\HttpFoundation\File\File as HttpFile;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File as HttpFile;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity()
@@ -27,7 +27,7 @@ class Book extends File
     protected $file;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBookInformation\ElectronicBookInformation", mappedBy="bookFile")
+     * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation", mappedBy="bookFile")
      */
     protected $electronicBookInformation;
 

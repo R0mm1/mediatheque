@@ -18,10 +18,10 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
- *     "electronicBookInformation_image" = "\App\Entity\Book\ElectronicBookInformation\Image",
+ *     "electronicBookInformation_image" = "\App\Entity\Book\ElectronicBook\Information\Image",
  *     "cover" = "\App\Entity\Book\Cover",
- *     "bookfile" = "\App\Entity\Book\BookFile",
- *     "electronicBookInformation_book" = "\App\Entity\Book\ElectronicBookInformation\Book",
+ *     "bookfile" = "\App\Entity\Book\ElectronicBook\File",
+ *     "electronicBookInformation_book" = "\App\Entity\Book\ElectronicBook\Information\Book",
  * })
  * @ORM\HasLifecycleCallbacks
  * @ApiResource(
