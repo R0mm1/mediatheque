@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
  *     "electronicBookInformation_image" = "\App\Entity\Book\ElectronicBook\Information\Image",
  *     "cover" = "\App\Entity\Book\Cover",
  *     "bookfile" = "\App\Entity\Book\ElectronicBook\File",
+ *     "audiobook_file" = "\App\Entity\Book\AudioBook\File",
  *     "electronicBookInformation_book" = "\App\Entity\Book\ElectronicBook\Information\Book",
  * })
  * @ORM\HasLifecycleCallbacks

@@ -18,3 +18,7 @@ vich_uploader:
             uri_prefix: /book/electronicBookInformation/book
             upload_destination: '%kernel.project_dir%/assets/files/book/electronicBookInformation/book'
             namer: Vich\UploaderBundle\Naming\UniqidNamer
+        book_audioBook:
+            uri_prefix: /book/audioBook
+            upload_destination: '%kernel.project_dir%/assets/files/book/audioBook'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer

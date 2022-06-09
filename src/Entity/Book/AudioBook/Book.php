@@ -3,17 +3,41 @@
 namespace App\Entity\Book\AudioBook;
 
 use App\Entity\Book as BaseBook;
-use App\Entity\Mediatheque;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+/**
+ * @ORM\Entity()
+ * @ORM\Table(name="audio_book")
+ * @Vich\Uploadable
+ */
 class Book extends BaseBook
 {
     /**
-     * @var \App\Entity\Mediatheque\File|null
+     * @var File|null
      *
-     * @ORM\OneToOne(targetEntity="ElectronicBookFile", cascade={"remove", "persist"}, inversedBy="electronicBook")
+     * @ORM\OneToOne(targetEntity="App\Entity\Book\AudioBook\File", cascade={"remove", "persist"}, inversedBy="audioBook")
      * @Groups({"book:get", "book:set"})
      */
-    private ?Mediatheque\File $bookFile;
+    private ?File $bookFile;
+
+    /**
+     * @return File|null
+     */
+    public function getBookFile(): ?File
+    {
+        return $this->bookFile;
+    }
+
+    /**
+     * @param File|null $bookFile
+     * @return $this
+     */
+    public function setBookFile(?File $bookFile): self
+    {
+        $this->bookFile = $bookFile;
+
+        return $this;
+    }
 }
