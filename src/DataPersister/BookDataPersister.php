@@ -7,6 +7,7 @@ namespace App\DataPersister;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Book;
 use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
+use App\Entity\Book\AudioBook\Book as AudioBook;
 use App\Entity\Mediatheque\File;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -16,8 +17,8 @@ class BookDataPersister implements ContextAwareDataPersisterInterface
 {
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        protected StorageInterface $storage,
-        protected LoggerInterface $logger
+        protected StorageInterface       $storage,
+        protected LoggerInterface        $logger
     )
     {
     }
@@ -49,33 +50,42 @@ class BookDataPersister implements ContextAwareDataPersisterInterface
 
         if ($data instanceof ElectronicBook && $data->getBookFile() instanceof File) {
             $filepath = $this->storage->resolvePath($data->getBookFile(), 'file');
-            if(!is_file($filepath)){
-                $this->logger->error(sprintf(
-                    "Trying to remove non-existing electronic book file at path %s for book #%d %s",
-                    $filepath,
-                    $data->getId(),
-                    $data->getTitle()
-                ));
-            } else{
-                unlink($filepath);
-            }
-
+            $this->deleteBookFile($filepath, $data);
         }
 
-        if($data->getCover() instanceof File){
+        if ($data instanceof AudioBook && $data->getBookFile() instanceof File) {
+            $filepath = $this->storage->resolvePath($data->getBookFile(), 'file');
+            $this->deleteBookFile($filepath, $data);
+        }
+
+        if ($data->getCover() instanceof File) {
             $filepath = $this->storage->resolvePath($data->getCover(), 'file');
-            if(!is_file($filepath)){
+            if (!is_file($filepath)) {
                 $this->logger->error(sprintf(
                     "Trying to remove non-existing cover at path %s for book #%d %s",
                     $filepath,
                     $data->getId(),
                     $data->getTitle()
                 ));
-            } else{
+            } else {
                 unlink($filepath);
             }
         }
 
         $this->entityManager->flush();
+    }
+
+    private function deleteBookFile(string $filepath, Book $book): void
+    {
+        if (!is_file($filepath)) {
+            $this->logger->error(sprintf(
+                "Trying to remove non-existing electronic book file at path %s for book #%d %s",
+                $filepath,
+                $book->getId(),
+                $book->getTitle()
+            ));
+        } else {
+            unlink($filepath);
+        }
     }
 }

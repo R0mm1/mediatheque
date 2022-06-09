@@ -16,7 +16,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
  *     "electronicbook" = "\App\Entity\Book\ElectronicBook\Book",
- *     "paperbook" = "\App\Entity\Book\PaperBook\Book"
+ *     "paperbook" = "\App\Entity\Book\PaperBook\Book",
+ *     "audiobook" = "\App\Entity\Book\AudioBook\Book"
  * })
  */
 class Book extends AbstractEntity
