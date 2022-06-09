@@ -27,3 +27,11 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
+
+    App\EventListener\SwaggerUi\BackupControllerListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 1 }
+
+    App\EventListener\SwaggerUi\RestoreControllerListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: -1 }
