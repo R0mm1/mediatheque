@@ -8,6 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
 use App\Entity\Book\PaperBook\Book as PaperBook;
+use App\Entity\Book\AudioBook\Book as AudioBook;
 use Doctrine\ORM\QueryBuilder;
 
 class BookType extends AbstractFilter

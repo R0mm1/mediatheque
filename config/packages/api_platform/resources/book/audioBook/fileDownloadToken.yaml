@@ -1,0 +1,15 @@
+resources:
+  App\Entity\Book\AudioBook\FileDownloadToken:
+    shortName: AudioBookFileDownloadToken
+    attributes:
+      denormalization_context:
+        groups: ['mediatheque_fileDownloadToken:set']
+      normalization_context:
+        groups: ['mediatheque_fileDownloadToken:get']
+    collectionOperations:
+      post: ~
+    itemOperations:
+      get:
+        controller: ApiPlatform\Core\Action\NotFoundAction
+        read: false
+        output: false

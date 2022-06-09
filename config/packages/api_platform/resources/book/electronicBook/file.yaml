@@ -29,5 +29,4 @@ resources:
                     description: Use a book previously uploaded to the electronic book parser by specifying the id of the resulting ElectronicBookInformation resource
                     required: false
     itemOperations:
-      get:
-        controller:
+      get: ~
