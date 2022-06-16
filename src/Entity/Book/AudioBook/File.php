@@ -22,7 +22,7 @@ class File extends BaseFile
      * @Assert\NotNull(groups={"file_create"})
      * @Vich\UploadableField(mapping="book_audioBook", fileNameProperty="path")
      * @Assert\File(
-     *     mimeTypes = {"audio/mpeg"},
+     *     mimeTypes = {"application/zip", "audio/mpeg"},
      *     )
      */
     protected $file;
