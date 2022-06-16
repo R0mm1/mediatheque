@@ -1,7 +1,10 @@
 security:
   enable_authenticator_manager: true
   providers:
-    users_in_memory: { memory: null }
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: id
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -9,10 +12,18 @@ security:
     docs:
       pattern: ^/docs/$
       security: false
+    file_download:
+      pattern: ^/(audio_book_files|book_files)
+      methods: [GET]
+      lazy: true
+      stateless: true
+      custom_authenticators:
+        - App\Security\FileDownloadAuthenticator
     main:
       lazy: true
       stateless: true
       custom_authenticators:
+        - App\Security\FileDownloadAuthenticator
         - App\Security\OAuth2Authenticator
 
   access_control:

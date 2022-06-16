@@ -7,12 +7,11 @@ namespace App\Controller\Book\BookFile;
 use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Controller\Mediatheque\AbstractCreateFile;
-use App\Entity\Book\BookFile;
-use App\Entity\Book\ElectronicBookInformation\ElectronicBookInformation;
+use App\Entity\Book\ElectronicBook\File;
+use App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation;
 use App\Entity\Mediatheque\FileInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -32,7 +31,7 @@ class Post extends AbstractCreateFile
 
     protected function getEntity(): FileInterface
     {
-        return new BookFile();
+        return new File();
     }
 
     public function __invoke(Request $request)

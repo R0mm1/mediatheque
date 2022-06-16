@@ -3,7 +3,7 @@
 namespace App\DataPersister\ElectronicBookInformation;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
-use App\Entity\Book\ElectronicBookInformation\ElectronicBookInformation;
+use App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Vich\UploaderBundle\Storage\StorageInterface;

@@ -2,7 +2,7 @@
 
 namespace App\Service\ElectronicBookInformationFinder\EpubFinder;
 
-use App\Entity\Book\ElectronicBookInformation\Image;
+use App\Entity\Book\ElectronicBook\Information\Image;
 
 interface FinderInterface
 {

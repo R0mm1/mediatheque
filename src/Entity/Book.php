@@ -3,24 +3,22 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
-use App\Entity\Book\ReferenceGroup;
 use App\Entity\Mediatheque\File;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({
+ *     "electronicbook" = "\App\Entity\Book\ElectronicBook\Book",
+ *     "paperbook" = "\App\Entity\Book\PaperBook\Book",
+ *     "audiobook" = "\App\Entity\Book\AudioBook\Book"
+ * })
  */
 class Book extends AbstractEntity
 {
@@ -101,6 +99,12 @@ class Book extends AbstractEntity
      * @Groups({"book:get", "book:set"})
      */
     private $owner;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Editor")
+     * @Groups({"book:get", "book:set"})
+     */
+    private ?Editor $editor;
 
     public function __construct()
     {
@@ -247,6 +251,24 @@ class Book extends AbstractEntity
     {
         $this->owner = $owner;
 
+        return $this;
+    }
+
+    /**
+     * @return Editor|null
+     */
+    public function getEditor(): ?Editor
+    {
+        return $this->editor;
+    }
+
+    /**
+     * @param Editor|null $editor
+     * @return Book
+     */
+    public function setEditor(?Editor $editor): Book
+    {
+        $this->editor = $editor;
         return $this;
     }
 

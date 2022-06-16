@@ -2,8 +2,8 @@
 
 namespace App\Service\ElectronicBookInformationFinder\EpubFinder;
 
-use App\Entity\Book\ElectronicBookInformation\Image;
-use App\Entity\Book\ElectronicBookInformation\ImageType;
+use App\Entity\Book\ElectronicBook\Information\Image;
+use App\Entity\Book\ElectronicBook\Information\ImageType;
 
 class FinderV30 implements FinderV30Interface
 {

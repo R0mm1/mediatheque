@@ -21,10 +21,10 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 class OAuth2Authenticator extends AbstractAuthenticator
 {
     public function __construct(
-        private string                 $keycloakExpectedIssuer,
-        private TokenDecoderInterface  $tokenDecoder,
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface        $logger
+        private readonly string                 $keycloakExpectedIssuer,
+        private readonly TokenDecoderInterface  $tokenDecoder,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger
     )
     {
     }

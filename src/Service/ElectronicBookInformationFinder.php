@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\Book\ElectronicBookInformation\Book;
-use App\Entity\Book\ElectronicBookInformation\ElectronicBookInformation;
+use App\Entity\Book\ElectronicBook\Information\Book;
+use App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation;
 use App\Service\ElectronicBookInformationFinder\EpubFinderInterface;
 
 class ElectronicBookInformationFinder implements ElectronicBookInformationFinderInterface

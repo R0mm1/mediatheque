@@ -1,0 +1,16 @@
+resources:
+  App\Entity\Book\PaperBook\Book:
+    shortName: PaperBook
+    attributes:
+      denormalization_context:
+        groups: ['book:set']
+      normalization_context:
+        groups: ['book:get', 'file_read' ]
+    itemOperations:
+      put: ~
+      get: ~
+    collectionOperations:
+      post: ~
+      get:
+        normalization_context:
+          groups: [ 'book:list' ]
