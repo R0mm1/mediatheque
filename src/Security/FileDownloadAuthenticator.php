@@ -7,6 +7,7 @@ use App\Entity\Book\AudioBook\FileDownloadToken as AudioFileDownloadToken;
 use App\Entity\Mediatheque\FileDownloadToken;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -19,7 +20,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 class FileDownloadAuthenticator extends AbstractAuthenticator
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger
     )
     {
     }
@@ -45,11 +47,28 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
         ]);
 
         if (!$tokenObject instanceof FileDownloadToken) {
+            $this->logger->alert(
+                "Invalid file download token used",
+                [
+                    "download_token" => $token,
+                    "route" => $route,
+                ]
+            );
             throw new AuthenticationException("Invalid token");
         }
 
         $creationDate = $tokenObject->getCreated();
-        if (!$creationDate instanceof \DateTime || ((time() - $creationDate->getTimestamp()) / 60) > 10) {
+        $age = time() - $creationDate->getTimestamp();
+        if (!$creationDate instanceof \DateTime || ($age / 60) > 10) {
+            $this->logger->info(
+                "Expired file download token used",
+                [
+                    "download_token" => $token,
+                    "age" => $age,
+                    "route" => $route,
+                    "user_sub" => $tokenObject->getUser()->getSub()
+                ]
+            );
             $this->entityManager->remove($tokenObject);
             $this->entityManager->flush();
             throw new AuthenticationException("Expired token");
@@ -57,6 +76,15 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
 
         $this->entityManager->remove($tokenObject);
         $this->entityManager->flush();
+
+        $this->logger->info(
+            "File download token used",
+            [
+                "download_token" => $token,
+                "route" => $route,
+                "user_sub" => $tokenObject->getUser()->getSub()
+            ]
+        );
 
         return new SelfValidatingPassport(new UserBadge(
             $tokenObject->getUser()->getId()
