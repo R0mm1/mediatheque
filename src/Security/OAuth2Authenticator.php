@@ -24,7 +24,7 @@ class OAuth2Authenticator extends AbstractAuthenticator
         private readonly string                 $keycloakExpectedIssuer,
         private readonly TokenDecoderInterface  $tokenDecoder,
         private readonly EntityManagerInterface $entityManager,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface        $logger
     )
     {
     }
@@ -43,7 +43,7 @@ class OAuth2Authenticator extends AbstractAuthenticator
 
             $jwtPayload = $this->tokenDecoder->decode($encodedJwt);
         } catch (ExpiredException $exception) {
-            $this->logger->alert(
+            $this->logger->info(
                 "Attempt to login with an expired token",
                 [
                     'Authorization' => $authorizationString
@@ -52,7 +52,7 @@ class OAuth2Authenticator extends AbstractAuthenticator
             throw new ExpiredTokenException("Token expire", 0, $exception);
         } catch (\Throwable $exception) {
             $this->logger->alert(
-                $exception->getMessage(),
+                sprintf("Authentication failed: %s", $exception->getMessage()),
                 [
                     'Authorization' => $authorizationString
                 ]
@@ -71,6 +71,11 @@ class OAuth2Authenticator extends AbstractAuthenticator
             );
             throw InvalidTokenException::get();
         }
+
+        $this->logger->info(sprintf(
+            "User with sub %s successfully logged in",
+            $jwtPayload->sub
+        ));
 
         return new SelfValidatingPassport(new UserBadge(
             $jwtPayload->sub,
