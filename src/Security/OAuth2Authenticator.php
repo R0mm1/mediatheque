@@ -38,6 +38,16 @@ class OAuth2Authenticator extends AbstractAuthenticator
     {
         $authorizationString = $request->headers->get('Authorization');
 
+        if(!is_string($authorizationString) || !str_contains($authorizationString, ' ')){
+            $this->logger->alert(
+                "Attempt to login with a missing or badly formatted token",
+                [
+                    'Authorization' => $authorizationString
+                ]
+            );
+            throw InvalidTokenException::get();
+        }
+
         try {
             [, $encodedJwt] = explode(' ', $authorizationString);
 

@@ -58,13 +58,12 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
         }
 
         $creationDate = $tokenObject->getCreated();
-        $age = time() - $creationDate->getTimestamp();
-        if (!$creationDate instanceof \DateTime || ($age / 60) > 10) {
+        if (!$creationDate instanceof \DateTime || ($age = (time() - $creationDate->getTimestamp()) / 60) > 10) {
             $this->logger->info(
                 "Expired file download token used",
                 [
                     "download_token" => $token,
-                    "age" => $age,
+                    "age" => $age ?? 'unknown',
                     "route" => $route,
                     "user_sub" => $tokenObject->getUser()->getSub()
                 ]
