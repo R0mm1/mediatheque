@@ -8,5 +8,5 @@ interface FileInterface
 {
     function getFile(): ?HttpFile;
 
-    function setFile(?HttpFile $file): void;
+    function setFile(?HttpFile $file): self;
 }
