@@ -129,9 +129,10 @@ class File implements FileInterface
     /**
      * @param string|null $path
      */
-    public function setPath(?string $path): void
+    public function setPath(?string $path): self
     {
         $this->path = $path;
+        return $this;
     }
 
     /**
@@ -143,13 +144,13 @@ class File implements FileInterface
     }
 
     /**
-     * @param HttpFile|null $file
      * @throws Exception
      */
-    public function setFile(?HttpFile $file): void
+    public function setFile(?HttpFile $file): self
     {
         $this->file = $file;
         $this->updatedAt = new DateTime('now');
+        return $this;
     }
 
     /**

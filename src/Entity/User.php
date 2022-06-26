@@ -107,9 +107,10 @@ class User implements UserInterface
     /**
      * @param string|null $firstname
      */
-    public function setFirstname(?string $firstname): void
+    public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
+        return $this;
     }
 
     /**
@@ -123,9 +124,10 @@ class User implements UserInterface
     /**
      * @param string|null $lastname
      */
-    public function setLastname(?string $lastname): void
+    public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
+        return $this;
     }
 
     /**
