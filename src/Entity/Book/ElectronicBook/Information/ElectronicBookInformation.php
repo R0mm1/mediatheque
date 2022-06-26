@@ -71,6 +71,9 @@ class ElectronicBookInformation
         return $this;
     }
 
+    /**
+     * @return Image[]
+     */
     public function getImages(): array
     {
         return $this->images->toArray();
