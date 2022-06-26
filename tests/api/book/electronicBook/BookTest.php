@@ -1,14 +1,22 @@
 <?php
 
-namespace App\Tests\api\book\paperBook;
+namespace App\Tests\api\book\electronicBook;
 
+use App\Entity\Book\ElectronicBook\File;
 use App\Tests\api\book\BookTestCase;
 
 class BookTest extends BookTestCase
 {
+    private File $electronicBookFile;
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->electronicBookFile = (new File())
+            ->setPath('/some-path')
+            ->setFile(null);
+        $this->entityManager->persist($this->electronicBookFile);
 
         $this->entityManager->flush();
     }
@@ -16,7 +24,7 @@ class BookTest extends BookTestCase
     public function testPostBook()
     {
         $bookData = [
-            'title' => 'My book',
+            'title' => 'My electronic book',
             'year' => "2022",
             'pageCount' => 158,
             'isbn' => '978-2-7578-8997-8',
@@ -28,12 +36,13 @@ class BookTest extends BookTestCase
             ],
             'owner' => '/users/' . $this->owner->getId(),
             'editor' => '/editors/' . $this->editor->getId(),
-            'cover' => '/book/covers/' . $this->cover->getId()
+            'cover' => '/book/covers/' . $this->cover->getId(),
+            'bookFile' => '/book_files/' . $this->electronicBookFile->getId()
         ];
 
-        $this->client->jsonRequest('POST', '/paper_books', $bookData);
+        $this->client->jsonRequest('POST', '/electronic_books', $bookData);
 
-        self::assertResponseStatusCodeSame(201);
+        $this->assertResponseStatusCodeSame(201);
         $responseContent = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertIsArray($responseContent);
 
@@ -52,6 +61,16 @@ class BookTest extends BookTestCase
             $this->owner,
             $this->editor,
             $this->cover
+        );
+
+        $this->assertArrayHasKey('bookFile', $responseContent);
+        $this->assertEquals(
+            [
+                'id' => $this->electronicBookFile->getId(),
+                'path' => $this->electronicBookFile->getPath(),
+                'status' => $this->electronicBookFile->getStatus()
+            ],
+            $responseContent['bookFile']
         );
     }
 }

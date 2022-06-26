@@ -1,14 +1,22 @@
 <?php
 
-namespace App\Tests\api\book\paperBook;
+namespace App\Tests\api\book\audioBook;
 
+use App\Entity\Book\AudioBook\File;
 use App\Tests\api\book\BookTestCase;
 
 class BookTest extends BookTestCase
 {
+    private File $audioBookFile;
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->audioBookFile = (new File())
+            ->setPath('/some-path')
+            ->setFile(null);
+        $this->entityManager->persist($this->audioBookFile);
 
         $this->entityManager->flush();
     }
@@ -16,7 +24,7 @@ class BookTest extends BookTestCase
     public function testPostBook()
     {
         $bookData = [
-            'title' => 'My book',
+            'title' => 'My audio book',
             'year' => "2022",
             'pageCount' => 158,
             'isbn' => '978-2-7578-8997-8',
@@ -28,12 +36,13 @@ class BookTest extends BookTestCase
             ],
             'owner' => '/users/' . $this->owner->getId(),
             'editor' => '/editors/' . $this->editor->getId(),
-            'cover' => '/book/covers/' . $this->cover->getId()
+            'cover' => '/book/covers/' . $this->cover->getId(),
+            'bookFile' => '/audio_book_files/' . $this->audioBookFile->getId()
         ];
 
-        $this->client->jsonRequest('POST', '/paper_books', $bookData);
+        $this->client->jsonRequest('POST', '/audio_books', $bookData);
 
-        self::assertResponseStatusCodeSame(201);
+        $this->assertResponseStatusCodeSame(201);
         $responseContent = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertIsArray($responseContent);
 
@@ -52,6 +61,16 @@ class BookTest extends BookTestCase
             $this->owner,
             $this->editor,
             $this->cover
+        );
+
+        $this->assertArrayHasKey('bookFile', $responseContent);
+        $this->assertEquals(
+            [
+                'id' => $this->audioBookFile->getId(),
+                'path' => $this->audioBookFile->getPath(),
+                'status' => $this->audioBookFile->getStatus()
+            ],
+            $responseContent['bookFile']
         );
     }
 }
