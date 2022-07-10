@@ -1,5 +1,5 @@
 imports:
-    - { resource: './packages/api_platform/filters/*.yaml' }
+    - { resource: './packages/api_platform/filters/**/*.yaml' }
 
 parameters:
     keycloak_internal_base_url: '%env(resolve:KEYCLOAK_INTERNAL_BASE_URL)%'
