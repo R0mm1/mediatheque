@@ -1,0 +1,18 @@
+resources:
+  App\Entity\Mediatheque\UserConfiguration:
+    attributes:
+      normalization_context:
+        groups: ['user_configuration:get']
+      denormalization_context:
+        groups: ['user_configuration:set']
+    collectionOperations:
+      post: ~
+      get:
+        filters: [ 'app.filters.mediatheque.user_configuration.search_filter' ]
+    itemOperations:
+      put: ~
+      delete: ~
+      get:
+        controller: ApiPlatform\Core\Action\NotFoundAction
+        read: false
+        output: false
