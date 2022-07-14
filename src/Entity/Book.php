@@ -70,7 +70,7 @@ class Book extends AbstractEntity
     /**
      * @var File|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Mediatheque\File", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Book\Cover", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      * @ApiProperty(iri="http://schema.org/cover")
      * @Groups({"book:get", "book:set"})
