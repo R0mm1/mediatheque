@@ -9,7 +9,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\Book\AudioBook\FileRepository")
  * @ORM\Table(name="audio_book_file")
  * @package App\Entity\Book
  * @Vich\Uploadable
@@ -25,7 +25,7 @@ class File extends BaseFile
      *     mimeTypes = {"application/zip", "audio/mpeg"},
      *     )
      */
-    protected $file;
+    protected ?HttpFile $file;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Book\AudioBook\Book", mappedBy="bookFile")

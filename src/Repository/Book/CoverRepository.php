@@ -21,6 +21,15 @@ class CoverRepository extends AbstractRepository
 
     protected function getAlias(): string
     {
-        return 'g';
+        return 'bc';
+    }
+
+    public function findOrphans()
+    {
+        $alias = $this->getAlias();
+        $qb = $this->createQueryBuilder($alias);
+        $qb->leftJoin($alias . '.book', 'b')
+            ->where($qb->expr()->isNull('b.id'));
+        return $qb->getQuery()->getResult();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
+use App\Entity\Book\Cover;
 use App\Entity\Mediatheque\File;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -68,14 +69,14 @@ class Book extends AbstractEntity
     private ?string $summary = null;
 
     /**
-     * @var File|null
+     * @var Cover|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Book\Cover", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      * @ApiProperty(iri="http://schema.org/cover")
      * @Groups({"book:get", "book:set"})
      */
-    private $cover = null;
+    private ?Cover $cover = null;
 
     /**
      * @ORM\ManyToMany(targetEntity="Author", inversedBy="books")

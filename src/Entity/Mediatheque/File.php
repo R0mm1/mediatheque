@@ -69,38 +69,30 @@ class File implements FileInterface
      * @ORM\Column(type="integer")
      * @Groups({"file_read"})
      */
-    protected $id;
+    protected ?int $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"file_read"})
      */
-    protected $path;
+    protected ?string $path;
 
     /**
-     * @var integer|null
-     *
      * @ORM\Column(type="integer")
      * @Groups({"file_read"})
      */
-    protected $status;
+    protected ?int $status;
 
     /**
-     * @var HttpFile|null
-     *
      * @Assert\NotNull(groups={"file_create"})
      * @Vich\UploadableField(mapping="file", fileNameProperty="path")
      */
-    protected $file;
+    protected ?HttpFile $file;
 
     /**
      * @ORM\Column(type="datetime")
-     *
-     * @var DateTime|null
      */
-    protected $updatedAt;
+    protected ?DateTime $updatedAt;
 
     /**
      * @return mixed
@@ -167,6 +159,14 @@ class File implements FileInterface
     public function setStatus($status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getUpdatedAt(): ?DateTime
+    {
+        return $this->updatedAt;
     }
 
     /**

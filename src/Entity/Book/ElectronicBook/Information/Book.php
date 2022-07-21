@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\Book\ElectronicBook\Information\Book")
  * @ORM\Table(name="electronic_book_information_book")
  * @Vich\Uploadable
  */
@@ -24,7 +24,7 @@ class Book extends File
      *     mimeTypes = {"application/zip", "application/epub+zip"}
      * )
      */
-    protected $file;
+    protected ?HttpFile $file;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation", mappedBy="bookFile")

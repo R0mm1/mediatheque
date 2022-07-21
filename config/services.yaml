@@ -15,6 +15,10 @@ services:
             string $keycloakInternalBaseUrl: '%keycloak_internal_base_url%'
             string $keycloakExpectedIssuer: '%keycloak_expected_issuer%'
 
+    _instanceof:
+        App\Service\Cleaning\OrphanFileEntitiesFinder\OrphanFileFinderInterface:
+            tags: ['mediatheque.cleaning.orphanFileEntitiesFinder']
+
     App\:
         resource: '../src/'
         exclude:
@@ -35,3 +39,11 @@ services:
     App\EventListener\SwaggerUi\RestoreControllerListener:
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: -1 }
+
+    App\Service\Cleaning\OrphanFilesFinder:
+        bind:
+            array $mappings: '%vich_uploader.mappings%'
+
+    App\Service\Cleaning\OrphanFileEntitiesFinder:
+        bind:
+            $orphanFileEntitiesFinders: !tagged_locator { tag: 'mediatheque.cleaning.orphanFileEntitiesFinder', index_by: 'key', default_index_method: 'getType' }
