@@ -19,7 +19,7 @@ class User implements UserInterface
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups({"get_user", "book"})
+     * @Groups({"get_user", "book", "user:list"})
      */
     private string $id;
 
@@ -35,13 +35,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"get_user", "book"})
+     * @Groups({"get_user", "book", "user:list"})
      */
     private ?string $firstname = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"get_user", "book"})
+     * @Groups({"get_user", "book", "user:list"})
      */
     private ?string $lastname = null;
 
