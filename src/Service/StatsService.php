@@ -8,21 +8,16 @@ use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\Book\PaperBook\Book as PaperBook;
 use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
+use App\Entity\Book\AudioBook\Book as AudioBook;
 use App\Repository\AuthorRepository;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class StatsService
 {
-    /**
-     * @var AuthorRepository
-     */
-    protected $authorsRepository;
+    protected AuthorRepository $authorsRepository;
 
-    /**
-     * @var BookRepository
-     */
-    protected $booksRepository;
+    protected BookRepository $booksRepository;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -30,12 +25,12 @@ class StatsService
         $this->booksRepository = $entityManager->getRepository(Book::class);
     }
 
-    public function getAuthorsCount()
+    public function getAuthorsCount(): int
     {
         return $this->authorsRepository->count([]);
     }
 
-    public function getBooksCount()
+    public function getBooksCount(): array
     {
         $getBookTypeResult = function ($class) {
             $qb = $this->booksRepository->createQueryBuilder('b');
@@ -50,13 +45,14 @@ class StatsService
         };
         $return = [
             'paper' => $getBookTypeResult(PaperBook::class),
-            'electronic' => $getBookTypeResult(ElectronicBook::class)
+            'electronic' => $getBookTypeResult(ElectronicBook::class),
+            'audio' => $getBookTypeResult(AudioBook::class)
         ];
-        $return['total'] = $return['paper'] + $return['electronic'];
+        $return['total'] = $return['paper'] + $return['electronic'] + $return['audio'];
         return $return;
     }
 
-    public function getAuthorsBooksDistribution()
+    public function getAuthorsBooksDistribution(): array
     {
         $booksCount = $this->booksRepository->count([]);
 
