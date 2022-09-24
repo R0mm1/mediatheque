@@ -6,6 +6,7 @@ use App\Entity\Author;
 use App\Entity\Book\PaperBook\Book as PaperBook;
 use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
 use App\Entity\Book\AudioBook\Book as AudioBook;
+use App\Entity\Person;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -22,6 +23,9 @@ class StatsTest extends WebTestCase
     private ElectronicBook $electronicBook2;
 
     private AudioBook $audioBook1;
+
+    private Person $person1;
+    private Person $person2;
 
     private Author $author1;
     private Author $author2;
@@ -40,12 +44,18 @@ class StatsTest extends WebTestCase
             ->setLastname('C');
         $this->entityManager->persist($this->user1);
 
-        $this->author1 = (new Author())
+        $this->person1 = (new Person())
             ->setFirstname('Author')
             ->setLastname('1');
-        $this->author2 = (new Author())
+        $this->person2 = (new Person())
             ->setFirstname('Author')
             ->setLastname('2');
+        $this->author1 = (new Author())
+            ->setPerson($this->person1);
+        $this->author2 = (new Author())
+            ->setPerson($this->person2);
+        $this->entityManager->persist($this->person1);
+        $this->entityManager->persist($this->person2);
         $this->entityManager->persist($this->author1);
         $this->entityManager->persist($this->author2);
 

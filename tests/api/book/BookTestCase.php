@@ -5,6 +5,7 @@ namespace App\Tests\api\book;
 use App\Entity\Author;
 use App\Entity\Book\Cover;
 use App\Entity\Editor;
+use App\Entity\Person;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -12,6 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class BookTestCase extends WebTestCase
 {
+    protected Person $person1;
+    protected Person $person2;
     protected Author $author1;
     protected Author $author2;
     protected User $owner;
@@ -29,13 +32,20 @@ abstract class BookTestCase extends WebTestCase
         /**@var $entityManager EntityManagerInterface */
         $this->entityManager = $container->get(EntityManagerInterface::class);
 
-        $this->author1 = (new Author())
+        $this->person1 = (new Person())
             ->setLastname("Hugo")
             ->setFirstname("Victor");
-        $this->entityManager->persist($this->author1);
-        $this->author2 = (new Author())
+        $this->entityManager->persist($this->person1);
+        $this->person2 = (new Person())
             ->setLastname("Zola")
             ->setFirstname("Émile");
+        $this->entityManager->persist($this->person2);
+
+        $this->author1 = (new Author())
+            ->setPerson($this->person1);
+        $this->entityManager->persist($this->author1);
+        $this->author2 = (new Author())
+            ->setPerson($this->person2);
         $this->entityManager->persist($this->author2);
 
         $this->owner = (new User('123'))
@@ -91,8 +101,11 @@ abstract class BookTestCase extends WebTestCase
         $authorsData = array_map(function (Author $author) {
             return [
                 'id' => $author->getId(),
-                'firstname' => $author->getFirstname(),
-                'lastname' => $author->getLastname()
+                'person' => [
+                    'firstname' => $author->getPerson()->getFirstname(),
+                    'lastname' => $author->getPerson()->getLastname(),
+                    'id' => $author->getPerson()->getId()
+                ]
             ];
         }, $expectedAuthors);
         $this->assertEquals($authorsData, $actualBookData['authors']);

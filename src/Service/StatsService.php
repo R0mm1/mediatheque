@@ -57,7 +57,8 @@ class StatsService
         $booksCount = $this->booksRepository->count([]);
 
         $distributions = $this->authorsRepository->createQueryBuilder('a')
-            ->select('a.id', 'a.firstname', 'a.lastname', 'count(b) as booksCount')
+            ->select('a.id', 'p.firstname', 'p.lastname', 'count(b) as booksCount')
+            ->join('a.person', 'p')
             ->leftJoin('a.books', 'b')
             ->groupBy('a')
             ->getQuery()

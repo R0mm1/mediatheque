@@ -19,32 +19,33 @@ class Author extends AbstractEntity
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\OneToOne(targetEntity="App\Entity\Person", cascade={"persist"})
      * @Groups({"author:get", "author:list", "author:set", "book:get", "book:list"})
+     */
+    private ?Person $person;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $firstname;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"author:get", "author:list", "author:set", "book:get", "book:list"})
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
-     * @Groups({"author:get", "author:set"})
      */
     private $bearthYear;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
-     * @Groups({"author:get", "author:set"})
      */
     private $deathYear;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"author:get", "author:set"})
      */
     private $biography;
 
@@ -63,61 +64,122 @@ class Author extends AbstractEntity
         return $this->id;
     }
 
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): Author
+    {
+        $this->person = $person;
+        return $this;
+    }
+
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function getFirstname(): ?string
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         return $this->firstname;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function setFirstname(?string $firstname): self
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         $this->firstname = $firstname;
 
         return $this;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function getLastname(): ?string
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         return $this->lastname;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function setLastname(string $lastname): self
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         $this->lastname = $lastname;
 
         return $this;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function getBearthYear(): ?string
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         return $this->bearthYear;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function setBearthYear(?string $bearthYear): self
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use setBirthYear on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         $this->bearthYear = $bearthYear;
 
         return $this;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function getDeathYear(): ?string
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         return $this->deathYear;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function setDeathYear(?string $deathYear): self
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         $this->deathYear = $deathYear;
 
         return $this;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function getBiography(): ?string
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         return $this->biography;
     }
 
+    /**
+     * @deprecated Use the same property on the Person entity instead
+     */
     public function setBiography(?string $biography): self
     {
+        @trigger_error(sprintf('Using %s on %s is deprecated, use the same method on %s instead', __FUNCTION__, __CLASS__, Person::class), \E_USER_DEPRECATED);
+
         $this->biography = $biography;
 
         return $this;

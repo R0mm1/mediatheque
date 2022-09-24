@@ -1,0 +1,15 @@
+services:
+  app.filters.person.search_filter:
+    parent:        'api_platform.doctrine.orm.search_filter'
+    arguments:     [ { "firstname": "partial", "lastname": "partial" } ]
+    tags:          [ { name: 'api_platform.filter', id: 'person.search_filter' } ]
+    autowire:      false
+    autoconfigure: false
+
+
+  app.filters.person.order_filter:
+    parent:        'api_platform.doctrine.orm.order_filter'
+    arguments:     [ { "lastname": "ASC", "firstname": "ASC" } ]
+    tags:          [ { name: 'api_platform.filter', id: 'person.order_filter' } ]
+    autowire:      false
+    autoconfigure: false

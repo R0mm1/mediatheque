@@ -1,7 +1,7 @@
 services:
   app.filters.author.search_filter:
     parent:        'api_platform.doctrine.orm.search_filter'
-    arguments:     [ { "firstname": "partial", "lastname": "partial" } ]
+    arguments:     [ { "person.firstname": "partial", "person.lastname": "partial" } ]
     tags:          [ { name: 'api_platform.filter', id: 'author.search_filter' } ]
     autowire:      false
     autoconfigure: false
@@ -9,7 +9,7 @@ services:
 
   app.filters.author.order_filter:
     parent:        'api_platform.doctrine.orm.order_filter'
-    arguments:     [ { "lastname": "ASC", "firstname": "ASC" } ]
+    arguments:     [ { "person.lastname": "ASC", "person.firstname": "ASC" } ]
     tags:          [ { name: 'api_platform.filter', id: 'author.order_filter' } ]
     autowire:      false
     autoconfigure: false
