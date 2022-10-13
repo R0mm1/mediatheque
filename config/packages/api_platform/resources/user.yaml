@@ -9,3 +9,7 @@ resources:
       put: ~
       delete: ~
       get: ~
+    collectionOperations:
+      get:
+        normalization_context:
+          groups: [ 'user:list' ]

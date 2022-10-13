@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\Filter\Author;
+namespace App\Filter\Person;
 
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use App\Entity\Author;
+use App\Entity\Person;
 use Doctrine\ORM\QueryBuilder;
 
 class Fullname extends AbstractFilter
@@ -16,15 +16,14 @@ class Fullname extends AbstractFilter
      */
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
     {
-        if ($property !== 'fullname' || $resourceClass !== Author::class) return;
+        if ($property !== 'fullname' || $resourceClass !== Person::class) return;
 
         $queryBuilder
-            ->join($queryBuilder->getRootAliases()[0].'.person', 'p')
             ->andWhere($queryBuilder->expr()->orX(
-                $queryBuilder->expr()->like("p.firstname", ':authorSearchValue'),
-                $queryBuilder->expr()->like("p.lastname", ':authorSearchValue')
+                $queryBuilder->expr()->like("o.firstname", ':personSearchValue'),
+                $queryBuilder->expr()->like("o.lastname", ':personSearchValue')
             ))
-            ->setParameter('authorSearchValue', "%$value%");
+            ->setParameter('personSearchValue', "%$value%");
     }
 
     /**

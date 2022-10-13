@@ -13,4 +13,9 @@ resources:
       get:
         normalization_context:
           groups: [ 'book:list' ]
-        filters: ['App\Filter\Book\AuthorFullName', 'App\Filter\Book\BookType', 'book.search_filter', 'book.order_filter']
+        filters:
+          - App\Filter\Book\AuthorFullName
+          - App\Filter\Book\BookType
+          - App\Filter\Book\Owner
+          - book.search_filter
+          - book.order_filter
