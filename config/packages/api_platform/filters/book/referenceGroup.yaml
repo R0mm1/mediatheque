@@ -1,0 +1,7 @@
+services:
+  app.filters.reference_group.order_filter:
+    parent:        'api_platform.doctrine.orm.order_filter'
+    arguments:     [ { comment: 'ASC'} ]
+    tags:          [ { name: 'api_platform.filter', id: 'book.order_filter' } ]
+    autowire:      false
+    autoconfigure: false

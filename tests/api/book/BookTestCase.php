@@ -29,7 +29,6 @@ abstract class BookTestCase extends WebTestCase
         $this->client = self::createClient();
 
         $container = static::getContainer();
-        /**@var $entityManager EntityManagerInterface */
         $this->entityManager = $container->get(EntityManagerInterface::class);
 
         $this->person1 = (new Person())

@@ -4,6 +4,7 @@ namespace App\Entity\Book;
 
 use App\Entity\Book;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
@@ -14,9 +15,6 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 
 /**
- * @ApiResource(normalizationContext={"groups"={"referenceGroup"}}, denormalizationContext={"groups"={"referenceGroup"}})
- * @ApiFilter(SearchFilter::class, properties={"id": "exact", "books.id": "exact"})
- * @ApiFilter(OrderFilter::class, properties={"comment": "ASC"})
  * @ORM\Entity(repositoryClass="App\Repository\Book\ReferenceGroupRepository")
  */
 class ReferenceGroup
@@ -25,28 +23,36 @@ class ReferenceGroup
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"referenceGroup"})
+     * @Groups({"referenceGroup:get", "referenceGroup:list", "book:get", "referenceGroupBook:get"})
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Book", inversedBy="groups")
      * @ORM\JoinTable(name="book_group",
      *      joinColumns={@ORM\JoinColumn(name="referenceGroup_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="id")})
-     * @Groups({"referenceGroup"})
+     * @deprecated
      */
-    private $books;
+    private Collection $books;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Book\ReferenceGroup\Book", mappedBy="referenceGroup", cascade={"remove"})
+     * @Groups({"referenceGroup:get"})
+     * @var Collection
+     */
+    private Collection $elements;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"referenceGroup"})
+     * @Groups({"referenceGroup:get", "referenceGroup:list", "referenceGroup:set", "book:get", "referenceGroupBook:get"})
      */
-    private $comment;
+    private string $comment;
 
     public function __construct()
     {
         $this->books = new ArrayCollection();
+        $this->elements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,6 +78,7 @@ class ReferenceGroup
 
     /**
      * @return mixed
+     * @deprecated
      */
     public function getBooks()
     {
@@ -98,5 +105,13 @@ class ReferenceGroup
     {
         $this->books = $books;
         return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getElements(): Collection
+    {
+        return $this->elements;
     }
 }
