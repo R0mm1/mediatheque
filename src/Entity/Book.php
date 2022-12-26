@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Entity\Mediatheque\File;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,14 +27,14 @@ class Book extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"book:get", "book:list", "book:set", "referenceGroup", "author:get"})
+     * @Groups({"book:get", "book:list", "book:set", "referenceGroup:get", "referenceGroupBook:get", "referenceGroupBook:list", "author:get"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
-     * @Groups({"book:get", "book:list", "book:set", "referenceGroup", "author:get"})
+     * @Groups({"book:get", "book:list", "book:set", "referenceGroup:get", "referenceGroupBook:get", "referenceGroupBook:list", "author:get"})
      */
     private $title;
 
@@ -90,9 +91,16 @@ class Book extends AbstractEntity
     /**
      * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="App\Entity\Book\ReferenceGroup", mappedBy="books")
-     * @Groups({"book:get", "book:set"})
+     * @deprecated Books are now related to reference groups through \App\Entity\Book\ReferenceGroup\Book elements
      */
     private $groups;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Book\ReferenceGroup\Book", mappedBy="book")
+     * @Groups({"book:get"})
+     * @var Collection
+     */
+    private Collection $groupMemberships;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="books")
@@ -110,6 +118,7 @@ class Book extends AbstractEntity
     {
         $this->authors = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->groupMemberships = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -218,10 +227,19 @@ class Book extends AbstractEntity
 
     /**
      * @return ArrayCollection
+     * @deprecated
      */
     public function getGroups()
     {
         return $this->groups;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getGroupMemberships(): Collection
+    {
+        return $this->groupMemberships;
     }
 
     /**
