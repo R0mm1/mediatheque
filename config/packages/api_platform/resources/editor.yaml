@@ -1,7 +1,0 @@
-resources:
-  App\Entity\Editor:
-    attributes:
-      denormalization_context:
-        groups: [ 'editor:set' ]
-      normalization_context:
-        groups: [ 'editor:get' ]

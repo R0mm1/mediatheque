@@ -2,21 +2,61 @@
 
 namespace App\Entity\Book;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\Book\ReferenceGroup\Order;
 use App\Entity\Book;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Book\ReferenceGroupRepository")
  */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(
+            normalizationContext: ['groups'=>'referenceGroup:list']
+        ),
+        new Put(),
+        new Delete(),
+        new Post(),
+        new Put(
+            uriTemplate: '/reference_groups/{id}/sort',
+            controller: Order::class,
+            openapiContext: [
+                "summary" => "Sort the books in the group by the order they are given in the request body",
+                "requestBody" => [
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "books" => [
+                                        "type" => "array",
+                                        "items" => [
+                                            "type" => "string",
+                                            "description" => "The ReferenceGroupBookId"
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        )
+    ],
+    normalizationContext: ['groups' =>  ['referenceGroup:get']],
+    denormalizationContext: ['groups' =>  ['referenceGroup:set']]
+)]
 class ReferenceGroup
 {
     /**

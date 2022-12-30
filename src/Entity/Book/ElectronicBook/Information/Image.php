@@ -2,6 +2,9 @@
 
 namespace App\Entity\Book\ElectronicBook\Information;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use App\DataProvider\ElectronicBookInformation\ImageFileDataProvider;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -10,6 +13,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity()
  * @ORM\Table(name="electronic_book_information_image")
  */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Get(
+            uriTemplate: '/images/{id}/file',
+            provider: ImageFileDataProvider::class
+        )
+    ],
+    routePrefix: '/electronic_book_information',
+    normalizationContext: ['groups' => ['electronicBookInformation_image:get']]
+)]
 class Image
 {
     /**

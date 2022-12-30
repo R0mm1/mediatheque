@@ -2,6 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Filter\Person\Fullname;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
@@ -10,6 +18,25 @@ use Symfony\Component\Uid\UuidV6;
 /**
  * @ORM\Entity()
  */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(
+            normalizationContext: ['groups' => ['person:list']],
+            filters: [
+                Fullname::class,
+                'person.search_filter',
+                'person.order_filter'
+            ]
+        ),
+        new Post(),
+        new Put(),
+        new Delete()
+    ],
+    normalizationContext: ['groups' => ['person:get']],
+    denormalizationContext: ['groups' => ['person:set']]
+)]
+#[ApiFilter(Fullname::class)]
 class Person extends AbstractEntity
 {
     /**

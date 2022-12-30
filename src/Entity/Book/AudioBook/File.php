@@ -2,6 +2,10 @@
 
 namespace App\Entity\Book\AudioBook;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use App\DataProvider\Book\BookFileDataProvider\AudioBookFileDataProvider;
 use App\Entity\Mediatheque\File as BaseFile;
 use Symfony\Component\HttpFoundation\File\File as HttpFile;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,6 +18,44 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @package App\Entity\Book
  * @Vich\Uploadable
  */
+#[ApiResource(
+    shortName: 'AudioBookFile',
+    types: ['http://schema.org/Book/BookFile'],
+    operations: [
+        new Get(
+            provider: AudioBookFileDataProvider::class
+        ),
+        new Post(
+            defaults: ['_api_receive' => false],
+            controller: \App\Controller\Book\AudioBookFile\Post::class,
+            openapiContext: [
+                'summary' => 'Create an audio book file to link to a book',
+                'description' => 'Create an audio book file from an uploaded file',
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        [
+                                            'name' => 'file',
+                                            'type' => 'file',
+                                            'description' => 'The file to upload',
+                                            'required' => false
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            validationContext: ['groups' => ['Default', 'file_create']]
+        )
+    ],
+    normalizationContext: ['groups' => ['file_read']]
+)]
 class File extends BaseFile
 {
     /**
@@ -30,7 +72,7 @@ class File extends BaseFile
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Book\AudioBook\Book", mappedBy="bookFile")
      */
-    protected ?Book $audioBook;
+    protected ?Book $audioBook = null;
 
     public function getAudioBook(): ?Book
     {

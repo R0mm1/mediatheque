@@ -2,8 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
+use App\DataPersister\BookDataPersister;
 use App\Entity\Mediatheque\File;
+use App\Filter\Book\AuthorFullName;
+use App\Filter\Book\BookType;
+use App\Filter\Book\Owner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,6 +30,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     "audiobook" = "\App\Entity\Book\AudioBook\Book"
  * })
  */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(
+            normalizationContext: ['groups' => ['book:list']],
+            filters: [
+                'book.search_filter',
+                'book.order_filter'
+            ]
+        ),
+        new Put(),
+        new Delete(
+            processor: BookDataPersister::class
+        )
+    ],
+    normalizationContext: ['groups' => ['book:get']],
+    denormalizationContext: ['groups' => ['book:set']]
+)]
+#[ApiFilter(AuthorFullName::class)]
+#[ApiFilter(BookType::class)]
+#[ApiFilter(Owner::class)]
 class Book extends AbstractEntity
 {
     /**
@@ -73,7 +103,6 @@ class Book extends AbstractEntity
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Book\Cover", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
-     * @ApiProperty(iri="http://schema.org/cover")
      * @Groups({"book:get", "book:set"})
      */
     private $cover = null;

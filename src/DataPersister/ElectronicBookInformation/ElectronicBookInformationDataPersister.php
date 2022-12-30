@@ -2,40 +2,24 @@
 
 namespace App\DataPersister\ElectronicBookInformation;
 
-use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
-class ElectronicBookInformationDataPersister implements ContextAwareDataPersisterInterface
+class ElectronicBookInformationDataPersister implements ProcessorInterface
 {
     public function __construct(
-        protected StorageInterface       $storage,
-        protected EntityManagerInterface $entityManager
+        private readonly StorageInterface       $storage,
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
 
-    public function supports($data, array $context = []): bool
-    {
-        return
-            get_class($data) === ElectronicBookInformation::class &&
-            isset($context['item_operation_name']) &&
-            $context['item_operation_name'] === 'delete';
-    }
-
-    public function persist($data, array $context = [])
-    {
-        throw new \Exception("Should not be reached");
-    }
-
-    /**
-     * @param ElectronicBookInformation $data
-     * @param array $context
-     * @return void
-     */
-    public function remove($data, array $context = [])
+    private function remove(ElectronicBookInformation $data): void
     {
         $filePath = $this->storage->resolvePath($data->getBookFile(), 'file');
         $pathinfo = pathinfo($filePath);
@@ -50,5 +34,17 @@ class ElectronicBookInformationDataPersister implements ContextAwareDataPersiste
 
         $this->entityManager->remove($data);
         $this->entityManager->flush();
+    }
+
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []): void
+    {
+        if (!$data instanceof ElectronicBookInformation && $operation->getClass() !== Delete::class) {
+            throw new \LogicException(sprintf(
+                "This processor should be used only to delete %s",
+                ElectronicBookInformation::class
+            ));
+        }
+
+        $this->remove($data);
     }
 }

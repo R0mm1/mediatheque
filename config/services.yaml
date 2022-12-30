@@ -15,6 +15,8 @@ services:
             string $keycloakInternalBaseUrl: '%keycloak_internal_base_url%'
             string $keycloakExpectedIssuer: '%keycloak_expected_issuer%'
 
+            ApiPlatform\State\ProviderInterface $itemProvider: '@api_platform.doctrine.orm.state.item_provider'
+
     App\:
         resource: '../src/'
         exclude:

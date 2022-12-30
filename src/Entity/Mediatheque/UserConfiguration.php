@@ -2,6 +2,14 @@
 
 namespace App\Entity\Mediatheque;
 
+use ApiPlatform\Action\NotFoundAction;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\DataPersister\Mediatheque\UserConfigurationDataPersister;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -15,6 +23,25 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
  *    }
  * )
  */
+#[ApiResource(
+    operations: [
+        new Get(
+            controller: NotFoundAction::class,
+            output: false,
+            read: false
+        ),
+        new GetCollection(
+            filters: [
+                'app.filters.mediatheque.user_configuration.search_filter'
+            ]
+        ),
+        new Post(processor: UserConfigurationDataPersister::class),
+        new Put(processor: UserConfigurationDataPersister::class),
+        new Delete(processor: UserConfigurationDataPersister::class)
+    ],
+    normalizationContext: ['groups' => ['user_configuration:get']],
+    denormalizationContext: ['groups' => ['user_configuration:set']]
+)]
 class UserConfiguration
 {
     /**
