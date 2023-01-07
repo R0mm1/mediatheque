@@ -2,23 +2,23 @@
 
 namespace App\DataProvider;
 
-use ApiPlatform\Core\DataProvider\CollectionDataProviderInterface;
-use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
 use App\Dto\Resources\Stats;
 use App\Service\StatsService;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class StatsDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface
+class StatsDataProvider implements ProviderInterface
 {
     public function __construct(
-        private RequestStack $requestStack,
-        private StatsService $statsService
+        private readonly RequestStack $requestStack,
+        private readonly StatsService $statsService
     )
     {
     }
 
-    public function getCollection(string $resourceClass, string $operationName = null)
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $stats = (new Stats())->setId(time());
         $statsData = [];
@@ -34,10 +34,5 @@ class StatsDataProvider implements CollectionDataProviderInterface, RestrictedDa
 
         $stats->setStats($statsData);
         return [$stats];
-    }
-
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return $resourceClass === Stats::class && $operationName === 'get';
     }
 }

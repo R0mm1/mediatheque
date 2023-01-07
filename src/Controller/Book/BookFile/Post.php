@@ -4,8 +4,8 @@
 namespace App\Controller\Book\BookFile;
 
 
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
-use ApiPlatform\Core\Validator\ValidatorInterface;
+use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
+use ApiPlatform\Validator\ValidatorInterface;
 use App\Controller\Mediatheque\AbstractCreateFile;
 use App\Entity\Book\ElectronicBook\File;
 use App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation;
@@ -20,10 +20,10 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 class Post extends AbstractCreateFile
 {
     public function __construct(
-        EntityManagerInterface           $entityManager,
-        ValidatorInterface               $validator,
-        ResourceMetadataFactoryInterface $resourceMetadataFactory,
-        protected StorageInterface       $storage
+        EntityManagerInterface                     $entityManager,
+        ValidatorInterface  $validator,
+        ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory,
+        protected StorageInterface                 $storage
     )
     {
         parent::__construct($entityManager, $validator, $resourceMetadataFactory);

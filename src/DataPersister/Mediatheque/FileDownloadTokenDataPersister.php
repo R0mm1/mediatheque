@@ -3,13 +3,16 @@
 namespace App\DataPersister\Mediatheque;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Mediatheque\FileDownloadToken;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
-class FileDownloadTokenDataPersister implements ContextAwareDataPersisterInterface
+class FileDownloadTokenDataPersister implements ProcessorInterface
 {
     public function __construct(
         private readonly TokenGeneratorInterface $uriSafeTokenGenerator,
@@ -19,12 +22,19 @@ class FileDownloadTokenDataPersister implements ContextAwareDataPersisterInterfa
     {
     }
 
-    public function supports($data, array $context = []): bool
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-        return $data instanceof FileDownloadToken;
+        if (!$data instanceof FileDownloadToken || get_class($operation) !== Post::class) {
+            throw new \LogicException(sprintf(
+                "This processor should be used only to post %s",
+                FileDownloadToken::class
+            ));
+        }
+
+        $this->persist($data);
     }
 
-    public function persist($data, array $context = [])
+    private function persist($data)
     {
         if (!$data instanceof FileDownloadToken) {
             throw new \LogicException("Data should be an instance of " . FileDownloadToken::class);
@@ -40,10 +50,5 @@ class FileDownloadTokenDataPersister implements ContextAwareDataPersisterInterfa
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();
-    }
-
-    public function remove($data, array $context = [])
-    {
-        throw new \LogicException("Should not be reached");
     }
 }

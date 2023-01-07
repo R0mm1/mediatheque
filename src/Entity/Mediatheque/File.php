@@ -2,15 +2,16 @@
 
 namespace App\Entity\Mediatheque;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use App\Controller\Mediatheque\CreateFile;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use App\Controller\Mediatheque\CreateFile;
 use Symfony\Component\HttpFoundation\File\File as HttpFile;
 
 /**
@@ -25,39 +26,32 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
  *     "electronicBookInformation_book" = "\App\Entity\Book\ElectronicBook\Information\Book",
  * })
  * @ORM\HasLifecycleCallbacks
- * @ApiResource(
- *     iri="http://schema.org/File",
- *     normalizationContext={
- *          "groups"={"file_read"}
- *     },
- *     collectionOperations={
- *          "post": {
- *              "controller"=CreateFile::class,
- *              "defaults"={
- *                 "_api_receive"=false
- *             },
- *             "validation_groups"={"Default", "file_create"},
- *             "swagger_context"={
- *                 "consumes"={
- *                     "multipart/form-data",
- *                 },
- *                 "parameters"={
- *                     {
- *                         "in"="formData",
- *                         "name"="file",
- *                         "type"="file",
- *                         "description"="The file to upload",
- *                     },
- *                 },
- *             }
- *          }
- *     },
- *     itemOperations={
- *          "get"
- *     }
- * )
  * @Vich\Uploadable
  */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Post(
+            defaults: [
+                '_api_receive'=> false
+            ],
+            controller: CreateFile::class,
+            openapiContext: [
+                'consumes'=> ['multipart/form-data'],
+                'parameters' => [
+                    [
+                        'in'=>'formData',
+                        'name'=>'file',
+                        'type'=>'file',
+                        'description'=>'The file to upload'
+                    ]
+                ]
+            ],
+            validationContext: ['groups' => ['Default', 'file_create']]
+        )
+    ],
+    normalizationContext: ['groups' => ['file_read']]
+)]
 class File implements FileInterface
 {
     const STATUS_TEMP = 1;

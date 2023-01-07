@@ -4,6 +4,7 @@ namespace App\Tests\api\book\audioBook;
 
 use App\Entity\Book\AudioBook\File;
 use App\Tests\api\book\BookTestCase;
+use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 
 class BookTest extends BookTestCase
 {

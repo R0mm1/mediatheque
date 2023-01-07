@@ -2,8 +2,25 @@
 
 namespace App\Dto\Resources;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Action\NotFoundAction;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\DataProvider\StatsDataProvider;
 
+#[ApiResource(
+    operations: [
+        new Get(
+            controller: NotFoundAction::class,
+            output: false,
+            read: false
+        ),
+        new GetCollection(
+            provider: StatsDataProvider::class
+        )
+    ]
+)]
 class Stats
 {
     #[ApiProperty(identifier: true)]

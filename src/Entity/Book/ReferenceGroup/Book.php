@@ -2,6 +2,12 @@
 
 namespace App\Entity\Book\ReferenceGroup;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Entity\Book\ReferenceGroup;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -11,6 +17,23 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
  * @ORM\Entity()
  * @ORM\Table(name="reference_group_book")
  */
+#[ApiResource(
+    shortName: 'ReferenceGroupBook',
+    operations: [
+        new Get(),
+        new GetCollection(
+            normalizationContext: ['groups' => ['referenceGroupBook:list']],
+            filters: [
+                \App\Filter\Book\ReferenceGroup\Book\ReferenceGroup::class
+            ]
+        ),
+        new Put(),
+        new Delete(),
+        new Post()
+    ],
+    normalizationContext: ['groups' => ['referenceGroupBook:get']],
+    denormalizationContext: ['groups' => [ 'referenceGroupBook:set']]
+)]
 class Book
 {
     /**

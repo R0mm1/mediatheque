@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -12,6 +17,18 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 /**
  * @ORM\Entity()
  */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(
+            normalizationContext: ['groups' => 'user:list']
+        ),
+        new Put(),
+        new Delete()
+    ],
+    normalizationContext: ['group' => ['get_user']],
+    denormalizationContext: ['group' => ['create_user']]
+)]
 class User implements UserInterface
 {
     /**

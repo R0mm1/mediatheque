@@ -2,6 +2,12 @@
 
 namespace App\Entity\Book\ElectronicBook;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\DataProvider\Book\BookRawFileDataProvider;
 use App\Entity\Book as BaseBook;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -13,6 +19,28 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
+#[ApiResource(
+    shortName: 'ElectronicBook',
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['electronicBook:get', 'book:get', 'file_read']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['book:list']]
+        ),
+        new Put(
+            normalizationContext: ['groups' => ['electronicBook:get', 'book:get', 'file_read']]
+        ),
+        new Post(),
+        new Get(
+            uriTemplate: '/electronic_books/{id}/rawFile',
+            normalizationContext: ['groups' => ['file_read']],
+            provider: BookRawFileDataProvider::class
+        )
+    ],
+    normalizationContext: ['groups' => ['book:get', 'file_read']],
+    denormalizationContext: ['groups' => ['book:set']]
+)]
 class Book extends BaseBook
 {
     /**

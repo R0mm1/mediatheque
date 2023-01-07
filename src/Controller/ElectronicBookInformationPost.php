@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
-use ApiPlatform\Core\Util\RequestAttributesExtractor;
-use ApiPlatform\Core\Validator\ValidatorInterface;
+use ApiPlatform\Validator\ValidatorInterface;
+use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use App\Entity\Book\ElectronicBook\Information\Book;
 use App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation;
 use App\Service\ElectronicBookInformationFinderInterface;
@@ -15,10 +14,10 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class ElectronicBookInformationPost
 {
     public function __construct(
-        protected ResourceMetadataFactoryInterface         $resourceMetadataFactory,
-        protected ValidatorInterface                       $validator,
-        protected EntityManagerInterface                   $entityManager,
-        protected ElectronicBookInformationFinderInterface $electronicBookInformationFinder
+        protected ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory,
+        protected ValidatorInterface                         $validator,
+        protected EntityManagerInterface                     $entityManager,
+        protected ElectronicBookInformationFinderInterface   $electronicBookInformationFinder
     )
     {
     }
@@ -34,11 +33,22 @@ class ElectronicBookInformationPost
         $book = new Book();
         $book->setFile($electronicBookFile);
 
-        $attributes = RequestAttributesExtractor::extractAttributes($request);
         $resourceMetadata = $this->resourceMetadataFactory->create(ElectronicBookInformation::class);
-        $validationGroups = $resourceMetadata->getOperationAttribute($attributes, 'validation_groups', null, true);
 
-        $this->validator->validate($book, ['groups' => $validationGroups]);
+        $it = $resourceMetadata->getIterator();
+        while ($it->valid()) {
+            $metadata = $it->current();
+            foreach ($metadata->getOperations() ?? [] as $operation) {
+                if ($operation->getMethod() === 'POST') {
+                    $validationGroups = $operation->getValidationContext();
+                }
+            }
+            $it->next();
+        }
+
+        if (isset($validationGroups) && isset($validationGroups['groups']) && is_array($validationGroups['groups'])) {
+            $this->validator->validate($book, $validationGroups['groups']);
+        }
 
         $this->entityManager->persist($book);
         $electronicBookInformation = $this->electronicBookInformationFinder->find($book);

@@ -4,6 +4,8 @@ namespace App\Security;
 
 use App\Entity\Book\ElectronicBook\FileDownloadToken as ElectronicFileDownloadToken;
 use App\Entity\Book\AudioBook\FileDownloadToken as AudioFileDownloadToken;
+use App\Entity\Book\ElectronicBook\File as ElectronicBookFile;
+use App\Entity\Book\AudioBook\File as AudioBookFile;
 use App\Entity\Mediatheque\FileDownloadToken;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
@@ -34,11 +36,12 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
     public function authenticate(Request $request): Passport
     {
         $route = $request->attributes->get('_route');
+        $resource = $request->attributes->get('_api_resource_class');
         $token = $request->query->get('t');
 
-        $tokenClass = match ($route) {
-            'api_book_files_get_item' => ElectronicFileDownloadToken::class,
-            'api_audio_book_files_get_item' => AudioFileDownloadToken::class,
+        $tokenClass = match ($resource) {
+            ElectronicBookFile::class => ElectronicFileDownloadToken::class,
+            AudioBookFile::class => AudioFileDownloadToken::class,
             default => throw new LogicException("No token class known for route " . print_r($route, true))
         };
 
@@ -52,6 +55,7 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
                 [
                     "download_token" => $token,
                     "route" => $route,
+                    "resource" => $resource
                 ]
             );
             throw new AuthenticationException("Invalid token");
@@ -65,6 +69,7 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
                     "download_token" => $token,
                     "age" => $age ?? 'unknown',
                     "route" => $route,
+                    "resource" => $resource,
                     "user_sub" => $tokenObject->getUser()->getSub()
                 ]
             );
@@ -81,6 +86,7 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
             [
                 "download_token" => $token,
                 "route" => $route,
+                "resource" => $resource,
                 "user_sub" => $tokenObject->getUser()->getSub()
             ]
         );
