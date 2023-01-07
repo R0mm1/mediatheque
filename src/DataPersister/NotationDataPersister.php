@@ -35,9 +35,9 @@ class NotationDataPersister implements ProcessorInterface
             $notation->setUser(
                 $this->tokenStorage->getToken()->getUser()
             );
-            $this->entityManager->persist($notation);
-            $this->entityManager->flush();
         }
+        $this->entityManager->persist($notation);
+        $this->entityManager->flush();
     }
 
     private function update(Notation $notation): void
