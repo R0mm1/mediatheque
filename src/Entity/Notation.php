@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -21,20 +22,19 @@ class Notation
      * @ORM\Column(type="integer")
      * @Groups({"notation", "notation_read"})
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="float")
      * @Groups({"notation", "notation_write", "notation_read"})
      */
-    private $note;
+    private float $note;
 
     /**
-     * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @Groups({"notation"})
+     * @Groups({"notation", "notation_read"})
      */
-    private $user;
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -61,9 +61,9 @@ class Notation
     }
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getUser(): User
+    public function getUser(): ?UserInterface
     {
         return $this->user;
     }
@@ -72,7 +72,7 @@ class Notation
      * @param User $user
      * @return Notation
      */
-    public function setUser(User $user): self
+    public function setUser(UserInterface $user): self
     {
         $this->user = $user;
 
