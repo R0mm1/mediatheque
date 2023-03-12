@@ -43,4 +43,21 @@ class UserTest extends WebTestCase
 
         $this->assertCount(2, $responseContent);
     }
+
+    public function testSelf()
+    {
+        $this->client->jsonRequest('GET', '/self');
+        self::assertResponseStatusCodeSame(200);
+        $responseContent = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertIsArray($responseContent);
+
+        $this->assertEquals(
+            [
+                "id" => $this->user1->getId(),
+                "firstname" => $this->user1->getFirstname(),
+                "lastname" => $this->user1->getLastname(),
+            ],
+            $responseContent
+        );
+    }
 }

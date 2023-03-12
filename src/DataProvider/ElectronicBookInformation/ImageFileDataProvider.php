@@ -2,27 +2,27 @@
 
 namespace App\DataProvider\ElectronicBookInformation;
 
-use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
-use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
 use App\Entity\Book\ElectronicBook\Information\Image;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ImageFileDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
+class ImageFileDataProvider implements ProviderInterface
 {
     public function __construct(
-        protected string $projectDir,
-        protected EntityManagerInterface $entityManager
+        private readonly string                 $projectDir,
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
 
-    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = [])
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        $image = $this->entityManager->find($resourceClass, $id);
+        $image = $this->entityManager->find($operation->getClass(), $uriVariables['id']);
 
-        if(!$image instanceof Image){
+        if (!$image instanceof Image) {
             throw new NotFoundHttpException('Not Found');
         }
 
@@ -32,7 +32,7 @@ class ImageFileDataProvider implements ItemDataProviderInterface, RestrictedData
             $image->getPath()
         );
 
-        if(!is_readable($fullPath)){
+        if (!is_readable($fullPath)) {
             throw new \Exception(sprintf(
                 "The file related to the image #%s could not be found at %s",
                 $image->getId(),
@@ -41,10 +41,5 @@ class ImageFileDataProvider implements ItemDataProviderInterface, RestrictedData
         }
 
         return new BinaryFileResponse($fullPath);
-    }
-
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return $resourceClass === Image::class && $operationName === 'get_file';
     }
 }

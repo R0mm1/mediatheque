@@ -2,6 +2,7 @@
 
 namespace App\Tests\unit\Security;
 
+use App\Entity\Book\ElectronicBook\File;
 use App\Entity\Mediatheque\FileDownloadToken;
 use App\Entity\User;
 use App\Security\FileDownloadAuthenticator;
@@ -103,7 +104,14 @@ class FileDownloadAuthenticatorTest extends TestCase
     public function authenticateDataProvider()
     {
         yield "There is no token class for the given route" => [
-            'request' => $this->createMockedRequest([], ['t' => '123456'], ['_route' => 'some_route']),
+            'request' => $this->createMockedRequest(
+                [],
+                ['t' => '123456'],
+                [
+                    '_route' => 'some_route',
+                    '_api_resource_class' => '\SomeClass'
+                ]
+            ),
             'fileDownloadToken' => null,
             'tokenAge' => null,
             'expectedExceptionClass' => \LogicException::class,
@@ -111,7 +119,14 @@ class FileDownloadAuthenticatorTest extends TestCase
         ];
 
         yield "There is no token matching the given code" => [
-            'request' => $this->createMockedRequest([], ['t' => '123456'], ['_route' => 'api_book_files_get_item']),
+            'request' => $this->createMockedRequest(
+                [],
+                ['t' => '123456'],
+                [
+                    '_route' => 'api_book_files_get_item',
+                    '_api_resource_class' => File::class
+                ]
+            ),
             'fileDownloadToken' => null,
             'tokenAge' => null,
             'expectedExceptionClass' => AuthenticationException::class,
@@ -119,7 +134,14 @@ class FileDownloadAuthenticatorTest extends TestCase
         ];
 
         yield "The token is too old" => [
-            'request' => $this->createMockedRequest([], ['t' => '123456'], ['_route' => 'api_book_files_get_item']),
+            'request' => $this->createMockedRequest(
+                [],
+                ['t' => '123456'],
+                [
+                    '_route' => 'api_book_files_get_item',
+                    '_api_resource_class' => File::class
+                ]
+            ),
             'fileDownloadToken' => $this->createMockedFileDownloadToken('abcdefg'),
             'tokenAge' => 601,
             'expectedExceptionClass' => AuthenticationException::class,
@@ -127,7 +149,14 @@ class FileDownloadAuthenticatorTest extends TestCase
         ];
 
         yield "Everything is fine" => [
-            'request' => $this->createMockedRequest([], ['t' => '123456'], ['_route' => 'api_book_files_get_item']),
+            'request' => $this->createMockedRequest(
+                [],
+                ['t' => '123456'],
+                [
+                    '_route' => 'api_book_files_get_item',
+                    '_api_resource_class' => File::class
+                ]
+            ),
             'fileDownloadToken' => $this->createMockedFileDownloadToken('abcdefg'),
             'tokenAge' => 59,
             'expectedExceptionClass' => null,

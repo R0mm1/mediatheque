@@ -4,8 +4,9 @@
 namespace App\Filter\Book;
 
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Doctrine\Orm\Filter\AbstractFilter;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\Operation;
 use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
 use App\Entity\Book\PaperBook\Book as PaperBook;
 use App\Entity\Book\AudioBook\Book as AudioBook;
@@ -21,7 +22,7 @@ class BookType extends AbstractFilter
         self::OPT_ALL => 'all', self::OPT_PAPER => 'paper', self::OPT_ELECTRONIC => 'electronic', self::OPT_AUDIO => 'audio'
     ];
 
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
+    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         if ($property !== 'bookType' || $value === self::OPTIONS[self::OPT_ALL]) return;
 

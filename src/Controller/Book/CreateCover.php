@@ -4,8 +4,8 @@
 namespace App\Controller\Book;
 
 
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
-use ApiPlatform\Core\Validator\ValidatorInterface;
+use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
+use ApiPlatform\Validator\ValidatorInterface;
 use App\Controller\Mediatheque\AbstractCreateFile;
 use App\Entity\Book\Cover;
 use App\Entity\Book\ElectronicBook\Information\Image;
@@ -22,10 +22,10 @@ class CreateCover extends AbstractCreateFile
     const PARAM_FILE = 'file';
 
     public function __construct(
-        EntityManagerInterface           $entityManager,
-        ValidatorInterface               $validator,
-        ResourceMetadataFactoryInterface $resourceMetadataFactory,
-        protected string                 $projectDir
+        EntityManagerInterface                     $entityManager,
+        ValidatorInterface                         $validator,
+        ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory,
+        protected string                           $projectDir
     )
     {
         parent::__construct($entityManager, $validator, $resourceMetadataFactory);

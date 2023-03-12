@@ -2,20 +2,13 @@
 
 namespace App\DataProvider\Book\BookFileDataProvider;
 
-use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
-use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use ApiPlatform\State\ProviderInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-abstract class AbstractBookFileDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
+abstract class AbstractBookFileDataProvider  implements ProviderInterface
 {
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return $operationName === 'get'
-            && (isset($context['item_operation_name']) && $context['item_operation_name'] === 'get');
-    }
-
     protected function createResponse(string $filePath, string $bookTitle): BinaryFileResponse
     {
         $file = new File($filePath);

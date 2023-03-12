@@ -4,7 +4,9 @@
 namespace App\DataPersister;
 
 
-use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Book;
 use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
 use App\Entity\Book\AudioBook\Book as AudioBook;
@@ -13,39 +15,25 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
-class BookDataPersister implements ContextAwareDataPersisterInterface
+class BookDataPersister implements ProcessorInterface
 {
     public function __construct(
-        protected EntityManagerInterface $entityManager,
-        protected StorageInterface       $storage,
-        protected LoggerInterface        $logger
+        private readonly EntityManagerInterface $entityManager,
+        private readonly StorageInterface       $storage,
+        private readonly LoggerInterface        $logger
     )
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supports($data, array $context = []): bool
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-        return $data instanceof Book &&
-            isset($context['item_operation_name']) &&
-            $context['item_operation_name'] === 'delete';
-    }
+        if(get_class($operation) !== Delete::class || !$data instanceof Book){
+            throw new \LogicException(sprintf(
+                "Should not be used for something else than delete a %s",
+                Book::class
+            ));
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function persist($data, array $context = [])
-    {
-        return $data;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($data, array $context = [])
-    {
         $this->entityManager->remove($data);
 
         if ($data instanceof ElectronicBook && $data->getBookFile() instanceof File) {

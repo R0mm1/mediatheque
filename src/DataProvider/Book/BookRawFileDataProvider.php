@@ -4,15 +4,15 @@
 namespace App\DataProvider\Book;
 
 
-use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
-use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
 use App\Entity\Book;
 use App\Entity\Book\AudioBook\Book as AudioBook;
 use App\Entity\Book\ElectronicBook\Book as ElectronicBook;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class BookRawFileDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
+class BookRawFileDataProvider implements ProviderInterface
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager
@@ -20,14 +20,9 @@ class BookRawFileDataProvider implements ItemDataProviderInterface, RestrictedDa
     {
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        return in_array($resourceClass, [ElectronicBook::class, AudioBook::class]) && $operationName === 'get_file_raw';
-    }
-
-    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = [])
-    {
-        $book = $this->entityManager->getRepository($resourceClass)->find($id);
+        $book = $this->entityManager->getRepository($operation->getClass())->find($uriVariables['id']);
 
         if(!$book instanceof Book){
             throw new NotFoundHttpException('Not Found');

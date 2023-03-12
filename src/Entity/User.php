@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
+use App\DataProvider\UserSelfDataProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -12,6 +18,23 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 /**
  * @ORM\Entity()
  */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(
+            normalizationContext: ['groups' => 'user:list']
+        ),
+        new Get(
+            uriTemplate: '/self',
+            normalizationContext: ['groups' => 'get_user'],
+            provider: UserSelfDataProvider::class
+        ),
+        new Put(),
+        new Delete()
+    ],
+    normalizationContext: ['group' => ['get_user']],
+    denormalizationContext: ['group' => ['create_user']]
+)]
 class User implements UserInterface
 {
     /**
@@ -19,7 +42,7 @@ class User implements UserInterface
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups({"get_user", "book", "user:list"})
+     * @Groups({"self", "get_user", "book", "user:list"})
      */
     private string $id;
 

@@ -2,6 +2,13 @@
 
 namespace App\Entity\Book\ElectronicBook\Information;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Controller\ElectronicBookInformationPost;
+use App\DataPersister\ElectronicBookInformation\ElectronicBookInformationDataPersister;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,6 +18,34 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity()
  */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            defaults: ['_api_receive' => false],
+            controller: ElectronicBookInformationPost::class,
+            openapiContext: [
+                'consumes' => 'multipart/form-data',
+                'parameters' => [
+                    [
+                        'in' => 'formData',
+                        'name' => 'electronicBook',
+                        'type' => 'file',
+                        'description' => 'The electronic book to parse'
+                    ]
+                ]
+            ],
+            validationContext: ['groups' => ['book_create']]
+        ),
+        new Delete(
+            processor: ElectronicBookInformationDataPersister::class
+        )
+    ],
+    routePrefix: '/electronic_book_information',
+    normalizationContext: ['groups' => ['electronicBookInformation:get']],
+    denormalizationContext: ['groups' => ['electronicBookInformation:set']]
+)]
 class ElectronicBookInformation
 {
     /**

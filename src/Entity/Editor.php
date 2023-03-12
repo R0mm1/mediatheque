@@ -2,12 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EditorRepository")
  */
+#[ApiResource(
+    normalizationContext: ['groups' => ['editor:get']],
+    denormalizationContext: ['groups' => ['editor:set']]
+)]
 class Editor
 {
     /**
