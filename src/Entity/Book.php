@@ -57,14 +57,14 @@ class Book extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"book:get", "book:list", "book:set", "referenceGroup:get", "referenceGroupBook:get", "referenceGroupBook:list", "author:get"})
+     * @Groups({"book:get", "book:list", "book:set", "referenceGroup:get", "referenceGroupBook:get", "referenceGroupBook:list", "author:get", "meilisearch"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
-     * @Groups({"book:get", "book:list", "book:set", "referenceGroup:get", "referenceGroupBook:get", "referenceGroupBook:list", "author:get"})
+     * @Groups({"book:get", "book:list", "book:set", "referenceGroup:get", "referenceGroupBook:get", "referenceGroupBook:list", "author:get", "meilisearch"})
      */
     private $title;
 
@@ -94,7 +94,7 @@ class Book extends AbstractEntity
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"book:get", "book:set"})
+     * @Groups({"book:get", "book:set", "meilisearch"})
      */
     private ?string $summary = null;
 
@@ -324,12 +324,19 @@ class Book extends AbstractEntity
      */
     public function getShortSummary():string
     {
-        if(!is_string($this->getSummary())){
+        return mb_substr($this->getTagsStrippedSummary(), 0, 240);
+    }
+
+    /**
+     * @Groups({"meilisearch"})
+     */
+    public function getTagsStrippedSummary(): string
+    {
+        if (!is_string($this->getSummary())) {
             return '';
         }
 
         $summary = strip_tags($this->getSummary());
-        $summary = html_entity_decode($summary, ENT_QUOTES);
-        return mb_substr($summary, 0, 240);
+        return html_entity_decode($summary, ENT_QUOTES);
     }
 }

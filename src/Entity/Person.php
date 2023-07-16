@@ -50,13 +50,13 @@ class Person extends AbstractEntity
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"person:get", "person:list", "person:set", "book:get", "book:list"})
+     * @Groups({"person:get", "person:list", "person:set", "book:get", "book:list", "meilisearch"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"person:get", "person:list", "person:set", "book:get", "book:list"})
+     * @Groups({"person:get", "person:list", "person:set", "book:get", "book:list", "meilisearch"})
      */
     private $lastname;
 

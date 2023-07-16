@@ -4,6 +4,8 @@ imports:
 parameters:
     keycloak_internal_base_url: '%env(resolve:KEYCLOAK_INTERNAL_BASE_URL)%'
     keycloak_expected_issuer: '%env(resolve:KEYCLOAK_EXPECTED_ISSUER)%'
+    meilisearch_master_key: '%env(MEILISEARCH_MASTER_KEY)%'
+    meilisearch_internal_base_url: '%env(MEILISEARCH_INTERNAL_BASE_URL)%'
 
 services:
     _defaults:
@@ -14,6 +16,9 @@ services:
 
             string $keycloakInternalBaseUrl: '%keycloak_internal_base_url%'
             string $keycloakExpectedIssuer: '%keycloak_expected_issuer%'
+
+            string $meilisearchMasterKey: '%meilisearch_master_key%'
+            string $meilisearchInternalBaseUrl: '%meilisearch_internal_base_url%'
 
             ApiPlatform\State\ProviderInterface $itemProvider: '@api_platform.doctrine.orm.state.item_provider'
 

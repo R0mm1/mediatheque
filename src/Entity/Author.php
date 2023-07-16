@@ -41,13 +41,13 @@ class Author extends AbstractEntity
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"author:get", "author:list", "book:get", "book:list"})
+     * @Groups({"author:get", "author:list", "book:get", "book:list", "meilisearch"})
      */
     private $id;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Person", cascade={"persist"})
-     * @Groups({"author:get", "author:list", "author:set", "book:get", "book:list"})
+     * @Groups({"author:get", "author:list", "author:set", "book:get", "book:list", "meilisearch"})
      */
     private ?Person $person;
 
