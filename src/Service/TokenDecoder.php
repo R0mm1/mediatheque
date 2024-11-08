@@ -2,53 +2,34 @@
 
 namespace App\Service;
 
-use App\Service\JWT\JWKInterface;
 use App\Service\JWT\JWTInterface;
-use Firebase\JWT\SignatureInvalidException;
+use Firebase\JWT\CachedKeySet;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Psr\Http\Client\ClientInterface;
 
 class TokenDecoder implements TokenDecoderInterface
 {
-    private const CACHE_JWKS_KEY = 'jwks';
-
     public function __construct(
-        private string              $keycloakInternalBaseUrl,
-        private JWKInterface        $jwk,
-        private JWTInterface        $jwt,
-        private HttpClientInterface $client,
+        private string          $keycloakInternalBaseUrl,
+        private JWTInterface    $jwt,
+        private ClientInterface $client,
     )
     {
     }
 
     public function decode(string $encodedToken, int $attemptCounter = 0): object
     {
-        $cache = new ApcuAdapter('authentication');
-        $isFresh = !$cache->hasItem(self::CACHE_JWKS_KEY);
-        $jwks = $cache->get(self::CACHE_JWKS_KEY, function () {
-            $jwksResponse = $this->client->request(
-                'GET',
-                sprintf(
-                    '%s/realms/mediatheque/protocol/openid-connect/certs',
-                    $this->keycloakInternalBaseUrl
-                )
-            );
+        $keySet = new CachedKeySet(
+            sprintf(
+                '%s/realms/mediatheque/protocol/openid-connect/certs',
+                $this->keycloakInternalBaseUrl
+            ),
+            $this->client,
+            new Psr17Factory(),
+            new ApcuAdapter('jwks')
+        );
 
-            return json_decode($jwksResponse->getContent(), true);
-        });
-
-        try {
-            $jwtPayload = $this->jwt->decode($encodedToken, $this->jwk->parseKeySet($jwks), ['RS256']);
-
-        } catch (SignatureInvalidException $exception) {
-            if ($isFresh || $attemptCounter >= 1) {
-                throw $exception;
-            }
-
-            $cache->delete(self::CACHE_JWKS_KEY);
-            $jwtPayload = $this->decode($encodedToken, $attemptCounter++);
-        }
-
-        return $jwtPayload;
+        return $this->jwt->decode($encodedToken, $keySet);
     }
 }

@@ -5,8 +5,8 @@ namespace App\Service\JWT;
 class JWT implements JWTInterface
 {
 
-    public function decode($jwt, $keyOrKeyArray, array $allowed_algs = array()): object
+    public function decode(string $jwt, $keyOrKeyArray): object
     {
-        return \Firebase\JWT\JWT::decode($jwt, $keyOrKeyArray, $allowed_algs);
+        return \Firebase\JWT\JWT::decode($jwt, $keyOrKeyArray);
     }
 }
