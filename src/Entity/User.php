@@ -15,9 +15,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
-/**
- * @ORM\Entity()
- */
 #[ApiResource(
     operations: [
         new Get(),
@@ -35,42 +32,31 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
     normalizationContext: ['group' => ['get_user']],
     denormalizationContext: ['group' => ['create_user']]
 )]
+#[ORM\Entity]
 class User implements UserInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups({"self", "get_user", "book", "user:list"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['self', 'get_user', 'book', 'user:list'])]
     private string $id;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private string $sub;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $last_jit = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @Groups({"get_user", "book", "user:list"})
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Groups(['get_user', 'book', 'user:list'])]
     private ?string $firstname = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @Groups({"get_user", "book", "user:list"})
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Groups(['get_user', 'book', 'user:list'])]
     private ?string $lastname = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Book", mappedBy="owner")
-     */
+    #[ORM\OneToMany(targetEntity: \App\Entity\Book::class, mappedBy: 'owner')]
     private Collection $books;
 
     public function __construct(string $sub)
@@ -189,9 +175,8 @@ class User implements UserInterface
         return ['ROLE_USER'];
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        return null;
     }
 
     public function getUserIdentifier(): string

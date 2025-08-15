@@ -14,3 +14,7 @@ assets/files/book/electronicBook
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###

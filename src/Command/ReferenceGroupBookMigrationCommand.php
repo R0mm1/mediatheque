@@ -4,11 +4,13 @@ namespace App\Command;
 
 use App\Entity\Book\ReferenceGroup;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ReferenceGroupBookMigrationCommand extends Command
+#[AsCommand('migration:referenceGroupBook')]
+class ReferenceGroupBookMigrationCommand
 {
     protected static $defaultName = 'migration:referenceGroupBook';
 
@@ -17,13 +19,11 @@ class ReferenceGroupBookMigrationCommand extends Command
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-
-        parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /**@var $groups ReferenceGroup[] */
+        /**@var ReferenceGroup[] $groups */
         $groups = $this->entityManager->getRepository(ReferenceGroup::class)->findAll();
 
         foreach ($groups as $group) {

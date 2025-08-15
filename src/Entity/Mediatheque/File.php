@@ -14,20 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File as HttpFile;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Mediatheque\FileRepository")
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({
- *     "electronicBookInformation_image" = "\App\Entity\Book\ElectronicBook\Information\Image",
- *     "cover" = "\App\Entity\Book\Cover",
- *     "bookfile" = "\App\Entity\Book\ElectronicBook\File",
- *     "audiobook_file" = "\App\Entity\Book\AudioBook\File",
- *     "electronicBookInformation_book" = "\App\Entity\Book\ElectronicBook\Information\Book",
- * })
- * @ORM\HasLifecycleCallbacks
- * @Vich\Uploadable
- */
+#[Vich\Uploadable]
 #[ApiResource(
     operations: [
         new Get(),
@@ -52,48 +39,44 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
     ],
     normalizationContext: ['groups' => ['file_read']]
 )]
+#[ORM\Entity(repositoryClass: \App\Repository\Mediatheque\FileRepository::class)]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]
+#[ORM\DiscriminatorMap(['electronicBookInformation_image' => '\App\Entity\Book\ElectronicBook\Information\Image', 'cover' => '\App\Entity\Book\Cover', 'bookfile' => '\App\Entity\Book\ElectronicBook\File', 'audiobook_file' => '\App\Entity\Book\AudioBook\File', 'electronicBookInformation_book' => '\App\Entity\Book\ElectronicBook\Information\Book'])]
+#[ORM\HasLifecycleCallbacks]
 class File implements FileInterface
 {
     const STATUS_TEMP = 1;
     const STATUS_VALID = 2;
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"file_read"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['file_read'])]
     protected $id;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"file_read"})
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['file_read'])]
     protected $path;
 
     /**
      * @var integer|null
-     *
-     * @ORM\Column(type="integer")
-     * @Groups({"file_read"})
      */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['file_read'])]
     protected $status;
 
-    /**
-     * @var HttpFile|null
-     *
-     * @Assert\NotNull(groups={"file_create"})
-     * @Vich\UploadableField(mapping="file", fileNameProperty="path")
-     */
-    protected $file;
+    #[Assert\NotNull(groups: ['file_create'])]
+    #[Vich\UploadableField(mapping: "file", fileNameProperty: "path")]
+    protected ?HttpFile $file;
 
     /**
-     * @ORM\Column(type="datetime")
-     *
      * @var DateTime|null
      */
+    #[ORM\Column(type: 'datetime')]
     protected $updatedAt;
 
     /**
@@ -163,9 +146,7 @@ class File implements FileInterface
         $this->status = $status;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function prePersist()
     {
         if (empty($this->status)) {

@@ -12,12 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="audio_book_file")
- * @package App\Entity\Book
- * @Vich\Uploadable
- */
+#[Vich\Uploadable]
 #[ApiResource(
     shortName: 'AudioBookFile',
     types: ['http://schema.org/Book/BookFile'],
@@ -56,22 +51,16 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     normalizationContext: ['groups' => ['file_read']]
 )]
+#[ORM\Entity]
+#[ORM\Table(name: 'audio_book_file')]
 class File extends BaseFile
 {
-    /**
-     * @var HttpFile|null
-     *
-     * @Assert\NotNull(groups={"file_create"})
-     * @Vich\UploadableField(mapping="book_audioBook", fileNameProperty="path")
-     * @Assert\File(
-     *     mimeTypes = {"application/zip", "audio/mpeg"},
-     *     )
-     */
-    protected $file;
+    #[Vich\UploadableField(mapping: "book_audioBook", fileNameProperty: "path")]
+    #[Assert\NotNull(groups: ['file_create'])]
+    #[Assert\File(mimeTypes: ['application/zip', 'audio/mpeg'])]
+    protected ?HttpFile $file;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Book\AudioBook\Book", mappedBy="bookFile")
-     */
+    #[ORM\OneToOne(targetEntity: \App\Entity\Book\AudioBook\Book::class, mappedBy: 'bookFile')]
     protected ?Book $audioBook = null;
 
     public function getAudioBook(): ?Book

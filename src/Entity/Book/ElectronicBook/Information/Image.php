@@ -9,10 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="electronic_book_information_image")
- */
 #[ApiResource(
     operations: [
         new Get(),
@@ -24,32 +20,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
     routePrefix: '/electronic_book_information',
     normalizationContext: ['groups' => ['electronicBookInformation_image:get']]
 )]
+#[ORM\Entity]
+#[ORM\Table(name: 'electronic_book_information_image')]
 class Image
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups({"electronicBookInformation:get", "electronicBookInformation_image:get"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['electronicBookInformation:get', 'electronicBookInformation_image:get'])]
     private ?string $id;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"electronicBookInformation:get", "electronicBookInformation_image:get"})
-     */
+    #[ORM\Column(type: 'string')]
+    #[Groups(['electronicBookInformation:get', 'electronicBookInformation_image:get'])]
     private ?string $name;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"electronicBookInformation:get", "electronicBookInformation_image:get"})
-     */
+    #[ORM\Column(type: 'string')]
+    #[Groups(['electronicBookInformation:get', 'electronicBookInformation_image:get'])]
     private ?string $type;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private ?string $path;
 
     /**

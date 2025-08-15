@@ -11,6 +11,9 @@ use App\Entity\Notation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+/**
+ * @implements ProcessorInterface<Notation, Notation|null>
+ */
 class NotationDataPersister implements ProcessorInterface
 {
     public function __construct(
@@ -20,7 +23,7 @@ class NotationDataPersister implements ProcessorInterface
     {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Notation|null
     {
         $result = match (get_class($operation)) {
             Post::class => $this->create($data),
@@ -31,6 +34,8 @@ class NotationDataPersister implements ProcessorInterface
         if($result instanceof Notation){
             return $result;
         }
+
+        return null;
     }
 
     private function create(Notation $notation): Notation

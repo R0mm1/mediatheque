@@ -15,11 +15,8 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Mediatheque\FileRepository")
- * @package App\Entity\Book
- * @Vich\Uploadable
- */
+
+#[Vich\Uploadable]
 #[ApiResource(
     types: ['http://schema.org/Book/Cover'],
     operations: [
@@ -61,14 +58,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     routePrefix: '/book',
     normalizationContext: ['groups' => ['file_read']]
 )]
+#[ORM\Entity(repositoryClass: \App\Repository\Mediatheque\FileRepository::class)]
 class Cover extends File
 {
-
-    /**
-     * @var HttpFile|null
-     *
-     * @Assert\NotNull(groups={"file_create"})
-     * @Vich\UploadableField(mapping="book_cover", fileNameProperty="path")
-     */
-    protected $file;
+    #[Assert\NotNull(groups: ['file_create'])]
+    #[Vich\UploadableField(mapping: 'book_cover', fileNameProperty: 'path')]
+    protected ?HttpFile $file;
 }

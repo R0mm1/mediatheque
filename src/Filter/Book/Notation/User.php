@@ -30,7 +30,7 @@ class User extends AbstractFilter
                 'property' => 'user',
                 'type' => 'string',
                 'required' => false,
-                'swagger' => [
+                'openapi' => [
                     'description' => "Filter book notation by user. The value must be the id of the user, not the IRI."
                 ]
             ]

@@ -13,10 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="reference_group_book")
- */
 #[ApiResource(
     shortName: 'ReferenceGroupBook',
     operations: [
@@ -34,35 +30,29 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
     normalizationContext: ['groups' => ['referenceGroupBook:get']],
     denormalizationContext: ['groups' => [ 'referenceGroupBook:set']]
 )]
+#[ORM\Entity]
+#[ORM\Table(name: 'reference_group_book')]
 class Book
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups({"referenceGroupBook:get", "referenceGroupBook:list", "referenceGroup:get"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['referenceGroupBook:get', 'referenceGroupBook:list', 'referenceGroup:get'])]
     private string $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Book", inversedBy="groupMemberships")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"referenceGroupBook:get", "referenceGroupBook:list", "referenceGroupBook:set", "referenceGroup:get"})
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Book::class, inversedBy: 'groupMemberships')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['referenceGroupBook:get', 'referenceGroupBook:list', 'referenceGroupBook:set', 'referenceGroup:get'])]
     private \App\Entity\Book $book;
 
-    /**
-     * @ORM\Column(type="integer", nullable=false)
-     * @Groups({"referenceGroupBook:get", "referenceGroupBook:list", "referenceGroupBook:set", "referenceGroup:get"})
-     */
+    #[ORM\Column(type: 'integer', nullable: false)]
+    #[Groups(['referenceGroupBook:get', 'referenceGroupBook:list', 'referenceGroupBook:set', 'referenceGroup:get'])]
     private int $position;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Book\ReferenceGroup", inversedBy="elements")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"referenceGroupBook:get", "referenceGroupBook:list", "referenceGroupBook:set", "book:get"})
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Book\ReferenceGroup::class, inversedBy: 'elements')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['referenceGroupBook:get', 'referenceGroupBook:list', 'referenceGroupBook:set', 'book:get'])]
     private ReferenceGroup $referenceGroup;
 
     public function getId(): ?string

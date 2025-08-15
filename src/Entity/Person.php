@@ -15,9 +15,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\UuidV6;
 
-/**
- * @ORM\Entity()
- */
 #[ApiResource(
     operations: [
         new Get(),
@@ -37,45 +34,34 @@ use Symfony\Component\Uid\UuidV6;
     denormalizationContext: ['groups' => ['person:set']]
 )]
 #[ApiFilter(Fullname::class)]
+#[ORM\Entity]
 class Person extends AbstractEntity
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups({"person:get", "person:list", "book:get", "book:list"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['person:get', 'person:list', 'book:get', 'book:list'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"person:get", "person:list", "person:set", "book:get", "book:list"})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['person:get', 'person:list', 'person:set', 'book:get', 'book:list'])]
     private $firstname;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"person:get", "person:list", "person:set", "book:get", "book:list"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['person:get', 'person:list', 'person:set', 'book:get', 'book:list'])]
     private $lastname;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     * @Groups({"person:get", "person:set"})
-     */
+    #[ORM\Column(type: 'string', length: 4, nullable: true)]
+    #[Groups(['person:get', 'person:set'])]
     private $birthYear;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     * @Groups({"person:get", "person:set"})
-     */
+    #[ORM\Column(type: 'string', length: 4, nullable: true)]
+    #[Groups(['person:get', 'person:set'])]
     private $deathYear;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @Groups({"person:get", "person:set"})
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['person:get', 'person:set'])]
     private $biography;
 
     public function getId(): ?UuidV6

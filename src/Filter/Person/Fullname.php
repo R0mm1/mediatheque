@@ -34,7 +34,7 @@ class Fullname extends AbstractFilter
                 'property' => 'fullname',
                 'type' => 'string',
                 'required' => false,
-                'swagger' => [
+                'openapi' => [
                     'description' => "Make a search on both the firstname and the lastname"
                 ]
             ]

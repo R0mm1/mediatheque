@@ -10,6 +10,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
+/**
+ * @implements ProcessorInterface<ElectronicBookInformation, void>
+ */
 class ElectronicBookInformationDataPersister implements ProcessorInterface
 {
     public function __construct(

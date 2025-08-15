@@ -5,26 +5,24 @@ namespace App\Command;
 use App\Entity\Author;
 use App\Entity\Person;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Author2PersonMigrationCommand extends Command
+#[AsCommand('migration:author2person')]
+class Author2PersonMigrationCommand
 {
-    protected static $defaultName = 'migration:author2person';
-
     private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-
-        parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /**@var $authors Author[] */
+        /**@var Author[] $authors */
         $authors = $this->entityManager->getRepository(Author::class)->findAll();
 
         foreach ($authors as $author) {

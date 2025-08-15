@@ -28,7 +28,7 @@ class AudioBookFileDataProvider extends AbstractBookFileDataProvider
             return $this->itemProvider->provide($operation, $uriVariables, $context);
         }
 
-        /**@var $bookFile AudioBookFile*/
+        /**@var AudioBookFile $bookFile*/
         $bookFile = $this->entityManager->getRepository(AudioBookFile::class)->find($uriVariables['id']);
 
         $path = $this->storage->resolvePath($bookFile, 'file');

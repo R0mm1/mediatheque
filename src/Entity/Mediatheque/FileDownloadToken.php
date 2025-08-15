@@ -8,40 +8,27 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({
- *     "book_electronicBook_file" = "App\Entity\Book\ElectronicBook\FileDownloadToken",
- *     "book_audioBook_file" = "App\Entity\Book\AudioBook\FileDownloadToken"
- * })
- */
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]
+#[ORM\DiscriminatorMap(['book_electronicBook_file' => 'App\Entity\Book\ElectronicBook\FileDownloadToken', 'book_audioBook_file' => 'App\Entity\Book\AudioBook\FileDownloadToken'])]
 class FileDownloadToken
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     private ?string $id;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Groups({"mediatheque_fileDownloadToken:get"})
-     */
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Groups(['mediatheque_fileDownloadToken:get'])]
     private ?string $token;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\User::class)]
     private User $user;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     */
+    #[ORM\Column(type: 'datetime', nullable: false)]
     private ?DateTime $created;
 
     public function getId(): ?string
@@ -86,9 +73,7 @@ class FileDownloadToken
         return $this->created;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function created(): void
     {
         $this->created = new DateTime();

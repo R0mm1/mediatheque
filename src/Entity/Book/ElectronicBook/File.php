@@ -13,12 +13,7 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="book_file")
- * @package App\Entity\Book
- * @Vich\Uploadable
- */
+#[Vich\Uploadable]
 #[ApiResource(
     shortName: 'BookFile',
     types: ['http://schema.org/Book/BookFile'],
@@ -63,22 +58,16 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     ],
     normalizationContext: ['groups' => ['file_read']]
 )]
+#[ORM\Entity]
+#[ORM\Table(name: 'book_file')]
 class File extends BaseFile
 {
-    /**
-     * @var HttpFile|null
-     *
-     * @Assert\NotNull(groups={"file_create"})
-     * @Vich\UploadableField(mapping="book_electronicBook", fileNameProperty="path")
-     * @Assert\File(
-     *     mimeTypes = {"application/zip", "application/epub+zip"},
-     *     )
-     */
-    protected $file;
+    #[Assert\NotNull(groups: ['file_create'])]
+    #[Assert\File(mimeTypes: ['application/zip', 'application/epub+zip'])]
+    #[Vich\UploadableField(mapping: "book_electronicBook", fileNameProperty: "path")]
+    protected ?HttpFile $file;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBook\Book", mappedBy="bookFile")
-     */
+    #[ORM\OneToOne(targetEntity: \App\Entity\Book\ElectronicBook\Book::class, mappedBy: 'bookFile')]
     protected $electronicBook;
 
     /**

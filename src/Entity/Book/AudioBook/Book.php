@@ -13,11 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="audio_book")
- * @Vich\Uploadable
- */
+#[Vich\Uploadable]
 #[ApiResource(
     shortName: 'AudioBook',
     operations: [
@@ -40,14 +36,15 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     normalizationContext: ['groups' => ['book:get', 'file_read']],
     denormalizationContext: ['groups' => ['book:set']]
 )]
+#[ORM\Entity]
+#[ORM\Table(name: 'audio_book')]
 class Book extends BaseBook
 {
     /**
      * @var File|null
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\Book\AudioBook\File", cascade={"remove", "persist"}, inversedBy="audioBook")
-     * @Groups({"book:get", "book:set"})
      */
+    #[ORM\OneToOne(targetEntity: \App\Entity\Book\AudioBook\File::class, cascade: ['remove', 'persist'], inversedBy: 'audioBook')]
+    #[Groups(['book:get', 'book:set'])]
     private ?File $bookFile;
 
     /**

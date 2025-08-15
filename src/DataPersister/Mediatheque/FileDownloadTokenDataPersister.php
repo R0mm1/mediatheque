@@ -12,6 +12,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
+/**
+ * @implements ProcessorInterface<FileDownloadToken, FileDownloadToken>
+ */
 class FileDownloadTokenDataPersister implements ProcessorInterface
 {
     public function __construct(
@@ -22,7 +25,7 @@ class FileDownloadTokenDataPersister implements ProcessorInterface
     {
     }
 
-    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []): FileDownloadToken
     {
         if (!$data instanceof FileDownloadToken || get_class($operation) !== Post::class) {
             throw new \LogicException(sprintf(
@@ -34,7 +37,7 @@ class FileDownloadTokenDataPersister implements ProcessorInterface
         return $this->persist($data);
     }
 
-    private function persist($data)
+    private function persist($data): FileDownloadToken
     {
         if (!$data instanceof FileDownloadToken) {
             throw new \LogicException("Data should be an instance of " . FileDownloadToken::class);

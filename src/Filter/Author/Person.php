@@ -32,7 +32,7 @@ class Person extends AbstractFilter
                 'property' => 'person',
                 'type' => 'string',
                 'required' => false,
-                'swagger' => [
+                'openapi' => [
                     'description' => "Found the author matching the person id"
                 ]
             ]

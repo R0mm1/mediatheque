@@ -15,9 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
 #[ApiResource(
     operations: [
         new Get(),
@@ -46,38 +43,28 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['electronicBookInformation:get']],
     denormalizationContext: ['groups' => ['electronicBookInformation:set']]
 )]
+#[ORM\Entity]
 class ElectronicBookInformation
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups({"electronicBookInformation:get"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['electronicBookInformation:get'])]
     private ?string $id;
 
 
-    /**
-     * @ORM\OneToOne(targetEntity="\App\Entity\Book\ElectronicBook\Information\Book", inversedBy="electronicBookInformation")
-     * @Groups({"electronicBookInformation:set"})
-     */
+    #[ORM\OneToOne(targetEntity: \App\Entity\Book\ElectronicBook\Information\Book::class, inversedBy: 'electronicBookInformation')]
+    #[Groups(['electronicBookInformation:set'])]
     private ?Book $bookFile;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="\App\Entity\Book\ElectronicBook\Information\Image", cascade={"remove", "persist"})
-     * @ORM\JoinTable(name="electronic_book_information_electronic_book_information_image",
-     *      joinColumns={@ORM\JoinColumn(name="electronic_book_information_id", referencedColumnName="id", onDelete="CASCADE")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="electronic_book_information_image_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
-     * )
-     * @Groups({"electronicBookInformation:get"})
-     */
+    #[ORM\ManyToMany(targetEntity: \App\Entity\Book\ElectronicBook\Information\Image::class, cascade: ['remove', 'persist'])]
+    #[ORM\JoinTable(name: 'electronic_book_information_electronic_book_information_image', joinColumns: [new ORM\JoinColumn(name: 'electronic_book_information_id', referencedColumnName: 'id', onDelete: 'CASCADE')], inverseJoinColumns: [new ORM\JoinColumn(name: 'electronic_book_information_image_id', referencedColumnName: 'id', unique: true, onDelete: 'CASCADE')])]
+    #[Groups(['electronicBookInformation:get'])]
     private Collection $images;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"electronicBookInformation:get"})
-     */
+    #[ORM\Column(type: 'string')]
+    #[Groups(['electronicBookInformation:get'])]
     private ?string $title;
 
     public function __construct()

@@ -16,9 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-/**
- * @group time-sensitive
- */
+#[\PHPUnit\Framework\Attributes\Group('time-sensitive')]
 class FileDownloadAuthenticatorTest extends TestCase
 {
     private FileDownloadAuthenticator $fileDownloadAuthenticator;
