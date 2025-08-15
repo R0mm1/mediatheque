@@ -62,7 +62,7 @@ class Notation extends BaseNotation
      * @param Book $book
      * @return Notation
      */
-    public function setBook(Book $book): self
+    public function setBook(Book $book): static
     {
         $this->book = $book;
         return $this;

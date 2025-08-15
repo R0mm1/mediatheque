@@ -30,20 +30,26 @@ class UserConfigurationDataPersister implements ProcessorInterface
             ));
         }
 
-        match (get_class($operation)) {
+        $result = match (get_class($operation)) {
             Post::class, Put::class => $this->persist($data),
             Delete::class => $this->remove($data),
             default => throw new \LogicException("This processor should not be used with an other operation than Post, Put or Delete")
         };
+
+        if($result instanceof UserConfiguration){
+            return $result;
+        }
     }
 
-    private function persist(UserConfiguration $data)
+    private function persist(UserConfiguration $data): UserConfiguration
     {
         $data->setUser(
             $this->tokenStorage->getToken()->getUser()
         );
         $this->entityManager->persist($data);
         $this->entityManager->flush();
+
+        return $data;
     }
 
     private function remove(UserConfiguration $data)

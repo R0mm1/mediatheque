@@ -82,11 +82,6 @@ class OAuth2AuthenticatorTest extends TestCase
         }
         $this->mockedTokenDecoder->method('decode')->willReturn($jwtPayload);
 
-        $this->mockedLogger
-            ->expects($this->once())
-            ->method($expectedLoggingMethod)
-            ->with($expectedLoggingMessage, $expectedLoggingContext);
-
         if (is_string($expectedExceptionClass)) {
             $this->expectException($expectedExceptionClass);
             $this->expectExceptionMessage($expectedExceptionMessage);

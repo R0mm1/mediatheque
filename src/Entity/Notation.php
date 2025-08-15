@@ -53,7 +53,7 @@ class Notation
      * @param float $note
      * @return Notation
      */
-    public function setNote(float $note): self
+    public function setNote(float $note): static
     {
         $this->note = $note;
 
