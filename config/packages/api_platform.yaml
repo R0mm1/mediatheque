@@ -7,3 +7,7 @@ api_platform:
         paths:
             - '%kernel.project_dir%/src/Entity'
             - '%kernel.project_dir%/src/Dto'
+    formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+        multipart: ['multipart/form-data']
