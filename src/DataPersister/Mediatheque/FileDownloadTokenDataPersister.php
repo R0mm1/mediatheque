@@ -31,7 +31,7 @@ class FileDownloadTokenDataPersister implements ProcessorInterface
             ));
         }
 
-        $this->persist($data);
+        return $this->persist($data);
     }
 
     private function persist($data)
@@ -50,5 +50,7 @@ class FileDownloadTokenDataPersister implements ProcessorInterface
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();
+
+        return $data;
     }
 }

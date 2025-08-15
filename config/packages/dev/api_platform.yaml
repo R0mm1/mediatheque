@@ -1,5 +1,6 @@
 api_platform:
     enable_swagger_ui: true
+    enable_swagger: true
     oauth:
         enabled: true
         clientId: 'swagger'

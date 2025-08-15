@@ -64,7 +64,8 @@ class OAuth2Authenticator extends AbstractAuthenticator
             $this->logger->alert(
                 sprintf("Authentication failed: %s", $exception->getMessage()),
                 [
-                    'Authorization' => $authorizationString
+                    'Authorization' => $authorizationString,
+                    'Trace' => $exception->getTrace()
                 ]
             );
             throw InvalidTokenException::get();

@@ -5,6 +5,7 @@ namespace App\Entity\Book;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\OpenApi\Model;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Book\CreateCover;
 use App\Controller\Book\GetCover;
@@ -28,11 +29,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         new Post(
             defaults: ['_api_receive' => false],
             controller: CreateCover::class,
-            openapiContext: [
-                'summary' => 'Create a cover to link to a book',
-                'description' => 'Create a cover from an uploaded file or from a book uploaded to the electronic book parser',
-                'requestBody' => [
-                    'content' => [
+            openapi: new Model\Operation(
+                requestBody: new Model\RequestBody(
+                    content: new \ArrayObject([
                         'multipart/form-data' => [
                             'schema' => [
                                 'type' => 'object',
@@ -41,7 +40,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                         'name' => 'file',
                                         'type' => 'file',
                                         'description' => 'The cover to upload',
-                                        'required' => false
+                                        'required' => false,
+                                        "inputFormats" => ['multipart' => ['multipart/form-data']],
                                     ],
                                     [
                                         'name' => 'electronic_book_information_image_id',
@@ -52,9 +52,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                 ]
                             ]
                         ]
-                    ]
-                ]
-            ],
+                    ])
+                )
+            ),
             validationContext: ['groups' => ['Default', 'file_create']]
         )
     ],
