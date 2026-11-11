@@ -10,15 +10,11 @@ use ApiPlatform\Metadata\Put;
 use App\DataProvider\Book\BookRawFileDataProvider;
 use App\Entity\Book as BaseBook;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="electronic_book")
- * @ORM\HasLifecycleCallbacks()
- * @Vich\Uploadable
- */
+
+#[Vich\Uploadable]
 #[ApiResource(
     shortName: 'ElectronicBook',
     operations: [
@@ -41,19 +37,21 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     normalizationContext: ['groups' => ['book:get', 'file_read']],
     denormalizationContext: ['groups' => ['book:set']]
 )]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'electronic_book')]
 class Book extends BaseBook
 {
     /**
      * @var File|null
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBook\File", cascade={"remove", "persist"}, inversedBy="electronicBook")
-     * @Groups({"book:get", "book:set"})
      */
+    #[ORM\OneToOne(targetEntity: \App\Entity\Book\ElectronicBook\File::class, cascade: ['remove', 'persist'], inversedBy: 'electronicBook')]
+    #[Groups(['book:get', 'book:set'])]
     private $bookFile;
 
-//    /**
-//     * @Groups({"book:get"})
-//     */
+    //    /**
+    //     * @Groups({"book:get"})
+    //     */
     private $hasBookFile;
 
     /**
@@ -94,9 +92,7 @@ class Book extends BaseBook
         return $this;
     }
 
-    /**
-     * @ORM\PostLoad()
-     */
+    #[ORM\PostLoad]
     public function postLoad()
     {
         $this->setHasBookFile(is_object($this->bookFile));

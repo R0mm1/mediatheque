@@ -11,6 +11,9 @@ use App\Entity\Notation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+/**
+ * @implements ProcessorInterface<Notation, Notation|null>
+ */
 class NotationDataPersister implements ProcessorInterface
 {
     public function __construct(
@@ -20,16 +23,22 @@ class NotationDataPersister implements ProcessorInterface
     {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Notation|null
     {
-        match (get_class($operation)) {
+        $result = match (get_class($operation)) {
             Post::class => $this->create($data),
             Put::class => $this->update($data),
             Delete::class => $this->remove($data)
         };
+
+        if($result instanceof Notation){
+            return $result;
+        }
+
+        return null;
     }
 
-    private function create(Notation $notation): void
+    private function create(Notation $notation): Notation
     {
         if (empty($notation->getUser())) {
             $notation->setUser(
@@ -38,15 +47,17 @@ class NotationDataPersister implements ProcessorInterface
         }
         $this->entityManager->persist($notation);
         $this->entityManager->flush();
+
+        return $notation;
     }
 
-    private function update(Notation $notation): void
+    private function update(Notation $notation): Notation
     {
         if (!$this->belongsToCurrentUser($notation)) {
-            return;
+            return $notation;
         }
 
-        $this->create($notation);
+        return $this->create($notation);
     }
 
     private function remove(Notation $notation): void

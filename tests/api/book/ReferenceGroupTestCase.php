@@ -8,10 +8,13 @@ use App\Entity\Book\PaperBook\Book as PaperBook;
 use App\Entity\Book\ReferenceGroup;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ReferenceGroupTestCase extends WebTestCase
 {
+    protected KernelBrowser $client;
+
     protected User $user;
 
     protected PaperBook $book1;

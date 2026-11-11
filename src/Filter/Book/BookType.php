@@ -48,7 +48,7 @@ class BookType extends AbstractFilter
                 'property' => 'bookType',
                 'type' => 'string',
                 'required' => false,
-                'swagger' => [
+                'openapi' => [
                     'description' => "Filter book by type (" . implode(', ', self::OPTIONS) . ")"
                 ]
             ]

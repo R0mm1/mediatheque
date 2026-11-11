@@ -10,10 +10,6 @@ use ApiPlatform\Metadata\Put;
 use App\Entity\Book as BaseBook;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="paper_book")
- */
 #[ApiResource(
     shortName: 'PaperBook',
     operations: [
@@ -27,6 +23,8 @@ use Doctrine\ORM\Mapping as ORM;
     normalizationContext: ['groups' => ['book:get', 'file_read']],
     denormalizationContext: ['groups' => [ 'book:set']]
 )]
+#[ORM\Entity]
+#[ORM\Table(name: 'paper_book')]
 class Book extends BaseBook
 {
 }

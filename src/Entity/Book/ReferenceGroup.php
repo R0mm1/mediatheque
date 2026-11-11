@@ -13,17 +13,14 @@ use App\Entity\Book;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Book\ReferenceGroupRepository")
- */
 #[ApiResource(
     operations: [
         new Get(),
         new GetCollection(
-            normalizationContext: ['groups'=>'referenceGroup:list']
+            normalizationContext: ['groups' => 'referenceGroup:list']
         ),
         new Put(),
         new Delete(),
@@ -57,36 +54,31 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' =>  ['referenceGroup:get']],
     denormalizationContext: ['groups' =>  ['referenceGroup:set']]
 )]
+#[ORM\Entity(repositoryClass: \App\Repository\Book\ReferenceGroupRepository::class)]
 class ReferenceGroup
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"referenceGroup:get", "referenceGroup:list", "book:get", "referenceGroupBook:get"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['referenceGroup:get', 'referenceGroup:list', 'book:get', 'referenceGroupBook:get'])]
     private int $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Book", inversedBy="groups")
-     * @ORM\JoinTable(name="book_group",
-     *      joinColumns={@ORM\JoinColumn(name="referenceGroup_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="id")})
      * @deprecated
      */
+    #[ORM\ManyToMany(targetEntity: \App\Entity\Book::class, inversedBy: 'groups')]
+    #[ORM\JoinTable(name: 'book_group', joinColumns: [new ORM\JoinColumn(name: 'referenceGroup_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'book_id', referencedColumnName: 'id')])]
     private Collection $books;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Book\ReferenceGroup\Book", mappedBy="referenceGroup", cascade={"remove"})
-     * @Groups({"referenceGroup:get"})
      * @var Collection
      */
+    #[ORM\OneToMany(targetEntity: \App\Entity\Book\ReferenceGroup\Book::class, mappedBy: 'referenceGroup', cascade: ['remove'])]
+    #[Groups(['referenceGroup:get'])]
     private Collection $elements;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @Groups({"referenceGroup:get", "referenceGroup:list", "referenceGroup:set", "book:get", "referenceGroupBook:get"})
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['referenceGroup:get', 'referenceGroup:list', 'referenceGroup:set', 'book:get', 'referenceGroupBook:get'])]
     private string $comment;
 
     public function __construct()

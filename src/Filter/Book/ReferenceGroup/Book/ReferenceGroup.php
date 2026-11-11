@@ -30,7 +30,7 @@ class ReferenceGroup extends AbstractFilter
                 'property' => 'referenceGroup',
                 'type' => 'string',
                 'required' => false,
-                'swagger' => [
+                'openapi' => [
                     'description' => "Filter by the reference group. The value must be the id of the user, not the IRI."
                 ]
             ]

@@ -8,12 +8,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\DataPersister\Mediatheque\FileDownloadTokenDataPersister;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="electronic_book_file_download_token")
- */
 #[ApiResource(
     shortName: 'ElectronicBookFileDownloadToken',
     operations: [
@@ -29,12 +25,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['mediatheque_fileDownloadToken:get']],
     denormalizationContext: ['groups' => ['mediatheque_fileDownloadToken:set']]
 )]
+#[ORM\Entity]
+#[ORM\Table(name: 'electronic_book_file_download_token')]
 class FileDownloadToken extends \App\Entity\Mediatheque\FileDownloadToken
 {
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBook\File")
-     * @Groups({"mediatheque_fileDownloadToken:set"})
-     */
+    #[ORM\OneToOne(targetEntity: \App\Entity\Book\ElectronicBook\File::class)]
+    #[Groups(['mediatheque_fileDownloadToken:set'])]
     private File $file;
 
     public function getFile(): File

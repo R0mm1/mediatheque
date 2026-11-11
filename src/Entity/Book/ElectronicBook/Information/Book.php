@@ -8,27 +8,18 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="electronic_book_information_book")
- * @Vich\Uploadable
- */
+
+#[Vich\Uploadable]
+#[ORM\Entity]
+#[ORM\Table(name: 'electronic_book_information_book')]
 class Book extends File
 {
-    /**
-     * @var HttpFile|null
-     *
-     * @Assert\NotNull(groups={"book_create"})
-     * @Vich\UploadableField(mapping="electronicBookInformation_book", fileNameProperty="path")
-     * @Assert\File(
-     *     mimeTypes = {"application/zip", "application/epub+zip"}
-     * )
-     */
-    protected $file;
+    #[Assert\NotNull(groups: ['book_create'])]
+    #[Assert\File(mimeTypes: ['application/zip', 'application/epub+zip'])]
+    #[Vich\UploadableField(mapping: "electronicBookInformation_book", fileNameProperty: "path")]
+    protected ?HttpFile $file;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation", mappedBy="bookFile")
-     */
+    #[ORM\OneToOne(targetEntity: \App\Entity\Book\ElectronicBook\Information\ElectronicBookInformation::class, mappedBy: 'bookFile')]
     protected $electronicBookInformation;
 
     /**

@@ -31,7 +31,7 @@ class Owner extends AbstractFilter
                 'property' => 'owner',
                 'type' => 'string',
                 'required' => false,
-                'swagger' => [
+                'openapi' => [
                     'description' => "Filter books by owner. The value must be the id of the user, not the IRI."
                 ]
             ]

@@ -10,17 +10,14 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Filter\Author\Fullname;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
- */
 #[ApiResource(
     operations: [
         new Get(),
         new GetCollection(
-            normalizationContext: ['groups' => ['author:list', 'person:list' ]],
+            normalizationContext: ['groups' => ['author:list', 'person:list']],
             filters: [
                 Fullname::class,
                 \App\Filter\Author\Person::class,
@@ -33,57 +30,39 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Delete()
     ],
     normalizationContext: ['groups' => ['author:get', 'person:get']],
-    denormalizationContext: ['groups' => [ 'author:set', 'person:set']]
+    denormalizationContext: ['groups' => ['author:set', 'person:set']]
 )]
+#[ORM\Entity(repositoryClass: \App\Repository\AuthorRepository::class)]
 class Author extends AbstractEntity
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"author:get", "author:list", "book:get", "book:list"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['author:get', 'author:list', 'book:get', 'book:list'])]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Person", cascade={"persist"})
-     * @Groups({"author:get", "author:list", "author:set", "book:get", "book:list"})
-     */
+    #[ORM\OneToOne(targetEntity: \App\Entity\Person::class, cascade: ['persist'])]
+    #[Groups(['author:get', 'author:list', 'author:set', 'book:get', 'book:list'])]
     private ?Person $person;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $firstname;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $lastname;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 4, nullable: true)]
     private $bearthYear;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 4, nullable: true)]
     private $deathYear;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $biography;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Book", mappedBy="authors", cascade={"persist"})
-     * @ORM\JoinTable(name="books_authors",
-     *     joinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="author_id", referencedColumnName="id")}
-     *     )
-     * @Groups({"author:get"})
-     */
+    #[ORM\ManyToMany(targetEntity: \App\Entity\Book::class, mappedBy: 'authors', cascade: ['persist'])]
+    #[ORM\JoinTable(name: 'books_authors', joinColumns: [new ORM\JoinColumn(name: 'book_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id')])]
+    #[Groups(['author:get'])]
     private $books;
 
     public function getId(): ?int

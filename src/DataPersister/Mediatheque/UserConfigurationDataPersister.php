@@ -12,6 +12,9 @@ use App\Entity\Mediatheque\UserConfiguration;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+/**
+ * @implements ProcessorInterface<UserConfiguration, UserConfiguration|null>
+ */
 class UserConfigurationDataPersister implements ProcessorInterface
 {
     public function __construct(
@@ -21,7 +24,7 @@ class UserConfigurationDataPersister implements ProcessorInterface
     {
     }
 
-    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []): UserConfiguration|null
     {
         if (!$data instanceof UserConfiguration) {
             throw new \LogicException(sprintf(
@@ -30,20 +33,28 @@ class UserConfigurationDataPersister implements ProcessorInterface
             ));
         }
 
-        match (get_class($operation)) {
+        $result = match (get_class($operation)) {
             Post::class, Put::class => $this->persist($data),
             Delete::class => $this->remove($data),
             default => throw new \LogicException("This processor should not be used with an other operation than Post, Put or Delete")
         };
+
+        if($result instanceof UserConfiguration){
+            return $result;
+        }
+
+        return null;
     }
 
-    private function persist(UserConfiguration $data)
+    private function persist(UserConfiguration $data): UserConfiguration
     {
         $data->setUser(
             $this->tokenStorage->getToken()->getUser()
         );
         $this->entityManager->persist($data);
         $this->entityManager->flush();
+
+        return $data;
     }
 
     private function remove(UserConfiguration $data)

@@ -33,7 +33,7 @@ class AuthorFullName extends AbstractFilter
                 'property' => 'authorFullname',
                 'type' => 'string',
                 'required' => false,
-                'swagger' => [
+                'openapi' => [
                     'description' => "Make a search on both the firstname and the lastname of the book authors"
                 ]
             ]

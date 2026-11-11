@@ -7,38 +7,41 @@ use App\Entity\Mediatheque\FileDownloadToken;
 use App\Entity\User;
 use App\Security\FileDownloadAuthenticator;
 use App\Tests\TestCase;
+use Closure;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\Clock\MockClock;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-/**
- * @group time-sensitive
- */
 class FileDownloadAuthenticatorTest extends TestCase
 {
+    private MockClock $clock;
+
     private FileDownloadAuthenticator $fileDownloadAuthenticator;
-    private EntityManagerInterface $mockedEntityManager;
-    private LoggerInterface $mockedLogger;
+    private EntityManagerInterface&MockObject $mockedEntityManager;
+    private LoggerInterface&MockObject $mockedLogger;
 
     protected function setUp(): void
     {
         $this->mockedEntityManager = $this->createMock(EntityManagerInterface::class);
         $this->mockedLogger = $this->createMock(LoggerInterface::class);
 
+        $this->clock = new MockClock('2026-01-01 12:00:00');
+
         $this->fileDownloadAuthenticator = new FileDownloadAuthenticator(
             $this->mockedEntityManager,
-            $this->mockedLogger
+            $this->mockedLogger,
+            $this->clock
         );
     }
 
-    /**
-     * @dataProvider supportDataProvider
-     */
+    #[DataProvider('supportDataProvider')]
     public function testSupport(Request $request, bool $support)
     {
         $this->assertEquals(
@@ -49,42 +52,41 @@ class FileDownloadAuthenticatorTest extends TestCase
         );
     }
 
-    public function supportDataProvider(): array
+    public static function supportDataProvider(): array
     {
         return [
             'Support' => [
-                'request' => $this->createMockedRequest([], ['t' => '123456879']),
+                'request' => new Request(query: ['t' => '123456879']),
                 'support' => true
             ],
             "Don't support" => [
-                'request' => $this->createMockedRequest([], ['token' => '123456879']),
+                'request' => new Request(query: ['token' => '123456879']),
                 'support' => false
             ]
         ];
     }
 
-    /**
-     * @dataProvider authenticateDataProvider
-     */
+    #[DataProvider('authenticateDataProvider')]
     public function testAuthenticate(
         Request     $request,
-        ?MockObject $fileDownloadToken,
+        ?Closure    $fileDownloadTokenBuilder,
         ?int        $tokenAge,
         ?string     $expectedExceptionClass,
         ?string     $expectedExceptionMessage
-    )
-    {
+    ) {
         if (is_string($expectedExceptionClass)) {
             $this->expectException($expectedExceptionClass);
         }
         if (is_string($expectedExceptionMessage)) {
-            $this->expectExceptionMessage($expectedExceptionMessage);
+            $this->expectExceptionMessageIsOrContains($expectedExceptionMessage);
         }
+
+        $fileDownloadToken = is_callable($fileDownloadTokenBuilder) ? $fileDownloadTokenBuilder($this) : null;
 
         if ($fileDownloadToken instanceof MockObject) {
             $tokenCreationDate = is_int($tokenAge) ?
-                \DateTime::createFromFormat('U', ClockMock::time())
-                    ->sub(new \DateInterval(sprintf('PT%dS', $tokenAge))) :
+                \DateTime::createFromFormat('U', $this->clock->now()->getTimestamp())
+                ->sub(new \DateInterval(sprintf('PT%dS', $tokenAge))) :
                 null;
             $fileDownloadToken->method('getCreated')->willReturn($tokenCreationDate);
         }
@@ -101,63 +103,63 @@ class FileDownloadAuthenticatorTest extends TestCase
         );
     }
 
-    public function authenticateDataProvider()
+    public static function authenticateDataProvider()
     {
         yield "There is no token class for the given route" => [
-            'request' => $this->createMockedRequest(
-                [],
-                ['t' => '123456'],
-                [
+            'request' => new Request(
+                query: ['t' => '123456'],
+                attributes: [
                     '_route' => 'some_route',
                     '_api_resource_class' => '\SomeClass'
                 ]
             ),
-            'fileDownloadToken' => null,
+            'fileDownloadTokenBuilder' => null,
             'tokenAge' => null,
             'expectedExceptionClass' => \LogicException::class,
             'expectedExceptionMessage' => "No token class known for route some_route"
         ];
 
         yield "There is no token matching the given code" => [
-            'request' => $this->createMockedRequest(
-                [],
-                ['t' => '123456'],
-                [
+            'request' => new Request(
+                query: ['t' => '123456'],
+                attributes: [
                     '_route' => 'api_book_files_get_item',
                     '_api_resource_class' => File::class
                 ]
             ),
-            'fileDownloadToken' => null,
+            'fileDownloadTokenBuilder' => null,
             'tokenAge' => null,
             'expectedExceptionClass' => AuthenticationException::class,
             'expectedExceptionMessage' => "Invalid token"
         ];
 
         yield "The token is too old" => [
-            'request' => $this->createMockedRequest(
-                [],
-                ['t' => '123456'],
-                [
+            'request' => new Request(
+                query: ['t' => '123456'],
+                attributes: [
                     '_route' => 'api_book_files_get_item',
                     '_api_resource_class' => File::class
                 ]
             ),
-            'fileDownloadToken' => $this->createMockedFileDownloadToken('abcdefg'),
+            'fileDownloadTokenBuilder' => static function (self $test) {
+                return $test->createMockedFileDownloadToken('abcdefg');
+            },
             'tokenAge' => 601,
             'expectedExceptionClass' => AuthenticationException::class,
             'expectedExceptionMessage' => "Expired token"
         ];
 
         yield "Everything is fine" => [
-            'request' => $this->createMockedRequest(
-                [],
-                ['t' => '123456'],
-                [
+            'request' => new Request(
+                query: ['t' => '123456'],
+                attributes: [
                     '_route' => 'api_book_files_get_item',
                     '_api_resource_class' => File::class
                 ]
             ),
-            'fileDownloadToken' => $this->createMockedFileDownloadToken('abcdefg'),
+            'fileDownloadTokenBuilder' => static function (self $test) {
+                return $test->createMockedFileDownloadToken('abcdefg');
+            },
             'tokenAge' => 59,
             'expectedExceptionClass' => null,
             'expectedExceptionMessage' => null

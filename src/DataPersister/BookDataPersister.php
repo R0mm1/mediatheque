@@ -15,6 +15,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
+/**
+ * @implements ProcessorInterface<Book, void>
+ */
 class BookDataPersister implements ProcessorInterface
 {
     public function __construct(
@@ -25,7 +28,7 @@ class BookDataPersister implements ProcessorInterface
     {
     }
 
-    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
         if(get_class($operation) !== Delete::class || !$data instanceof Book){
             throw new \LogicException(sprintf(
