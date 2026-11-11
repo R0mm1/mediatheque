@@ -1,13 +1,14 @@
 api_platform:
-    enable_swagger_ui: false
-    title: "Mediatheque API"
-    doctrine:
-        enabled: true
-    mapping:
-        paths:
-            - '%kernel.project_dir%/src/Entity'
-            - '%kernel.project_dir%/src/Dto'
-    formats:
-        jsonld: ['application/ld+json']
-        json: ['application/json']
-        multipart: ['multipart/form-data']
+  enable_swagger_ui: false
+  title: "Mediatheque API"
+  doctrine:
+    enabled: true
+  mapping:
+    paths:
+      - "%kernel.project_dir%/src/Entity"
+      - "%kernel.project_dir%/src/Dto"
+  formats:
+    jsonld: ["application/ld+json"]
+    json: ["application/json"]
+    multipart: ["multipart/form-data"]
+    epub: ["application/epub+zip"]

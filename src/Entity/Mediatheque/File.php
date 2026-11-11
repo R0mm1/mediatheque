@@ -10,7 +10,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File as HttpFile;
 
@@ -20,17 +20,17 @@ use Symfony\Component\HttpFoundation\File\File as HttpFile;
         new Get(),
         new Post(
             defaults: [
-                '_api_receive'=> false
+                '_api_receive' => false
             ],
             controller: CreateFile::class,
             openapiContext: [
-                'consumes'=> ['multipart/form-data'],
+                'consumes' => ['multipart/form-data'],
                 'parameters' => [
                     [
-                        'in'=>'formData',
-                        'name'=>'file',
-                        'type'=>'file',
-                        'description'=>'The file to upload'
+                        'in' => 'formData',
+                        'name' => 'file',
+                        'type' => 'file',
+                        'description' => 'The file to upload'
                     ]
                 ]
             ],

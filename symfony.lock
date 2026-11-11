@@ -106,14 +106,8 @@
     "firebase/php-jwt": {
         "version": "v5.5.1"
     },
-    "friendsofphp/proxy-manager-lts": {
-        "version": "v1.0.5"
-    },
     "jms/metadata": {
         "version": "2.6.1"
-    },
-    "laminas/laminas-code": {
-        "version": "4.5.1"
     },
     "monolog/monolog": {
         "version": "2.7.0"
@@ -337,21 +331,6 @@
     "symfony/password-hasher": {
         "version": "v6.0.2"
     },
-    "symfony/phpunit-bridge": {
-        "version": "6.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "5.3",
-            "ref": "97cb3dc7b0f39c7cfc4b7553504c9d7b7795de96"
-        },
-        "files": [
-            ".env.test",
-            "bin/phpunit",
-            "phpunit.xml.dist",
-            "tests/bootstrap.php"
-        ]
-    },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.24.0"
     },
@@ -371,9 +350,6 @@
         "version": "v6.0.2"
     },
     "symfony/property-info": {
-        "version": "v6.0.2"
-    },
-    "symfony/proxy-manager-bridge": {
         "version": "v6.0.2"
     },
     "symfony/routing": {

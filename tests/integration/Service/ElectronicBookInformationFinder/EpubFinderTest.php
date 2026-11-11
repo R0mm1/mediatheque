@@ -5,6 +5,7 @@ namespace App\Tests\integration\Service\ElectronicBookInformationFinder;
 use App\Entity\Book\ElectronicBook\Information\Book;
 use App\Service\ElectronicBookInformationFinder\EpubFinder;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -21,15 +22,12 @@ class EpubFinderTest extends KernelTestCase
         $this->entityManager = $container->get(EntityManagerInterface::class);
     }
 
-    /**
-     * @dataProvider findDataProvider
-     */
+    #[DataProvider('findDataProvider')]
     public function testFind(
         string $filePath,
         string $expectedTitle,
         array  $expectedImages
-    )
-    {
+    ) {
         //The file is deleted at the end of the process, so we create a working copy
         $pathinfo = pathinfo($filePath);
         $copyFilePath = sprintf(
@@ -62,7 +60,7 @@ class EpubFinderTest extends KernelTestCase
         }
     }
 
-    public function findDataProvider(): array
+    public static function findDataProvider(): array
     {
         return [
             'A valid epub 2.0 file' => [

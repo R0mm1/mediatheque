@@ -10,7 +10,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Book\ReferenceGroup;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ApiResource(
@@ -28,7 +28,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
         new Post()
     ],
     normalizationContext: ['groups' => ['referenceGroupBook:get']],
-    denormalizationContext: ['groups' => [ 'referenceGroupBook:set']]
+    denormalizationContext: ['groups' => ['referenceGroupBook:set']]
 )]
 #[ORM\Entity]
 #[ORM\Table(name: 'reference_group_book')]

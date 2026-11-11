@@ -10,7 +10,7 @@ use ApiPlatform\Metadata\Put;
 use App\DataProvider\Book\BookRawFileDataProvider;
 use App\Entity\Book as BaseBook;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
@@ -49,9 +49,9 @@ class Book extends BaseBook
     #[Groups(['book:get', 'book:set'])]
     private $bookFile;
 
-//    /**
-//     * @Groups({"book:get"})
-//     */
+    //    /**
+    //     * @Groups({"book:get"})
+    //     */
     private $hasBookFile;
 
     /**

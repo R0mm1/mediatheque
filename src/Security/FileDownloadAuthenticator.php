@@ -9,6 +9,7 @@ use App\Entity\Book\AudioBook\File as AudioBookFile;
 use App\Entity\Mediatheque\FileDownloadToken;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
+use Psr\Clock\ClockInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,10 +24,9 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly LoggerInterface $logger
-    )
-    {
-    }
+        private readonly LoggerInterface $logger,
+        private readonly ClockInterface $clock
+    ) {}
 
     public function supports(Request $request): ?bool
     {
@@ -62,7 +62,7 @@ class FileDownloadAuthenticator extends AbstractAuthenticator
         }
 
         $creationDate = $tokenObject->getCreated();
-        if (!$creationDate instanceof \DateTime || ($age = (time() - $creationDate->getTimestamp()) / 60) > 10) {
+        if (!$creationDate instanceof \DateTime || ($age = ($this->clock->now()->getTimestamp() - $creationDate->getTimestamp()) / 60) > 10) {
             $this->logger->info(
                 "Expired file download token used",
                 [

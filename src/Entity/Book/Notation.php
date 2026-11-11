@@ -13,7 +13,7 @@ use App\Entity\Book;
 use App\Entity\Notation as BaseNotation;
 use App\Filter\Book\Notation\User;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     shortName: 'BookNotation',
@@ -34,7 +34,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         )
     ],
     normalizationContext: ['groups' => ['notation_read']],
-    denormalizationContext: ['groups' => [ 'notation_write']]
+    denormalizationContext: ['groups' => ['notation_write']]
 )]
 #[ApiFilter(User::class)]
 #[ORM\Entity]

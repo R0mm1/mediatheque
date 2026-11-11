@@ -12,7 +12,7 @@ use ApiPlatform\Metadata\Put;
 use App\DataPersister\Mediatheque\UserConfigurationDataPersister;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ApiResource(

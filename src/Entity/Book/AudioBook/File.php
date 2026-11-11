@@ -30,21 +30,18 @@ use Symfony\Component\Validator\Constraints as Assert;
                     'content' => [
                         'multipart/form-data' => [
                             'schema' => [
-                                [
-                                    'type' => 'object',
-                                    'properties' => [
-                                        [
-                                            'name' => 'file',
-                                            'type' => 'file',
-                                            'description' => 'The file to upload',
-                                            'required' => false
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                'type' => 'object',
+                                'properties' => [
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                        'description' => 'The file to upload',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
             validationContext: ['groups' => ['Default', 'file_create']]
         )

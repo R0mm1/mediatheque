@@ -13,14 +13,14 @@ use App\Entity\Book;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 
 #[ApiResource(
     operations: [
         new Get(),
         new GetCollection(
-            normalizationContext: ['groups'=>'referenceGroup:list']
+            normalizationContext: ['groups' => 'referenceGroup:list']
         ),
         new Put(),
         new Delete(),

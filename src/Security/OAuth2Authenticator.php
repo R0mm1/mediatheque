@@ -25,9 +25,7 @@ class OAuth2Authenticator extends AbstractAuthenticator
         private readonly TokenDecoderInterface  $tokenDecoder,
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface        $logger
-    )
-    {
-    }
+    ) {}
 
     public function supports(Request $request): ?bool
     {
@@ -38,7 +36,7 @@ class OAuth2Authenticator extends AbstractAuthenticator
     {
         $authorizationString = $request->headers->get('Authorization');
 
-        if(!is_string($authorizationString) || !str_contains($authorizationString, ' ')){
+        if (!is_string($authorizationString) || !str_contains($authorizationString, ' ')) {
             $this->logger->alert(
                 "Attempt to login with a missing or badly formatted token",
                 [

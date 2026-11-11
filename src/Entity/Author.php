@@ -10,14 +10,14 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Filter\Author\Fullname;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 
 #[ApiResource(
     operations: [
         new Get(),
         new GetCollection(
-            normalizationContext: ['groups' => ['author:list', 'person:list' ]],
+            normalizationContext: ['groups' => ['author:list', 'person:list']],
             filters: [
                 Fullname::class,
                 \App\Filter\Author\Person::class,
@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Delete()
     ],
     normalizationContext: ['groups' => ['author:get', 'person:get']],
-    denormalizationContext: ['groups' => [ 'author:set', 'person:set']]
+    denormalizationContext: ['groups' => ['author:set', 'person:set']]
 )]
 #[ORM\Entity(repositoryClass: \App\Repository\AuthorRepository::class)]
 class Author extends AbstractEntity

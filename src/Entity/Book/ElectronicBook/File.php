@@ -19,7 +19,31 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     types: ['http://schema.org/Book/BookFile'],
     operations: [
         new Get(
-            provider: ElectronicBookFileDataProvider::class
+            provider: ElectronicBookFileDataProvider::class,
+            openapiContext: [
+                'parameters' => [
+                    [
+                        'name' => 't',
+                        'in' => 'query',
+                        'required' => true,
+                        'schema' => ['type' => 'string'],
+                        'description' => 'Download token',
+                    ],
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'The requested ebook',
+                        'content' => [
+                            'application/epub+zip' => [
+                                'schema' => [
+                                    'type' => 'string',
+                                    'format' => 'binary',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ),
         new Post(
             defaults: ['_api_receive' => false],
@@ -31,27 +55,34 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                     'content' => [
                         'multipart/form-data' => [
                             'schema' => [
-                                [
-                                    'type' => 'object',
-                                    'oneOf' => [
-                                        [
-                                            'name' => 'file',
-                                            'type' => 'file',
-                                            'description' => 'The file to upload',
-                                            'required' => false
+                                'type' => 'object',
+                                'oneOf' => [
+                                    [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'file' => [
+                                                'type' => 'string',
+                                                'format' => 'binary',
+                                                'description' => 'The file to upload',
+                                            ],
                                         ],
-                                        [
-                                            'name' => 'electronic_book_information_id',
-                                            'type' => 'string',
-                                            'description' => 'Use a book previously uploaded to the electronic book parser by specifying the id of the resulting ElectronicBookInformation resource',
-                                            'required' => false
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                        'required' => ['file'],
+                                    ],
+                                    [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'electronic_book_information_id' => [
+                                                'type' => 'string',
+                                                'description' => 'Use a book previously uploaded to the electronic book parser by specifying the id of the resulting ElectronicBookInformation resource',
+                                            ],
+                                        ],
+                                        'required' => ['electronic_book_information_id'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
             validationContext: ['groups' => ['Default', 'file_create']]
         )

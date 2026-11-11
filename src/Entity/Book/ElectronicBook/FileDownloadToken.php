@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\DataPersister\Mediatheque\FileDownloadTokenDataPersister;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     shortName: 'ElectronicBookFileDownloadToken',

@@ -11,8 +11,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Filter\Person\Fullname;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV6;
 
 #[ApiResource(
@@ -39,10 +39,8 @@ class Person extends AbstractEntity
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[Groups(['person:get', 'person:list', 'book:get', 'book:list'])]
-    private $id;
+    private UuidV6 $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['person:get', 'person:list', 'person:set', 'book:get', 'book:list'])]
@@ -63,6 +61,11 @@ class Person extends AbstractEntity
     #[ORM\Column(type: 'text', nullable: true)]
     #[Groups(['person:get', 'person:set'])]
     private $biography;
+
+    public function __construct()
+    {
+        $this->id = Uuid::v6();
+    }
 
     public function getId(): ?UuidV6
     {

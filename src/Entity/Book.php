@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     operations: [
@@ -156,7 +156,7 @@ class Book extends AbstractEntity
 
     public function setPageCount($pageCount): self
     {
-        $this->pageCount = (integer)$pageCount;
+        $this->pageCount = (int)$pageCount;
 
         return $this;
     }
@@ -290,9 +290,9 @@ class Book extends AbstractEntity
     }
 
     #[Groups(['book:list'])]
-    public function getShortSummary():string
+    public function getShortSummary(): string
     {
-        if(!is_string($this->getSummary())){
+        if (!is_string($this->getSummary())) {
             return '';
         }
 

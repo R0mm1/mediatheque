@@ -2,8 +2,7 @@
 .env
 vendor
 var
-assets/files/book/cover
-assets/files/book/electronicBook
+assets/*
 
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
